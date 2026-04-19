@@ -1,0 +1,14 @@
+# Python / Django (Back)
+back/.env/
+back/__pycache__/
+back/db.sqlite3
+back/*.pyc
+__pycache__/
+# Angular / Node (Front)
+front/node_modules/
+front/dist/
+front/.angular/
+
+# Varios
+.DS_Store
+.vscode/
