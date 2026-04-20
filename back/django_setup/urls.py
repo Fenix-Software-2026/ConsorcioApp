@@ -17,6 +17,9 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
+from myapp.views import test_mysql
+
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('', test_mysql, name='test_db'),
 ]
