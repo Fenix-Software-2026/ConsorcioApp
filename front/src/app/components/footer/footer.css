@@ -1,0 +1,16 @@
+:host {
+  display: block;
+  width: 100%;
+}
+
+footer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  box-sizing: border-box;
+  background-color: #d84e0d; 
+  border-radius: 10px;
+  color: white; 
+  padding: 20px;
+}
