@@ -6,6 +6,8 @@ back/*.pyc
 __pycache__/
 # Angular / Node (Front)
 front/node_modules/
+venv/
+node_modules/
 front/dist/
 front/.angular/
 
