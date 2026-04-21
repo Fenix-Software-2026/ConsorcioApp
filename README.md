@@ -21,24 +21,93 @@ Stack tecnológico empleado con sus versiones específicas:
 | **MySQL** | 2.2.8 | 
 ---
 
-#### Uso básico
-Como respuesta a la problemática identificada, el equipo propone el desarrollo de una aplicación web de gestión y comunicación para consorcios de edificios, diseñada para centralizar la información y optimizar la interacción entre todos los actores involucrados.
+## ⚙️ Instrucciones de Instalación
+ 1. Clonar el Repositorio
 
-##### Listado de requerimientos
-El sistema deberá permitir:
-Registro de usuarios (administrador, residente/propietario) Desactivación de usuarios
-Inicio y cierre de sesión 
-Diferenciación de roles (administrador / usuario) 
-Edición de datos personales
-El sistema deberá restringir funcionalidades según el rol del usuario. 
+```bash
+git clone [https://github.com/tu-usuario/consorcio-app.git](https://github.com/tu-usuario/consorcio-app.git)
+cd consorcio-app
 
-Crear reclamos por parte de los inquilinos/propietarios, los mismos contarán con título, descripción,categoría
-Adjuntar imágenes
-Visualizar listado de reclamos realizados 
-Filtrar reclamos por categoría y unidad/departamento
-Cambiar el estado del reclamo (pendiente, en proceso, resuelto,archivado) 
-Asociar reclamos a una unidad/departamento 
-Notificar al usuario sobre actualizaciones 
-Permitir agregar comentarios
-Visualizar el historial de cambio del reclamo (estado, fecha, usuario)
+### Configuración de la Base de Datos (MySQL)
+#### Creá la base de datos en tu servidor MySQL:
+```SQL
+CREATE DATABASE consorcio_db;
+```
+### 2- Configurá tus credenciales (usuario y contraseña) en el archivo settings.py del backend o en tu archivo de variables de entorno (.env). *
+
+### 3. Instalación del Backend (Django)
+Desde la raíz del proyecto o la carpeta backend:
+
+```bash
+# Crear entorno virtual
+python -m venv venv
+```
+
+## Activar entorno virtual
+``` # Windows:
+.\venv\Scripts\activate
+# Linux/Mac:
+source venv/bin/activate
+```
+
+### Instalar librerías y dependencias
+```
+pip install -r requirements.txt
+```
+### Aplicar migraciones a MySQL
+```
+python manage.py migrate
+```
+
+### Iniciar servidor
+```
+python manage.py runserver
+```
+### 4. Instalación del Frontend (Angular)
+Desde la carpeta frontend:
+
+```Bash
+# Instalar dependencias de Node
+npm install
+```
+## Levantar la aplicación
+```
+ng serve
+```
+* Nota: La aplicación estará disponible en http://localhost:4200 *
+
+# 🚀 Uso Básico
+### Acceso: 
+* **Iniciá sesión: El sistema asignará funciones según tu rol (Administrador o Residente/Propietario).**
+
+* **Perfil: Podés actualizar tus datos desde la configuración.**
+
+* **Gestión de Reclamos:**
+*  **Los inquilinos crean reclamos con fotos y descripción.**
+*La administración cambia el estado (Pendiente, En proceso, Resuelto, Archivado).*
+*Se puede auditar quién y cuándo realizó cada cambio en el historial.*
+
+## 📋 Requerimientos del Sistema
+### ✅ Requerimientos Funcionales
+* **Gestión de Usuarios: Registro, inicio/cierre de sesión, desactivación de cuentas y roles diferenciados.**
+* **Control de Acceso: Restricción de funcionalidades según permisos de usuario.**
+  
+
+* **Gestión de Reclamos:**
+* **Creación por categoría con soporte para imágenes adjuntas.**
+* **Filtros por unidad/departamento.**
+* **Sistema de comentarios y notificaciones de actualización.**
+* **Historial completo de trazabilidad (bitácora).**
+
+### 🔒 Requerimientos No Funcionales
+* **Diseño Responsive: Interfaz adaptable a móviles, tablets y PCs.**
+* **Usabilidad: Navegación clara e intuitiva para usuarios sin perfil técnico.**
+* **Seguridad: Encriptación de contraseñas y control de acceso robusto.**
+* **Auditoría: Registro obligatorio de trazabilidad para cada acción realizada.**
+* **Integridad de Datos: Protección de registros críticos; el sistema no permite la eliminación de datos históricos esenciales.**
+
+
+
+
+```
 
