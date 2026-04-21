@@ -21,3 +21,24 @@ Stack tecnológico empleado con sus versiones específicas:
 | **MySQL** | 2.2.8 | 
 ---
 
+#### Uso básico
+Como respuesta a la problemática identificada, el equipo propone el desarrollo de una aplicación web de gestión y comunicación para consorcios de edificios, diseñada para centralizar la información y optimizar la interacción entre todos los actores involucrados.
+
+##### Listado de requerimientos
+El sistema deberá permitir:
+Registro de usuarios (administrador, residente/propietario) Desactivación de usuarios
+Inicio y cierre de sesión 
+Diferenciación de roles (administrador / usuario) 
+Edición de datos personales
+El sistema deberá restringir funcionalidades según el rol del usuario. 
+
+Crear reclamos por parte de los inquilinos/propietarios, los mismos contarán con título, descripción,categoría
+Adjuntar imágenes
+Visualizar listado de reclamos realizados 
+Filtrar reclamos por categoría y unidad/departamento
+Cambiar el estado del reclamo (pendiente, en proceso, resuelto,archivado) 
+Asociar reclamos a una unidad/departamento 
+Notificar al usuario sobre actualizaciones 
+Permitir agregar comentarios
+Visualizar el historial de cambio del reclamo (estado, fecha, usuario)
+
