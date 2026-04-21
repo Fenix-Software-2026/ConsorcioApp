@@ -1,11 +1,23 @@
-# ConsorcioApp
+# 🏢 ConsorcioApp - Sistema de Gestión de Inquilinos
 
-Plataforma centralizada para la administración y convivencia en edificios, diseñada para optimizar la comunicación trilateral entre administración, personal operativo y residente.
+## 📝 Descripción del Proyecto
+**ConsorcioApp** es una plataforma integral diseñada para centralizar la comunicación y administración de consorcios. El proyecto surge como respuesta a la desorganización de los canales informales, permitiendo una gestión transparente y eficiente de reclamos, gastos y avisos mediante una **bitácora digital**.
 
-Integrantes:
-- Nahuel Santiago Cufre
-- Gisela Johana D'Andrea 
-- Ivan Ignacio Moreno Rivero
-- Luis Gastón Alonso
-- Luis Gerardo Catalas
-- Veronica Cecilia Vargas
+### Problemas que resuelve:
+* **Falta de seguimiento:** Evita la pérdida de reclamos y pedidos.
+* **Comunicación ineficiente:** Centraliza avisos y contactos en un entorno organizado.
+* **Falta de transparencia:** Ofrece acceso claro a estados de gestión y movimientos.
+
+---
+
+## 🛠️ Tecnologías Utilizadas
+Stack tecnológico empleado con sus versiones específicas:
+
+| Tecnología | Versión |
+| :--- | :--- |
+| **Django** | 6.0.4 |
+| **Angular** | 21.2.7 |
+| **Node.js** | 24.14.1 |
+| **MySQL** | 2.2.8 | 
+---
+
