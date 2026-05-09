@@ -89,25 +89,50 @@ ng serve
 
 ## 📋 Requerimientos del Sistema
 ### ✅ Requerimientos Funcionales
-* **Gestión de Usuarios: Registro, inicio/cierre de sesión, desactivación de cuentas y roles diferenciados.**
-* **Control de Acceso: Restricción de funcionalidades según permisos de usuario.**
-  
+* **Gestión de Usuarios:**
+(RF01) El sistema debe permitir que los usuarios se registren ingresando nombre, apellido, email, contraseña y rol (administrador o residente).
+
+(RF02) El sistema debe permitir la desactivación de usuarios.
+
+(RF03) El sistema debe permitir que los usuarios inicien y cierren sesión. 
+ 
+(RF04) El sistema debe permitir diferenciar los permisos y funcionalidades según el rol del usuario (administrador o residente). 
+
+(RF05) El sistema debe permitir que los usuarios editen sus datos personales. 
 
 * **Gestión de Reclamos:**
-* **Creación por categoría con soporte para imágenes adjuntas.**
-* **Filtros por unidad/departamento.**
-* **Sistema de comentarios y notificaciones de actualización.**
-* **Historial completo de trazabilidad (bitácora).**
+**(RF06) El sistema debe permitir crear reclamos por parte de los inquilinos/propietarios, los mismos contarán con título, descripción,categoría.
+
+(RF07) El sistema debe poder adjuntar imágenes.
+
+(RF08) El sistema debe permitir visualizar listado de reclamos realizados.
+ 
+(RF9) El sistema debe poder filtrar reclamos por categoría y unidad/departamento.
+
+(RF10)-El sistema debe permitir cambiar el estado del reclamo (pendiente, en proceso, resuelto,archivado). 
+
+(RF11) El sistema debe permitir asociar reclamos a una unidad/departamento. 
+
+(RF12)El sistema debe permitir notificar al usuario sobre actualizaciones. 
+
+(RF13)El sistema debe permitir agregar comentarios.
+
+(RF14) El sistema debe permitir visualizar el historial de cambio del reclamo (estado, fecha, usuario).
+
+**
 
 ### 🔒 Requerimientos No Funcionales
-* **Diseño Responsive: Interfaz adaptable a móviles, tablets y PCs.**
-* **Usabilidad: Navegación clara e intuitiva para usuarios sin perfil técnico.**
-* **Seguridad: Encriptación de contraseñas y control de acceso robusto.**
-* **Auditoría: Registro obligatorio de trazabilidad para cada acción realizada.**
-* **Integridad de Datos: Protección de registros críticos; el sistema no permite la eliminación de datos históricos esenciales.**
+**(RNF01)El sistema debe ser accesible desde navegador web y adaptarse a distintos dispositivos mediante diseño responsive.
 
+(RNF02)El sistema debe tener una interfaz clara e intuitiva.
 
+(RNF03)El sistema debe garantizar la seguridad de los datos de los usuarios mediante encriptación de contraseñas y control de acceso por roles.
 
+(RNF04)El sistema debe permitir un uso sencillo sin conocimientos técnicos.
+
+(RNF05)El sistema debe registrar quién realizó cada acción.
+
+(RNF06)El sistema no deberá permitir la eliminación de datos críticos.**
 
 ```
 
