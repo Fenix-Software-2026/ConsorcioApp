@@ -89,7 +89,8 @@ ng serve
 
 ## 📋 Requerimientos del Sistema
 ### ✅ Requerimientos Funcionales
-* **Gestión de Usuarios:**
+* Gestión de Usuarios:
+  
 (RF01) El sistema debe permitir que los usuarios se registren ingresando nombre, apellido, email, contraseña y rol (administrador o residente).
 
 (RF02) El sistema debe permitir la desactivación de usuarios.
@@ -100,8 +101,9 @@ ng serve
 
 (RF05) El sistema debe permitir que los usuarios editen sus datos personales. 
 
-* **Gestión de Reclamos:**
-**(RF06) El sistema debe permitir crear reclamos por parte de los inquilinos/propietarios, los mismos contarán con título, descripción,categoría.
+* Gestión de Reclamos:
+
+(RF06) El sistema debe permitir crear reclamos por parte de los inquilinos/propietarios, los mismos contarán con título, descripción,categoría.
 
 (RF07) El sistema debe poder adjuntar imágenes.
 
@@ -119,10 +121,11 @@ ng serve
 
 (RF14) El sistema debe permitir visualizar el historial de cambio del reclamo (estado, fecha, usuario).
 
-**
+
 
 ### 🔒 Requerimientos No Funcionales
-**(RNF01)El sistema debe ser accesible desde navegador web y adaptarse a distintos dispositivos mediante diseño responsive.
+
+(RNF01)El sistema debe ser accesible desde navegador web y adaptarse a distintos dispositivos mediante diseño responsive.
 
 (RNF02)El sistema debe tener una interfaz clara e intuitiva.
 
@@ -132,7 +135,7 @@ ng serve
 
 (RNF05)El sistema debe registrar quién realizó cada acción.
 
-(RNF06)El sistema no deberá permitir la eliminación de datos críticos.**
+(RNF06)El sistema no deberá permitir la eliminación de datos críticos.
 
 ```
 
