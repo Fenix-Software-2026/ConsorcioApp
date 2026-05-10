@@ -32,7 +32,7 @@ class Reclamo(models.Model):
    descripcion = models.TextField()
    categoria = models.CharField(max_length=20, choices=CATEGORIAS)
    estado = models.CharField(max_length=20, choices=ESTADOS, default='pendiente')
-   imagen = models.ImageField(upload_to='reclamos/', null=True, blank=True)
+   imagen = models.URLField(null=True, blank=True)
    fecha_creacion = models.DateTimeField(auto_now_add=True)
    fecha_actualizacion = models.DateTimeField(auto_now=True)
 
@@ -42,11 +42,11 @@ class Reclamo(models.Model):
    def __str__(self):
         return f"{self.titulo} - {self.estado}"
    
-class Comentario(models.Model):
-    reclamo = models.ForeignKey('Reclamo', on_delete=models.CASCADE, related_name='comentarios')
-    usuario = models.ForeignKey('Usuario', on_delete=models.CASCADE)
-    texto = models.TextField()
-    fecha_creacion = models.DateTimeField(auto_now_add=True)
+class Comunicado(models.Model):
+    titulo = models.CharField(max_length=200)
+    contenido = models.TextField()
+    fecha_publicacion = models.DateTimeField(auto_now_add=True)
+    es_urgente = models.BooleanField(default=False)
 
     def __str__(self):
-        return f"Comentario de {self.usuario} en {self.reclamo}"
+        return self.titulo
