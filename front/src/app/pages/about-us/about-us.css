@@ -86,6 +86,10 @@
   border: 1px solid #ddd;
   border-radius: 12px;
   transition: transform 0.3s;
+  margin-left: 90px;
+  margin-right: 90px;
+  margin-top: 20px;
+  margin-bottom: 20px;
 }
 
 .member-card:hover {
