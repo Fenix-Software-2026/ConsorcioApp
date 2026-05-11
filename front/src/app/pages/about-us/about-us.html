@@ -1,0 +1,49 @@
+<header class="hero-banner" data-aos="fade-down">
+  <div class="banner-content">
+    <h1>Sobre Nosotros</h1>
+    <p class="subtitle">Innovación en la gestión de consorcios</p>
+  </div>
+</header>
+  <section class="info-grid" data-aos="zoom-in">
+    <div class="info-card">
+      <h3>Nuestra Misión</h3>
+      <p>
+        ConsorcioApp nace como una solución a la problemática de la falta de comunicación 
+        entre propietarios de un consorcio y los propios inquilinos. Buscamos generar un 
+        canal por el cual ambas partes puedan comunicarse de manera fluida y eficiente.
+      </p>
+    </div>
+    <div class="info-card">
+      <h3>Compromiso</h3>
+      <p>
+        El sistema garantiza una comunicación polivalente entre ambas partes, una seguridad 
+        y protección de datos personales robusta, además de una interfaz clara e intuitiva. 
+        La plataforma se encuentra en constante desarrollo, por lo que tus comentarios 
+        siempre serán bien recibidos.
+      </p>
+    </div>
+  </section>
+
+  <section class="team-section">
+    <h2>Nuestro Equipo</h2>
+    <div class="team-grid">
+      
+      @for (persona of equipo; track persona.nombre; let i = $index) {
+        <div class="member-card" 
+             data-aos="fade-up"
+             [attr.data-aos-delay]="i * 200">
+          
+          <div class="avatar-placeholder">
+            <img [src]="persona.foto" [alt]="persona.nombre">
+          </div>
+          
+          <h4>{{ persona.nombre }}</h4> 
+          <p class="role">{{ persona.rol }}</p>
+          <p class="bio">{{ persona.bio }}</p>
+        </div>
+      } @empty {
+        <p>Cargando información de los desarrolladores...</p>
+      }
+
+    </div>
+  </section>
