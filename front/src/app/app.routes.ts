@@ -4,7 +4,7 @@ import { AboutUs } from './pages/about-us/about-us';
 
 
 export const routes: Routes = [
-  { path: 'inicio', component: Landing }, 
+  { path: '', component: Landing }, 
   { path: 'nosotros', component: AboutUs },
   { path: '**', redirectTo: '' } 
 ];
