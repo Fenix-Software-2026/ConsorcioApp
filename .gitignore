@@ -1,5 +1,7 @@
 # Python / Django (Back)
 back/.env/
+.venv
+.env
 back/__pycache__/
 back/db.sqlite3
 back/*.pyc
