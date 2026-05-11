@@ -1,1 +1,68 @@
-<router-outlet></router-outlet>
+<div class="landing-wrapper">
+  <header class="hero" data-aos="fade-up">
+    <div class="hero-inner">
+      <h1 class="main-title">ConsorcioApp</h1>
+      <p class="main-subtitle">La evolución en administración de consorcios</p>
+      <div class="hero-line" data-aos="stretch-right"></div>
+    </div>
+  </header>
+
+  <section class="info-section">
+    <div class="info-grid" data-aos="fade-up">
+        <h2>¿Qué es ConsorcioApp?</h2>
+        <p>ConsorcioApp es la nueva herramienta para llevar tu consorcio al <strong>siguiente nivel</strong>. Te ofrecemos una herramienta todo-en-uno para que puedas gestionar tu negocio con una solución tecnologica e innovadora.</p>
+        <h3>¿Que ofrecemos?</h3>
+
+
+  <section class="features-section">
+    <div class="features-grid">
+      
+      <article class="feature-card" data-aos="fade-up" data-aos-delay="100">
+        <div class="card-image-placeholder img-gestion" aria-label="Gestión" role="img"></div>
+        <div class="card-content">
+          <h3>Gestión Eficiente</h3>
+          <p>Administrá reclamos y pagos en un solo lugar, sin burocracia.</p>
+        </div>
+      </article>
+
+      <article class="feature-card" data-aos="fade-up" data-aos-delay="200">
+        <div class="card-image-placeholder img-comunicacion" aria-label="Comunicación" role="img"></div>
+        <div class="card-content">
+          <h3>Comunicación Real</h3>
+          <p>Chat directo entre administración, propietarios e inquilinos.</p>
+        </div>
+      </article>
+
+      <article class="feature-card" data-aos="fade-up" data-aos-delay="300">
+        <div class="card-image-placeholder img-seguridad" aria-label="Seguridad" role="img"></div>
+        <div class="card-content">
+          <h3>Transparencia Total</h3>
+          <p>Reportes de gastos claros y accesibles para toda la comunidad.</p>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+  <section class="cta-section" data-aos="zoom-in">
+    <div class="img-dudas" aria-label="Dudas o consultas" role="img"></div>
+    <h2>¿Tenés dudas?</h2>
+    <p>Estamos para ayudarte a digitalizar tu comunidad.</p>
+    <button class="btn-primary" (click)="toggleContactForm()">
+      Contactanos ahora
+    </button>
+
+    @if (showForm) {
+      <div class="form-container" data-aos="fade-down">
+        <form [formGroup]="contactForm" (ngSubmit)="onSubmit()">
+          <input type="text" formControlName="nombre" placeholder="Nombre completo">
+          <input type="email" formControlName="email" placeholder="Correo electrónico">
+          <textarea formControlName="mensaje" placeholder="¿En qué podemos ayudarte?"></textarea>
+          <button type="submit" [disabled]="contactForm.invalid">Enviar Mensaje</button>
+        </form>
+      </div>
+    }
+  </section>
+  
+
+</div>
