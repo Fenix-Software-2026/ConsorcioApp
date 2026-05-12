@@ -1,0 +1,33 @@
+html,
+body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
+
+body {
+  overflow-x: hidden;
+}
+
+.logo {
+  max-width: 180px;
+  height: auto;
+}
+
+.background {
+  background: linear-gradient(135deg, #ff7a18, #af002d 70%);
+}
+
+.input-login {
+  background-color: #e2530141;
+  border: none;
+}
+
+.input-login:focus {
+  box-shadow: none;
+  border: 1px solid #ff7a18;
+}
+
+.btn-colores {
+  background: linear-gradient(135deg, #ff7a18, #af002d);
+}

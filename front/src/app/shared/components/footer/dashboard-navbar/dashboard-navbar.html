@@ -1,0 +1,73 @@
+<div class="navbar">
+  <!-- este es el contenedor principal del navbar del dashboard, no es el global de la web -->
+
+  <div class="nav-left"></div>
+  <!-- esto por ahora esta vacio, seguramente despues aca va logo o titulo del sistema -->
+
+  <div class="navbar-right">
+
+    <button class="dark-toggle" (click)="toggleDarkMode()">
+      <!-- boton que cambia entre modo oscuro y claro -->
+
+      <i class="fa"
+         [class.fa-sun]="isDark"
+         [class.fa-moon]="!isDark"></i>
+
+      <!-- icono dinamico, si isDark es true muestra sol, si no muestra luna -->
+    </button>
+
+    <div class="perfil" (click)="toggleDropdown()">
+      <!-- este bloque es el boton del usuario, abre el menu desplegable -->
+
+      <div class="perfilCirculo">A</div>
+      <!-- circulo con inicial del usuario (hardcodeado por ahora, despues vendra del backend) -->
+
+      <span class="perfil-nombre">{{ panelTitle }}</span>
+      <!-- nombre del panel o rol (admin / owner), viene por input desde el componente -->
+
+      <div class="dropdown-menu" [class.show]="dropdownOpen">
+        <!-- menu desplegable, se muestra o se oculta segun dropdownOpen -->
+
+        <div class="user-info">
+          <!-- bloque superior del dropdown con info del usuario -->
+
+          <div class="perfilCirculo">H</div>
+          <!-- otra inicial hardcodeada, despues deberia ser dinamica -->
+
+          <div>
+            <p class="user-name">{{ panelTitle }}</p>
+            <!-- nombre o rol del usuario logueado -->
+
+            <p class="user-email">{{ userEmail }}</p>
+            <!-- email del usuario, viene del input del componente -->
+          </div>
+
+        </div>
+
+        <hr />
+        <!-- separador visual del menu -->
+
+        <a routerLink="/dashboard" class="dropdown-item">
+          <i class="fa-solid fa-user"></i>
+          Mi perfil
+        </a>
+        <!-- opcion de perfil, por ahora no hace nada funcional -->
+
+        <a routerLink="/dashboard" class="dropdown-item">
+          <i class="fa-solid fa-gear"></i>
+          Configuración
+        </a>
+        <!-- opcion de configuracion, futura funcionalidad -->
+
+        <a routerLink="/login" class="dropdown-item logout">
+          <i class="fa-solid fa-right-from-bracket"></i>
+          Cerrar sesión
+        </a>
+        <!-- boton de logout, aun no conectado a logica de auth -->
+      </div>
+
+    </div>
+
+  </div>
+
+</div>

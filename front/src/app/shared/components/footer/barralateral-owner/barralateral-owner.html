@@ -1,0 +1,29 @@
+<div class="barralateral">
+
+  <h3>Panel de Propietario | Inquilino</h3>
+
+  <nav class="sidebar">
+
+    <ul>
+
+      @for (item of menuItems; track item.name) {
+
+        <li class="menu-item">
+
+          <a [routerLink]="item.route">
+
+            <i [class]="item.icon"></i>
+
+            <span>{{ item.name }}</span>
+
+          </a>
+
+        </li>
+
+      }
+
+    </ul>
+
+  </nav>
+
+</div>
