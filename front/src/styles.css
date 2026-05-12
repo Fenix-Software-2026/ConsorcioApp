@@ -1,1 +1,35 @@
-/* You can add global styles to this file, and also import other style files */
+/* modificaciones de estilo para evitar doble scroll e importanto estilo de fuente para el login */
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
+
+
+html,
+body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+}
+
+body {
+    overflow-x: hidden;
+}
+
+app-root {
+    display: block;
+    height: 100%;
+}
+
+.layout {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.content {
+    flex: 1;
+}
+
+
+
+body {
+    font-family: "Roboto", sans-serif;
+}
