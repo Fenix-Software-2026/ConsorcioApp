@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from .models import Reclamo, Comunicado, Unidad, Usuario
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
 class UnidadSerializer(serializers.ModelSerializer):
     class Meta:
@@ -21,3 +22,16 @@ class ComunicadoSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comunicado
         fields = '__all__'
+
+
+class MiTokenSerializer(TokenObtainPairSerializer):
+    
+    @classmethod
+    def get_token(cls, user):
+        token = super().get_token(user)
+
+        # Añadimos datos personalizados ADENTRO del token de acceso
+        token['rol'] = user.rol
+        token['username'] = user.username
+        
+        return token
