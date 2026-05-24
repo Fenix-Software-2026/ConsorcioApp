@@ -4,12 +4,11 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 
 class Usuario(AbstractUser):
-    ROL = [     
-        ('residente',   'Residente'),
-        ('administrador',  'Administrador'),
-    ]
+    class Rol(models.TextChoices):
+        administrador = 'administrador', 'Administrador'
+        residente = 'residente', 'Residente'
    
-    rol = models.CharField(max_length=20, choices=ROL, default='residente')
+    rol = models.CharField(max_length=20, choices=Rol.choices, default='residente')
     residente_actual = models.BooleanField(default=True)
     
     unidad = models.OneToOneField(
