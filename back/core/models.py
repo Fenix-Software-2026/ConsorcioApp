@@ -15,7 +15,9 @@ class Usuario(AbstractUser):
     unidad = models.OneToOneField(
         'Unidad',
         on_delete=models.PROTECT,
-        related_name='usuario'
+        related_name='usuario',
+        null=True,
+        blank=True
     )
 
     def __str__(self):
