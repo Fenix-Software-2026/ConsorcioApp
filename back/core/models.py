@@ -1,24 +1,25 @@
 
 
 from django.db import models
-class Usuario(models.Model):
+from django.contrib.auth.models import AbstractUser
+
+class Usuario(AbstractUser):
     ROL = [     
         ('residente',   'Residente'),
         ('administrador',  'Administrador'),
     ]
    
-    nombre = models.CharField(max_length=100)
-    apellido = models.CharField(max_length=150)
-    email = models.EmailField(max_length=100, unique=True)
-    password = models.CharField(max_length=255)
     rol = models.CharField(max_length=20, choices=ROL, default='residente')
     residente_actual = models.BooleanField(default=True)
-    esta_activo = models.BooleanField(default=True)
     
-    unidad = models.ForeignKey('Unidad', on_delete=models.PROTECT) 
+    unidad = models.OneToOneField(
+        'Unidad',
+        on_delete=models.PROTECT,
+        related_name='usuario'
+    )
 
     def __str__(self):
-        return f"{self.nombre} {self.apellido} ({self.rol})"
+        return f"{self.first_name} {self.last_name} ({self.rol})"
 
 class Unidad(models.Model):
     piso = models.SmallIntegerField()
