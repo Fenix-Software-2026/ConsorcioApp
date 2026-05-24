@@ -1,6 +1,6 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
-
+from django.contrib import admin
 from core.views import ComunicadoViewSet, ReclamoViewSet, UsuarioViewSet, UnidadViewSet
 
 router = DefaultRouter()
@@ -11,4 +11,5 @@ router.register(r'unidad', UnidadViewSet)
 
 urlpatterns = [
     path('api/', include(router.urls)),
+    path('admin/', admin.site.urls),
 ]
