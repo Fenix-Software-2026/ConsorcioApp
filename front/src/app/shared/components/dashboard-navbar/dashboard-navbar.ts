@@ -1,6 +1,7 @@
-import { Component, Input } from '@angular/core';
+import { Component, inject, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
+import { AuthService } from '../../../auth/service/aurh';
 
 @Component({
   selector: 'app-dashboard-navbar',
@@ -12,10 +13,10 @@ import { RouterModule } from '@angular/router';
 export class DashboardNavbar {
 
   // titulo del panel (admin / owner / etc)
-  @Input() panelTitle: string = 'Administrador';
+  @Input() usuarioName: string = '';
 
   // email del usuario logueado (luego vendra de auth real)
-  @Input() userEmail: string = 'usuario@gmail.com';
+  @Input() usuarioRol: string = '';
 
   // estado visual del modo oscuro (solo frontend por ahora)
   isDark: boolean = false;
@@ -32,5 +33,16 @@ export class DashboardNavbar {
     // abre o cierra el menu del usuario
     this.dropdownOpen = !this.dropdownOpen;
   }
+
+  private authService = inject(AuthService);
+  private router = inject(Router);
+
+  onLogout() {
+    // llama al servicio de auth para cerrar sesion
+    this.authService.logout();
+    // redirige al login
+    this.router.navigate(['/login']);
+  }
+
 
 }

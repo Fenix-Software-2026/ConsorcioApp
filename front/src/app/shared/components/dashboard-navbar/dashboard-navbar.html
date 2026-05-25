@@ -22,7 +22,7 @@
       <div class="perfilCirculo">A</div>
       <!-- circulo con inicial del usuario (hardcodeado por ahora, despues vendra del backend) -->
 
-      <span class="perfil-nombre">{{ panelTitle }}</span>
+      <span class="perfil-nombre">{{ usuarioName }}</span>
       <!-- nombre del panel o rol (admin / owner), viene por input desde el componente -->
 
       <div class="dropdown-menu" [class.show]="dropdownOpen">
@@ -35,10 +35,10 @@
           <!-- otra inicial hardcodeada, despues deberia ser dinamica -->
 
           <div>
-            <p class="user-name">{{ panelTitle }}</p>
+            <p class="user-name">{{ usuarioRol }}</p>
             <!-- nombre o rol del usuario logueado -->
 
-            <p class="user-email">{{ userEmail }}</p>
+            <p class="user-email">{{ usuarioName }}</p>
             <!-- email del usuario, viene del input del componente -->
           </div>
 
@@ -59,7 +59,7 @@
         </a>
         <!-- opcion de configuracion, futura funcionalidad -->
 
-        <a routerLink="/login" class="dropdown-item logout">
+        <a (click)="onLogout()" class="dropdown-item logout">
           <i class="fa-solid fa-right-from-bracket"></i>
           Cerrar sesión
         </a>

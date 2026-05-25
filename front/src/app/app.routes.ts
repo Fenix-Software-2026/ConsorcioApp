@@ -6,12 +6,18 @@ import { Dashboard } from './pages/dashboard/dashboard';
 import { DashboardOwner } from './pages/dashboard-owner/dashboard-owner';
 import { AdminHome } from './pages/admin-home/admin-home';
 import { OwnerHome } from './pages/owner-home/owner-home';
+import { adminGuard } from './auth/guards/adminGuard';
+import { ownerGuard } from './auth/guards/residenteGuard';
 
 export const routes: Routes = [
   { path: '', component: Landing }, 
   { path: 'nosotros', component: AboutUs },
   { path: 'login', component: Login },
-  {path: 'dashboard',component: Dashboard,
+ 
+  {
+    path: 'dashboard',
+    component: Dashboard,
+    canActivate: [adminGuard],
     children: [
       { path: '', component: AdminHome } 
     ]
@@ -20,11 +26,12 @@ export const routes: Routes = [
   {
     path: 'owner',
     component: DashboardOwner,
+    canActivate: [ownerGuard ],
     children: [
       { path: '', component: OwnerHome }
     ]
   },
 
-  { path: '', redirectTo: 'inicio', pathMatch: 'full' },
-  { path: '**', redirectTo: 'inicio' }
+  { path: '', redirectTo: '', pathMatch: 'full' },
+  { path: '**', redirectTo: '' }
 ];
