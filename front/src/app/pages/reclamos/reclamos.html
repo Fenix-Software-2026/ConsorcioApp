@@ -1,0 +1,110 @@
+<div class="reclamos-container">
+
+  <h2>Gestión de Reclamos</h2>
+
+  <div class="top-bar">
+    <input type="text" placeholder="Buscar reclamo por descripción, vecino o estado..." [(ngModel)]="textoBusqueda">
+
+    <button class="btn-naranja-main" (click)="limpiarResueltos()" [disabled]="resueltos === 0">
+      🧹 Limpiar Resueltos
+    </button>
+  </div>
+
+  <div class="cards">
+    <div class="card">
+      <h3>{{ totalReclamos }}</h3>
+      <p>Total Reclamos</p>
+    </div>
+    <div class="card">
+      <h3>{{ pendientes }}</h3>
+      <p>Pendientes</p>
+    </div>
+    <div class="card">
+      <h3>{{ enProceso }}</h3>
+      <p>En proceso</p>
+    </div>
+    <div class="card">
+      <h3>{{ resueltos }}</h3>
+      <p>Resueltos</p>
+    </div>
+  </div>
+
+  <div class="table-responsive-scroll">
+    <table>
+      <thead>
+        <tr>
+          <th>N°</th>
+          <th>Vecino / Origen</th>
+          <th>Descripción</th>
+          <th>Estado</th>
+          <th>Fecha</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for(reclamo of reclamosFiltrados; track reclamo.numero){
+        <tr>
+          <td>{{ reclamo.numero }}</td>
+          <td class="vecino-info">{{ reclamo.usuario_nombre }}</td>
+          <td>{{ reclamo.descripcion }}</td>
+          <td>
+            <span class="estado" 
+                  [class.pendiente]="reclamo.estado === 'Pendiente'"
+                  [class.proceso]="reclamo.estado === 'En proceso'"
+                  [class.resuelto]="reclamo.estado === 'Resuelto'">
+              {{ reclamo.estado }}
+            </span>
+          </td>
+          <td>{{ reclamo.fecha }}</td>
+          <td>
+            <button class="btn-ver" (click)="abrirGestion(reclamo)">
+              Gestionar
+            </button>
+            <button class="btn-eliminar" (click)="eliminarReclamoVisual(reclamo.numero)" title="Eliminar de la vista">
+              🗑️
+            </button>
+          </td>
+        </tr>
+        } @empty {
+        <tr>
+          <td colspan="6" class="tabla-vacia">
+            No quedan reclamos en la bandeja de entrada.
+          </td>
+        </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</div>
+
+@if(mostrarModal) {
+<div class="modal-shadow">
+  <div class="modal-box">
+    <div class="modal-head">
+      <h3>Actualizar Estado del Reclamo #{{ reclamoSeleccionado.numero }}</h3>
+      <button class="close-x" (click)="cerrarModal()">&times;</button>
+    </div>
+    
+    <form [formGroup]="estadoForm" (ngSubmit)="actualizarEstadoLocal()">
+      <div class="modal-body">
+        <p class="detalle-txt"><strong>Descripción:</strong> {{ reclamoSeleccionado.descripcion }}</p>
+        <p class="detalle-txt"><strong>Vecino:</strong> {{ reclamoSeleccionado.usuario_nombre }}</p>
+        
+        <div class="select-box">
+          <label>Asignar nuevo estado:</label>
+          <select formControlName="nuevoEstado" class="select-field">
+            <option value="Pendiente">⚠️ Pendiente</option>
+            <option value="En proceso">🔧 En proceso</option>
+            <option value="Resuelto">✅ Resuelto</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="modal-foot">
+        <button type="button" class="btn-back" (click)="cerrarModal()">Volver</button>
+        <button type="submit" class="btn-save-orange">Aplicar Cambios</button>
+      </div>
+    </form>
+  </div>
+</div>
+}

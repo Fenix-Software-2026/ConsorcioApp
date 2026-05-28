@@ -1,238 +1,70 @@
-<div class="admin-home">
+<div class="owner-home">
   <section class="hero">
-
     <div class="hero-text">
-
       <h1>Bienvenido nuevamente 👋</h1>
-      <p>
-        Consulta tus expensas, realiza reclamos y mantente informado
-        sobre las novedades del consorcio desde un solo lugar.
-      </p>
-
+      <p>Gestioná tu consorcio desde un solo lugar.</p>
       <div class="hero-alerts">
-
-        <span>
-          <i class="bi bi-receipt"></i>
-          Próximo vencimiento: 15 Junio
-        </span>
-
-        <span>
-          <i class="bi bi-tools"></i>
-          2 reclamos activos
-        </span>
-
+        <span><i class="bi bi-receipt"></i> Próximo vencimiento: 15 Junio</span>
       </div>
-
     </div>
-
-    <div class="hero-image">
-
-      <img
-        src="https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?q=80&w=1200"
-        alt="Consorcio"
-      />
-
-    </div>
-
   </section>
 
-  <!-- Metricas -->
   <section class="metrics">
-
-    <div class="metric-card">
-
-      <i class="bi bi-cash-coin"></i>
-
-      <div>
-        <h3>$95.500</h3>
-        <p>Expensas del Mes</p>
+    @for(m of metricas; track m.titulo){
+      <div class="metric-card">
+        <i class="bi {{m.icon}}"></i>
+        <div><h3>{{m.titulo}}</h3><p>{{m.sub}}</p></div>
       </div>
-
-    </div>
-
-    <div class="metric-card">
-
-      <i class="bi bi-calendar-event"></i>
-
-      <div>
-        <h3>15 de Junio</h3>
-        <p>Próximo Vencimiento</p>
-      </div>
-
-    </div>
-
-    <div class="metric-card">
-
-      <i class="bi bi-tools"></i>
-
-      <div>
-        <h3>0</h3>
-        <p>Reclamos Activos</p>
-      </div>
-
-    </div>
-
-    <div class="metric-card">
-
-      <i class="bi bi-building-check"></i>
-
-      <div>
-        <h3>1</h3>
-        <p>Reserva Confirmada</p>
-      </div>
-
-    </div>
-
+    }
   </section>
 
-  <!-- Grid -->
   <section class="dashboard-grid">
-
-    <!-- Expensas -->
-    <div class="dashboard-card">
-
-      <h2>
-        <i class="bi bi-receipt-cutoff"></i>
-        Mis Expensas
-      </h2>
-
+    <div class="dashboard-card" [routerLink]="['/owner/mis-expensas']">
+      <h2>Mis Expensas</h2>
       <ul>
-
-        <li>
-          <i class="bi bi-check-circle-fill"></i>
-          Mayo 2026 — Pagado
-        </li>
-
-        <li>
-          <i class="bi bi-clock-fill"></i>
-          Junio 2026 — Pendiente
-        </li>
-
-        <li>
-          <i class="bi bi-credit-card-fill"></i>
-          Pagar online disponible
-        </li>
-
+        <li><i class="bi bi-check-circle-fill"></i> Mayo 2026 — Pagado</li>
       </ul>
-
+      <button class="action-btn">Ver Detalle</button>
     </div>
 
-    <!-- Reclamos -->
-    <div class="dashboard-card">
-
-      <h2>
-        <i class="bi bi-tools"></i>
-        Mis Reclamos
-      </h2>
-
+    <div class="dashboard-card" [routerLink]="['/owner/mis-reclamos']">
+      <h2>Mis Reclamos</h2>
       <ul>
-
-        <li>
-          <i class="bi bi-droplet-fill"></i>
-          Filtración cocina — En proceso
-        </li>
-
-        <li>
-          <i class="bi bi-lightbulb-fill"></i>
-          Luz pasillo — Pendiente
-        </li>
-
-        <li>
-          <i class="bi bi-plus-circle-fill"></i>
-          Crear nuevo reclamo
-        </li>
-
+        <li><i class="bi bi-droplet-fill"></i> Filtración cocina — En proceso</li>
       </ul>
-
+      <button class="action-btn">Gestionar</button>
     </div>
 
-    <!-- Reservas -->
-    <div class="dashboard-card">
-
-      <h2>
-        <i class="bi bi-building"></i>
-        Reservas y Lugares Comunes
-      </h2>
-
+    <div class="dashboard-card" [routerLink]="['/owner/reservas']">
+      <h2>Reservas</h2>
       <ul>
-
-        <li>
-          <i class="bi bi-calendar-check-fill"></i>
-          SUM reservado — 18 Junio
-        </li>
-
-        <li>
-          <i class="bi bi-people-fill"></i>
-          Gimnasio habilitado
-        </li>
-
-        <li>
-          <i class="bi bi-plus-square-fill"></i>
-          Solicitar nueva reserva
-        </li>
-
+        <li><i class="bi bi-calendar-check-fill"></i> Parrilla — 18 Junio</li>
       </ul>
-
+      <button class="action-btn">Reservar</button>
     </div>
 
-    <!-- Avisos -->
-    <div class="dashboard-card">
-
-      <h2>
-        <i class="bi bi-megaphone-fill"></i>
-        Avisos Importantes
-      </h2>
-
+    <div class="dashboard-card" [routerLink]="['/owner/avisos']">
+      <h2>Avisos</h2>
       <ul>
-
-        <li>
-          <i class="bi bi-bell-fill"></i>
-          Corte de agua — Viernes 10hs
-        </li>
-
-        <li>
-          <i class="bi bi-bell-fill"></i>
-          Asamblea extraordinaria
-        </li>
-
-        <li>
-          <i class="bi bi-bell-fill"></i>
-          Nuevas reglas SUM
-        </li>
-
+        <li><i class="bi bi-bell-fill"></i> Corte de agua — Viernes</li>
       </ul>
-
+      <button class="action-btn">Ver Avisos</button>
     </div>
 
-    <!-- Docuimentos -->
-    <div class="dashboard-card">
-
-      <h2>
-        <i class="bi bi-folder2-open"></i>
-        Mis Documentos
-      </h2>
-
+    <div class="dashboard-card" [routerLink]="['/owner/documentos']">
+      <h2>Documentos</h2>
       <ul>
-
-        <li>
-          <i class="bi bi-file-earmark-text-fill"></i>
-          Reglamento interno
-        </li>
-
-        <li>
-          <i class="bi bi-file-earmark-pdf-fill"></i>
-          Última factura
-        </li>
-
-        <li>
-          <i class="bi bi-file-earmark-medical-fill"></i>
-          Comprobante de pago
-        </li>
-
+        <li><i class="bi bi-file-earmark-text-fill"></i> Reglamento interno</li>
       </ul>
-
+      <button class="action-btn">Ver Biblioteca</button>
     </div>
 
+    <div class="dashboard-card emergency-card">
+      <h2>Emergencias</h2>
+      <ul>
+        <li><i class="bi bi-hospital-fill text-danger"></i> Ambulancia: 107</li>
+        <li><i class="bi bi-shield-shaded text-primary"></i> Policía: 911</li>
+      </ul>
+    </div>
   </section>
-
 </div>

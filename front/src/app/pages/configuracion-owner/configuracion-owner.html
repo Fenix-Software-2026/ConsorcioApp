@@ -1,0 +1,50 @@
+<div class="configuracion-container">
+  <h2>Mi Configuración</h2>
+
+  <div class="config-grid">
+    <div class="perfil-card">
+      <div class="avatar-container">
+        <img [src]="usuario.fotoUrl" alt="Perfil" class="avatar-img">
+      </div>
+      <h3>{{usuario.nombre}}</h3>
+      <p>Propietario • Unidad {{usuario.departamento}}</p>
+      
+      <input type="file" #fileInput (change)="onFileSelected($event)" accept="image/*" hidden>
+      <button class="editar-btn" (click)="fileInput.click()">
+        <i class="bi bi-camera"></i> Cambiar foto
+      </button>
+    </div>
+
+    <div class="config-card">
+      <h3>Información Personal</h3>
+      <div class="form-row">
+        <div class="campo"><label>Nombre</label><input type="text" [(ngModel)]="usuario.nombre"></div>
+        <div class="campo"><label>Email</label><input type="email" [(ngModel)]="usuario.email"></div>
+      </div>
+      <div class="form-row">
+        <div class="campo"><label>Teléfono</label><input type="text" [(ngModel)]="usuario.telefono"></div>
+        <div class="campo"><label>Unidad</label><input type="text" [(ngModel)]="usuario.departamento" readonly></div>
+      </div>
+
+      <h3 class="subtitulo">Seguridad</h3>
+      <div class="form-row">
+        <div class="campo"><label>Contraseña Actual</label><input type="password" [(ngModel)]="seguridad.passActual"></div>
+        <div class="campo"><label>Nueva Contraseña</label><input type="password" [(ngModel)]="seguridad.passNueva"></div>
+      </div>
+
+      <h3 class="subtitulo">Preferencias</h3>
+      <div class="switches">
+        <div class="switch-item">
+          <span>Recibir avisos por email</span>
+          <input type="checkbox" [(ngModel)]="usuario.recibirAvisos">
+        </div>
+        <div class="switch-item">
+          <span>Notificaciones de pagos</span>
+          <input type="checkbox" [(ngModel)]="usuario.notifPagos">
+        </div>
+      </div>
+
+      <button class="guardar-btn" (click)="guardarPerfil()">Guardar Cambios</button>
+    </div>
+  </div>
+</div>

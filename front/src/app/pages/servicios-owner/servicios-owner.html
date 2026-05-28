@@ -1,0 +1,90 @@
+<div class="servicios-container">
+
+    <div class="header">
+        <div class="header-info">
+            <h2>Servicios para Residentes</h2>
+            <p>Solicitá servicios confiables para tu hogar</p>
+        </div>
+
+        <button class="carrito-btn" (click)="toggleCarrito()">
+            <i class="bi bi-cart3"></i>
+            <span>Mi Carrito</span>
+            <span class="carrito-badge">{{ cantidadCarrito }}</span>
+        </button>
+    </div>
+
+    <div class="cards-container">
+        @for (servicio of servicios; track servicio.nombre) {
+            <div class="servicio-card">
+                <div class="icono">
+                    <i [class]="servicio.icono"></i>
+                </div>
+
+                <h3>{{ servicio.nombre }}</h3>
+                <p>{{ servicio.descripcion }}</p>
+
+                <span class="precio">
+                    ${{ servicio.precio }}
+                </span>
+
+                <button class="btn-agregar-servicio" (click)="agregarAlCarrito(servicio)">
+                    <i class="bi bi-plus-lg"></i> Agregar
+                </button>
+            </div>
+        }
+    </div>
+
+    @if (carritoAbierto) {
+        <div class="overlay" (click)="toggleCarrito()"></div>
+    }
+
+    <div class="carrito-panel" [class.show]="carritoAbierto">
+
+        <h3>Mi carrito ({{ cantidadCarrito }})</h3>
+        <hr>
+
+        @if (carrito.length === 0) {
+            <div class="carrito-vacio-mensaje">
+                <i class="bi bi-cart-x"></i>
+                <p>Tu carrito está vacío</p>
+            </div>
+        }
+
+        @if (carrito.length > 0) {
+            <div class="carrito-items">
+                @for (item of carrito; track item.nombre) {
+                    <div class="item-carrito">
+                        <div>
+                            <strong>{{ item.nombre }}</strong>
+                            <p>${{ item.precio }}</p>
+                        </div>
+
+                        <button class="eliminar-btn" (click)="eliminarDelCarrito($index)">
+                            <i class="bi bi-trash-fill"></i>
+                        </button>
+                    </div>
+                }
+            </div>
+
+            <hr>
+
+            <div class="total-container">
+                <span>Total</span>
+                <strong>${{ totalCarrito }}</strong>
+            </div>
+        }
+
+        <div class="carrito-acciones">
+            @if (carrito.length > 0) {
+                <button class="comprar-btn" (click)="irCheckout()">
+                    <i class="bi bi-send-check-fill"></i> Solicitar servicio
+                </button>
+            }
+            <button class="cerrar-btn" (click)="toggleCarrito()">
+                Cerrar
+            </button>
+        </div>
+
+    </div>
+
+</div>
