@@ -26,6 +26,12 @@ class Unidad(models.Model):
     piso = models.SmallIntegerField()
     departamento = models.CharField(max_length=5)
 
+    class Meta:
+        # Esto le dice a MySQL que la COMBINACIÓN de piso y depto tiene que ser única
+        constraints = [
+            models.UniqueConstraint(fields=['piso', 'departamento'], name='unique_piso_departamento')
+        ]
+
     def __str__(self):
         return f"Piso {self.piso} - Depto {self.departamento}"
 
