@@ -56,7 +56,12 @@ pip install -r requirements.txt
 ```
 ### Aplicar migraciones a MySQL
 ```
+python manage.py makemigrations
 python manage.py migrate
+```
+### Crear SúperUsuario Administrativo
+```
+python manage.py createsuperuser
 ```
 
 ### Iniciar servidor
@@ -75,67 +80,4 @@ npm install
 ng serve
 ```
 * Nota: La aplicación estará disponible en http://localhost:4200 *
-
-# 🚀 Uso Básico
-### Acceso: 
-* **Iniciá sesión: El sistema asignará funciones según tu rol (Administrador o Residente/Propietario).**
-
-* **Perfil: Podés actualizar tus datos desde la configuración.**
-
-* **Gestión de Reclamos:**
-*  **Los inquilinos crean reclamos con fotos y descripción.**
-*La administración cambia el estado (Pendiente, En proceso, Resuelto, Archivado).*
-*Se puede auditar quién y cuándo realizó cada cambio en el historial.*
-
-## 📋 Requerimientos del Sistema
-### ✅ Requerimientos Funcionales
-* Gestión de Usuarios:
-  
-(RF01) El sistema debe permitir que los usuarios se registren ingresando nombre, apellido, email, contraseña y rol (administrador o residente).
-
-(RF02) El sistema debe permitir la desactivación de usuarios.
-
-(RF03) El sistema debe permitir que los usuarios inicien y cierren sesión. 
- 
-(RF04) El sistema debe permitir diferenciar los permisos y funcionalidades según el rol del usuario (administrador o residente). 
-
-(RF05) El sistema debe permitir que los usuarios editen sus datos personales. 
-
-* Gestión de Reclamos:
-
-(RF06) El sistema debe permitir crear reclamos por parte de los inquilinos/propietarios, los mismos contarán con título, descripción,categoría.
-
-(RF07) El sistema debe poder adjuntar imágenes.
-
-(RF08) El sistema debe permitir visualizar listado de reclamos realizados.
- 
-(RF9) El sistema debe poder filtrar reclamos por categoría y unidad/departamento.
-
-(RF10)-El sistema debe permitir cambiar el estado del reclamo (pendiente, en proceso, resuelto,archivado). 
-
-(RF11) El sistema debe permitir asociar reclamos a una unidad/departamento. 
-
-(RF12)El sistema debe permitir notificar al usuario sobre actualizaciones. 
-
-(RF13)El sistema debe permitir agregar comentarios.
-
-(RF14) El sistema debe permitir visualizar el historial de cambio del reclamo (estado, fecha, usuario).
-
-
-
-### 🔒 Requerimientos No Funcionales
-
-(RNF01)El sistema debe ser accesible desde navegador web y adaptarse a distintos dispositivos mediante diseño responsive.
-
-(RNF02)El sistema debe tener una interfaz clara e intuitiva.
-
-(RNF03)El sistema debe garantizar la seguridad de los datos de los usuarios mediante encriptación de contraseñas y control de acceso por roles.
-
-(RNF04)El sistema debe permitir un uso sencillo sin conocimientos técnicos.
-
-(RNF05)El sistema debe registrar quién realizó cada acción.
-
-(RNF06)El sistema no deberá permitir la eliminación de datos críticos.
-
-```
 
