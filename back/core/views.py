@@ -18,7 +18,13 @@ class UsuarioViewSet(viewsets.ModelViewSet):
     permission_classes = [EsAdminConsorcio]
     queryset = Usuario.objects.all()
     serializer_class = UsuarioSerializer
-class UnidadViewSet(viewsets.ModelViewSet):
+
+class UnidadViewSet(viewsets.ReadOnlyModelViewSet):
+    """
+    Cambiamos ModelViewSet por ReadOnlyModelViewSet.
+    Esto deshabilita POST, PUT y DELETE automáticos. 
+    Solo permite GET (listar) para que el formulario de Angular arme el Select.
+    """
     permission_classes = [EsAdminConsorcio]
     queryset = Unidad.objects.all()
     serializer_class = UnidadSerializer

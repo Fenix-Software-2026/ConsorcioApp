@@ -1,7 +1,7 @@
 
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
-from core.models import Usuario
+from core.models import Comunicado, Reclamo, Unidad, Usuario
 
 # Register your models here.
 @admin.register(Usuario)
@@ -38,3 +38,19 @@ class UsuarioAdmin(UserAdmin):
         'unidad',
         'is_staff',
     )
+
+
+@admin.register(Unidad)
+class UnidadAdmin(admin.ModelAdmin):
+    list_display = ('piso', 'departamento')
+
+@admin.register(Reclamo)
+class ReclamoAdmin(admin.ModelAdmin):
+    list_display = ('titulo', 'categoria', 'estado', 'fecha_creacion')
+    list_filter = ('estado', 'categoria')
+
+@admin.register(Comunicado)
+class ComunicadoAdmin(admin.ModelAdmin):
+    list_display = ('titulo', 'fecha_publicacion', 'es_urgente')
+
+
