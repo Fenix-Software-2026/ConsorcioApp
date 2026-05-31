@@ -1,0 +1,111 @@
+<div class="confirmacion-container">
+
+    <!-- =========================
+         TOAST (FEEDBACK UX)
+    ========================== -->
+    @if (toast) {
+
+        <div class="toast">
+
+            <i class="bi bi-check-circle-fill"></i>
+
+            {{ toast }}
+
+        </div>
+
+    }
+
+
+    <!-- =========================
+         LOADING STATE
+    ========================== -->
+    @if (loading) {
+
+        <div class="card loading-card">
+
+            <i class="bi bi-hourglass-split icono"></i>
+
+            <h2>Procesando solicitud...</h2>
+
+            <p>Estamos enviando tu pedido al sistema</p>
+
+        </div>
+
+    }
+
+
+    <!-- =========================
+         SI HAY CARRITO (Y NO LOADING)
+    ========================== -->
+    @if (!loading && carrito.length > 0) {
+
+        <div class="card">
+
+            <i class="bi bi-list-check icono"></i>
+
+            <h2>Confirmar solicitud</h2>
+
+            <p>Revisá los servicios antes de confirmar</p>
+
+            <hr>
+
+            <!-- LISTA DE SERVICIOS -->
+            <div class="items">
+
+                @for (item of carrito; track item.nombre) {
+
+                    <div class="item">
+
+                        <strong>{{ item.nombre }}</strong>
+
+                        <span>${{ item.precio }}</span>
+
+                    </div>
+
+                }
+
+            </div>
+
+            <hr>
+
+            <!-- TOTAL -->
+            <div class="total">
+
+                <strong>Total:</strong>
+
+                <span>${{ total }}</span>
+
+            </div>
+
+            <!-- BOTÓN CONFIRMAR -->
+            <button (click)="confirmar()">
+                Confirmar solicitud
+            </button>
+
+        </div>
+
+    }
+
+
+    <!-- =========================
+         SI NO HAY CARRITO (Y NO LOADING)
+    ========================== -->
+    @if (!loading && carrito.length === 0) {
+
+        <div class="card">
+
+            <i class="bi bi-exclamation-circle-fill icono"></i>
+
+            <h2>No hay servicios seleccionados</h2>
+
+            <p>Volvé a la sección de servicios para agregar profesionales.</p>
+
+            <button routerLink="/owner/servicios">
+                Ir a servicios
+            </button>
+
+        </div>
+
+    }
+
+</div>

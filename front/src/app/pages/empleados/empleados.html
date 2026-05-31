@@ -1,0 +1,174 @@
+<div class="empleados-container">
+
+  <h2>Gestión de Empleados</h2>
+
+  <div class="top-bar">
+    <input type="text" placeholder="Buscar por nombre, cargo o estado..." [(ngModel)]="textoBusqueda">
+
+    <button class="btn-naranja-main" (click)="abrirAlta()">
+      + Nuevo Empleado
+    </button>
+  </div>
+
+  <div class="cards">
+    <div class="card">
+      <h3>{{ totalEmpleados }}</h3>
+      <p>Total Empleados</p>
+    </div>
+
+    <div class="card">
+      <h3>{{ activos }}</h3>
+      <p>Activos</p>
+    </div>
+
+    <div class="card">
+      <h3>{{ enLicencia }}</h3>
+      <p>En Licencia</p>
+    </div>
+  </div>
+
+  <div class="table-responsive-scroll">
+    <table>
+      <thead>
+        <tr>
+          <th>Nombre</th>
+          <th>Cargo</th>
+          <th>Turno</th>
+          <th>Contacto</th>
+          <th>Ingreso</th>
+          <th>Estado</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        @for(empleado of empleadosFiltrados; track empleado.nombre){
+        <tr>
+          <td class="empleado-nombre-destacado">{{ empleado.nombre }}</td>
+          <td><span class="badge-cargo">{{ empleado.cargo }}</span></td>
+          <td>{{ empleado.turno }}</td>
+          <td>{{ empleado.telefono }}</td>
+          <td>{{ empleado.fechaIngreso }}</td>
+          <td>
+            <span class="estado"
+                  [class.activo]="empleado.estado === 'Activo'"
+                  [class.licencia]="empleado.estado === 'Licencia'">
+              {{ empleado.estado }}
+            </span>
+          </td>
+          <td>
+            <button class="btn-ver" (click)="abrirGestion(empleado)">
+              Gestionar
+            </button>
+            <button class="btn-eliminar" (click)="eliminarEmpleadoVisual(empleado.nombre)" title="Dar de baja de la grilla">
+              🗑️
+            </button>
+          </td>
+        </tr>
+        } @empty {
+        <tr>
+          <td colspan="7" class="tabla-vacia">
+            No se encuentra personal registrado bajo ese término.
+          </td>
+        </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</div>
+
+@if(mostrarModalAlta) {
+<div class="modal-shadow">
+  <div class="modal-box">
+    <div class="modal-head">
+      <h3>Registrar Nuevo Empleado</h3>
+      <button class="close-x" (click)="cerrarModales()">&times;</button>
+    </div>
+    
+    <form [formGroup]="empleadoForm" (ngSubmit)="guardarNuevoEmpleado()">
+      <div class="modal-body">
+        <div class="form-group">
+          <label>Nombre y Apellido</label>
+          <input type="text" formControlName="nombre" placeholder="Ej: Carlos Gómez">
+        </div>
+
+        <div class="form-group">
+          <label>Teléfono de Contacto</label>
+          <input type="text" formControlName="telefono" placeholder="Ej: 3516112233">
+        </div>
+
+        <div class="form-row">
+          <div class="form-group flex-1">
+            <label>Cargo / Función</label>
+            <select formControlName="cargo" class="select-field">
+              <option value="Limpieza">Limpieza</option>
+              <option value="Seguridad">Seguridad</option>
+              <option value="Intendencia / Portería">Intendencia / Portería</option>
+            </select>
+          </div>
+
+          <div class="form-group flex-1">
+            <label>Turno Asignado</label>
+            <select formControlName="turno" class="select-field">
+              <option value="Mañana">Mañana</option>
+              <option value="Tarde">Tarde</option>
+              <option value="Noche">Noche</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group flex-1">
+            <label>Fecha de Ingreso</label>
+            <input type="date" formControlName="fechaIngreso">
+          </div>
+
+          <div class="form-group flex-1">
+            <label>Estado Inicial</label>
+            <select formControlName="estado" class="select-field">
+              <option value="Activo">✅ Activo</option>
+              <option value="Licencia">⚠️ Licencia</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-foot">
+        <button type="button" class="btn-back" (click)="cerrarModales()">Cancelar</button>
+        <button type="submit" class="btn-save-orange" [disabled]="empleadoForm.invalid">Dar de Alta</button>
+      </div>
+    </form>
+  </div>
+</div>
+}
+
+@if(mostrarModalGestion) {
+<div class="modal-shadow">
+  <div class="modal-box">
+    <div class="modal-head">
+      <h3>Gestionar Personal: {{ empleadoSeleccionado.nombre }}</h3>
+      <button class="close-x" (click)="cerrarModales()">&times;</button>
+    </div>
+    
+    <form [formGroup]="gestionForm" (ngSubmit)="actualizarEstadoLocal()">
+      <div class="modal-body">
+        <p class="txt-detail"><strong>Puesto de Trabajo:</strong> {{ empleadoSeleccionado.cargo }}</p>
+        <p class="txt-detail"><strong>Turno Actual:</strong> {{ empleadoSeleccionado.turno }}</p>
+        
+        <div class="form-group" style="margin-top: 15px;">
+          <label>Modificar Estado Actual:</label>
+          <select formControlName="nuevoEstado" class="select-field">
+            <option value="Activo">✅ Activo</option>
+            <option value="Licencia">⚠️ Licencia</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="modal-foot">
+        <button type="button" class="btn-back" (click)="cerrarModales()">Volver</button>
+        <button type="submit" class="btn-save-orange">Guardar Cambios</button>
+      </div>
+    </form>
+  </div>
+</div>
+}

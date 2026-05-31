@@ -1,0 +1,108 @@
+<div class="checkout-container">
+
+  @if (toast) {
+    <div class="toast-notification">
+      <i class="bi bi-info-circle-fill"></i> {{ toast }}
+    </div>
+  }
+
+  @if (loading) {
+    <div class="card loading-card">
+      <i class="bi bi-hourglass-split spinner"></i>
+      <h2>Procesando tu solicitud</h2>
+      <p>Estamos validando la operación financiera simulada...</p>
+    </div>
+  }
+
+  @if (!loading && compraFinalizada) {
+    <div class="card" style="text-align: center; max-width: 600px; margin: 40px auto; padding: 40px 24px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); border-radius: 12px; background: white;">
+      <i class="bi bi-check-circle-fill" style="font-size: 4rem; color: #28a745; margin-bottom: 20px; display: inline-block;"></i>
+      <h2 style="color: #333; font-size: 1.8rem; font-weight: bold; margin-bottom: 10px;">¡Solicitud Realizada!</h2>
+      <p style="font-size: 1.2rem; color: #555; line-height: 1.6; font-weight: 500; margin: 0;">
+        Gracias por tu compra, el o los profesionales se pondran en contacto con vos pronto
+      </p>
+    </div>
+  }
+
+  @if (!loading && !compraFinalizada && !tieneCarrito()) {
+    <div class="card vacio-card">
+      <i class="bi bi-exclamation-circle-fill icon-vacio"></i>
+      <h2>No hay servicios seleccionados</h2>
+      <p>Volvé a la sección de servicios para agregar profesionales.</p>
+      <button class="btn-volver" [routerLink]="['/owner/servicios']">Ir a servicios</button>
+    </div>
+  }
+
+  @if (!loading && !compraFinalizada && tieneCarrito()) {
+    <div class="checkout-layout">
+      
+      <div class="card resumen-card">
+        <h2>Resumen de solicitud</h2>
+        <div class="items-lista">
+          @for (item of carrito; track item.nombre) {
+            <div class="row">
+              <span>{{ item.nombre }}</span>
+              <strong>${{ item.precio }}</strong>
+            </div>
+          }
+        </div>
+        <hr>
+        <div class="total">
+          <span>Total a pagar:</span>
+          <strong>${{ total }}</strong>
+        </div>
+      </div>
+
+      <div class="card pago-card">
+        <h2>Método de Pago</h2>
+        <p class="subtitle">Ingresá datos ficticios para realizar la prueba</p>
+
+        <form [formGroup]="pagoForm" class="formulario-pago">
+          
+          <div class="input-group">
+            <label>Nombre del Titular</label>
+            <input type="text" formControlName="tarjetaNombre" placeholder="JUAN PEREZ" 
+                   [class.input-error]="f['tarjetaNombre'].touched && f['tarjetaNombre'].invalid">
+            @if (f['tarjetaNombre'].touched && f['tarjetaNombre'].invalid) {
+              <small class="error-text">Nombre requerido (solo letras y espacios).</small>
+            }
+          </div>
+
+          <div class="input-group">
+            <label>Número de Tarjeta</label>
+            <input type="text" formControlName="tarjetaNumero" placeholder="4517 4812 3456 7890" maxlength="19"
+                   [class.input-error]="f['tarjetaNumero'].touched && f['tarjetaNumero'].invalid">
+            @if (f['tarjetaNumero'].touched && f['tarjetaNumero'].invalid) {
+              <small class="error-text">Ingresá los dígitos de tu tarjeta (mínimo 16).</small>
+            }
+          </div>
+
+          <div class="row-inputs">
+            <div class="input-group">
+              <label>Vencimiento</label>
+              <input type="text" formControlName="tarjetaVence" placeholder="MM/AA" maxlength="5"
+                     [class.input-error]="f['tarjetaVence'].touched && f['tarjetaVence'].invalid">
+              @if (f['tarjetaVence'].touched && f['tarjetaVence'].invalid) {
+                <small class="error-text">Formato requerido: MM/AA.</small>
+              }
+            </div>
+            
+            <div class="input-group">
+              <label>Cód. Seguridad (CVV)</label>
+              <input type="password" formControlName="tarjetaCvv" placeholder="123" maxlength="4"
+                     [class.input-error]="f['tarjetaCvv'].touched && f['tarjetaCvv'].invalid">
+              @if (f['tarjetaCvv'].touched && f['tarjetaCvv'].invalid) {
+                <small class="error-text">Código inválido (3 o 4 números).</small>
+              }
+            </div>
+          </div>
+
+          <button type="button" (click)="pagar()" class="btn-confirmar" [disabled]="pagoForm.invalid">
+            <i class="bi bi-credit-card-2-front-fill"></i> Confirmar y Pagar ${{ total }}
+          </button>
+        </form>
+      </div>
+
+    </div>
+  }
+</div>

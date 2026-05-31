@@ -1,0 +1,122 @@
+<div class="usuarios-container">
+
+  <h2>Gestión de Usuarios</h2>
+
+  <div class="cards">
+    <div class="card">
+      <h3>{{ totalUsuarios }}</h3>
+      <p>Total Usuarios</p>
+    </div>
+    <div class="card">
+      <h3>{{ totalPropietarios }}</h3>
+      <p>Propietarios</p>
+    </div>
+    <div class="card">
+      <h3>{{ totalInquilinos }}</h3>
+      <p>Inquilinos</p>
+    </div>
+  </div>
+
+  <div class="acciones">
+    <input type="text" placeholder="Buscar usuario..." [(ngModel)]="textoBusqueda">
+    
+    <button class="btn-naranja" (click)="abrirModal()">+ Nuevo Usuario</button>
+  </div>
+
+  <div class="tabla-responsive-wrapper">
+    <table>
+      <thead>
+        <tr>
+          <th>Nombre Completo</th>
+          <th>Unidad</th>
+          <th>Tipo / Rol</th>
+          <th>Estado</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for(usuario of usuariosFiltrados; track usuario.id){
+        <tr>
+          <td>{{ usuario.nombre }} {{ usuario.apellido }}</td>
+          <td>Dpto: {{ usuario.unidad }}</td>
+          <td style="text-transform: capitalize;">{{ usuario.rol }}</td>
+          <td>
+            <span class="estado-indicador" [class.activo]="usuario.esta_activo">
+              {{ usuario.esta_activo ? 'Activo' : 'Inactivo' }}
+            </span>
+          </td>
+          <td>
+            <button class="btn-accion btn-ver">Ver</button>
+            <button class="btn-accion btn-editar">Editar</button>
+          </td>
+        </tr>
+        } @empty {
+        <tr>
+          <td colspan="5" style="text-align: center; padding: 30px; color: #999;">
+            No se encontraron usuarios registrados.
+          </td>
+        </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</div>
+
+@if(mostrarModal) {
+<div class="modal-fondo">
+  <div class="modal-caja">
+    <div class="modal-cabecera">
+      <h3>Registrar Nuevo Integrante</h3>
+      <button class="btn-cerrar-x" (click)="cerrarModal()">&times;</button>
+    </div>
+    
+    <form [formGroup]="usuarioForm" (ngSubmit)="guardarNuevoUsuario()">
+      <div class="modal-cuerpo">
+        
+        <div class="input-grupo">
+          <label>Nombre</label>
+          <input type="text" formControlName="nombre" placeholder="Ej: Juan">
+          @if(usuarioForm.get('nombre')?.touched && usuarioForm.get('nombre')?.errors?.['required']) {
+            <span class="error-msg">El nombre es obligatorio.</span>
+          }
+        </div>
+
+        <div class="input-grupo">
+          <label>Apellido</label>
+          <input type="text" formControlName="apellido" placeholder="Ej: Pérez">
+          @if(usuarioForm.get('apellido')?.touched && usuarioForm.get('apellido')?.errors?.['required']) {
+            <span class="error-msg">El apellido es obligatorio.</span>
+          }
+        </div>
+
+        <div class="input-grupo">
+          <label>Correo Electrónico</label>
+          <input type="email" formControlName="email" placeholder="juanperez@email.com">
+          @if(usuarioForm.get('email')?.touched && usuarioForm.get('email')?.errors?.['email']) {
+            <span class="error-msg">Ingresa un formato de email válido.</span>
+          }
+        </div>
+
+        <div class="input-grupo">
+          <label>Unidad / Departamento (ID)</label>
+          <input type="number" formControlName="unidad" placeholder="Ej: 1">
+        </div>
+
+        <div class="input-grupo">
+          <label>Rol del Usuario</label>
+          <select formControlName="rol" class="select-rol">
+            <option value="propietario">Propietario</option>
+            <option value="inquilino">Inquilino</option>
+          </select>
+        </div>
+
+      </div>
+
+      <div class="modal-pie">
+        <button type="button" class="btn-cancelar" (click)="cerrarModal()">Cancelar</button>
+        <button type="submit" class="btn-naranja" [disabled]="usuarioForm.invalid">Guardar Usuario</button>
+      </div>
+    </form>
+  </div>
+</div>
+}

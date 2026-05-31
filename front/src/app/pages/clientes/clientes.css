@@ -1,0 +1,183 @@
+/* --- TUS ESTILOS ORIGINALES INTACTOS --- */
+.usuarios-container {
+  padding: 30px;
+}
+
+.cards {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 25px;
+}
+
+/* Modificado: Agregamos transición suave para la animación */
+.card {
+  background: white;
+  padding: 20px;
+  border-radius: 15px;
+  flex: 1;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+  position: relative;
+  transition: all 0.3s ease-in-out; /* Controla la velocidad de la animación */
+}
+
+/* NUEVO: Efecto moderno con animación y difuminado naranja al pasar el mouse */
+.card:hover {
+  transform: translateY(-5px); /* Eleva la tarjeta sutilmente hacia arriba */
+  /* Genera un resplandor naranja difuminado hermoso en el fondo de la card */
+  box-shadow: 0 12px 24px rgba(249, 115, 22, 0.15), 0 4px 8px rgba(249, 115, 22, 0.1);
+  border-bottom: 3px solid #f97316; /* Una pequeña línea guía naranja abajo de la card activa */
+}
+
+.acciones {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+input {
+  padding: 10px;
+  width: 300px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+}
+
+button {
+  padding: 10px 15px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+table {
+  width: 100%;
+  background: white;
+  border-radius: 15px;
+  overflow: hidden;
+}
+
+th {
+  background:#f4f4f4;
+  padding: 15px;
+}
+
+td {
+  padding: 15px;
+  border-bottom: 1px solid #eee;
+}
+
+/* --- ADAPTACIONES NARANJA Y RESPONSIVE (SIN ROMPER NADA) --- */
+
+/* Botón principal unificado en el naranja de Fénix */
+.btn-naranja {
+  background: #f97316;
+  color: white;
+  font-weight: 600;
+  transition: background 0.2s ease;
+}
+
+.btn-naranja:hover {
+  background: #ea580c;
+}
+
+.btn-naranja:disabled {
+  background: #fed7aa;
+  color: #ffedd5;
+  cursor: not-allowed;
+}
+
+/* Botones de la tabla refinados */
+.btn-accion {
+  padding: 6px 12px;
+  margin-right: 5px;
+  font-size: 13px;
+}
+
+.btn-ver { background: #e2e8f0; color: #334155; }
+.btn-editar { background: #fef3c7; color: #d97706; }
+
+/* Indicador estético para el estado de usuario */
+.estado-indicador {
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: bold;
+  background: #f1f5f9;
+  color: #64748b;
+}
+.estado-indicador.activo {
+  background: #d1e7dd;
+  color: #0f5132;
+}
+
+/* Control Responsivo: Permite hacer scroll lateral en celulares sin romper el diseño */
+.tabla-responsive-wrapper {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  border-radius: 15px;
+  box-shadow: 0 2px 8px rgba(0,0,0,.1);
+}
+
+table {
+  min-width: 650px; /* Asegura legibilidad en pantallas compactas */
+}
+
+/* Media Query: En celulares las 3 tarjetas superiores se apilan una debajo de otra */
+@media (max-width: 768px) {
+  .cards {
+    flex-direction: column;
+    gap: 15px;
+  }
+  .acciones {
+    flex-direction: column;
+    gap: 15px;
+  }
+  input {
+    width: 100%;
+  }
+}
+
+/* --- ESTILOS DEL MODAL DE ALTA --- */
+.modal-fondo {
+  position: fixed;
+  top: 0; left: 0; width: 100vw; height: 100vh;
+  background: rgba(0,0,0,0.4);
+  backdrop-filter: blur(3px);
+  display: flex; justify-content: center; align-items: center;
+  z-index: 2500; padding: 15px;
+}
+
+.modal-caja {
+  background: white; border-radius: 15px; width: 100%; max-width: 480px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.15); overflow: hidden;
+}
+
+.modal-cabecera {
+  padding: 15px 20px; border-bottom: 1px solid #eee;
+  display: flex; justify-content: space-between; align-items: center;
+}
+
+.modal-cabecera h3 { margin: 0; color: #1e293b; }
+
+.btn-cerrar-x { background: none; border: none; font-size: 24px; color: #94a3b8; cursor: pointer; }
+
+.modal-cuerpo { padding: 20px; display: flex; flex-direction: column; gap: 15px; }
+
+.input-grupo { display: flex; flex-direction: column; gap: 5px; }
+
+.input-grupo label { font-weight: 600; font-size: 14px; color: #475569; }
+
+.input-grupo input, .select-rol {
+  padding: 10px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 14px; width: 100%; box-sizing: border-box;
+}
+
+.select-rol { background: white; }
+
+.error-msg { color: #ef4444; font-size: 12px; }
+
+.modal-pie {
+  padding: 15px 20px; background: #f8fafc; border-top: 1px solid #eee;
+  display: flex; justify-content: flex-end; gap: 10px;
+}
+
+.btn-cancelar { background: #e2e8f0; color: #475569; }

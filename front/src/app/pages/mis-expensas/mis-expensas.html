@@ -1,0 +1,94 @@
+<div class="expensas-container">
+
+<h2>Mis Expensas</h2>
+
+<div class="cards">
+
+<div class="card">
+
+<h3>$98.000</h3>
+
+<p>Próximo Pago</p>
+
+</div>
+
+<div class="card">
+
+<h3>15 Junio</h3>
+
+<p>Vencimiento</p>
+
+</div>
+
+<div class="card">
+
+<h3>1</h3>
+
+<p>Pendientes</p>
+
+</div>
+
+</div>
+
+
+<table>
+
+<thead>
+
+<tr>
+
+<th>Período</th>
+<th>Monto</th>
+<th>Vencimiento</th>
+<th>Estado</th>
+<th>Acciones</th>
+
+</tr>
+
+</thead>
+
+<tbody>
+
+@for(expensa of expensas; track expensa.periodo){
+
+<tr>
+
+<td>{{expensa.periodo}}</td>
+
+<td>{{expensa.monto}}</td>
+
+<td>{{expensa.vencimiento}}</td>
+
+<td>
+
+<span
+class="estado"
+[class.pagada]="expensa.estado==='Pagada'"
+[class.pendiente]="expensa.estado==='Pendiente'"
+>
+
+{{expensa.estado}}
+
+</span>
+
+</td>
+
+<td>
+
+<button class="btn-ver">
+
+Ver detalle
+
+</button>
+
+</td>
+
+</tr>
+
+}
+
+</tbody>
+
+</table>
+
+</div>

@@ -1,0 +1,193 @@
+<div class="pagos-container">
+
+  <h2>Gestión de Pagos y Caja</h2>
+
+  <div class="top-bar">
+    <input type="text" placeholder="Buscar por concepto, persona o estado..." [(ngModel)]="textoBusqueda">
+
+    <button class="btn-naranja-main" (click)="abrirAlta()">
+      + Registrar Movimiento
+    </button>
+  </div>
+
+  <div class="cards">
+    <div class="card card-balance">
+      <h3>${{ balanceCaja | number:'1.0-0' }}</h3>
+      <p>Balance Neto Caja</p>
+    </div>
+
+    <div class="card">
+      <h3 class="txt-ingreso">+${{ totalIngresos | number:'1.0-0' }}</h3>
+      <p>Ingresos Cobrados</p>
+    </div>
+
+    <div class="card">
+      <h3 class="txt-egreso">-${{ totalEgresos | number:'1.0-0' }}</h3>
+      <p>Egresos Abonados</p>
+    </div>
+
+    <div class="card">
+      <h3 class="txt-pendiente">${{ totalPendienteCobro | number:'1.0-0' }}</h3>
+      <p>Total No Percibido</p>
+    </div>
+  </div>
+
+  <div class="table-responsive-scroll">
+    <table>
+      <thead>
+        <tr>
+          <th>Concepto / Detalle</th>
+          <th>Destinatario / Emisor</th>
+          <th>Monto</th>
+          <th>Tipo</th>
+          <th>Fecha</th>
+          <th>Método</th>
+          <th>Estado</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        @for(pago of pagosFiltrados; track pago.concepto + pago.referencia; let i = $index) {
+        <tr>
+          <td class="pago-concepto-destacado">{{ pago.concepto }}</td>
+          <td>{{ pago.referencia }}</td>
+          <td class="monto-col" [class.txt-ingreso]="pago.tipo === 'Ingreso'" [class.txt-egreso]="pago.tipo === 'Egreso'">
+            {{ pago.tipo === 'Ingreso' ? '+' : '-' }}${{ pago.monto | number:'1.0-0' }}
+          </td>
+          <td>
+            <span class="badge-tipo" [class.badge-ingreso]="pago.tipo === 'Ingreso'" [class.badge-egreso]="pago.tipo === 'Egreso'">
+              {{ pago.tipo }}
+            </span>
+          </td>
+          <td>{{ pago.fecha | date:'dd/MM/yyyy' }}</td>
+          <td>{{ pago.metodo }}</td>
+          <td>
+            <span class="estado" 
+                  [class.pagado]="pago.estado === 'Pagado'"
+                  [class.pendiente]="pago.estado === 'Pendiente'"
+                  [class.vencido]="pago.estado === 'Vencido'">
+              {{ pago.estado }}
+            </span>
+          </td>
+          <td>
+            <button class="btn-ver" (click)="abrirGestion(pago)">
+              Gestionar
+            </button>
+            <button class="btn-eliminar" (click)="eliminarPagoVisual(pago.concepto, pago.referencia)" title="Eliminar del libro diario">
+              🗑️
+            </button>
+          </td>
+        </tr>
+        } @empty {
+        <tr>
+          <td colspan="8" class="tabla-vacia">
+            No se registran movimientos financieros con esos criterios de búsqueda.
+          </td>
+        </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</div>
+
+@if(mostrarModalAlta) {
+<div class="modal-shadow">
+  <div class="modal-box">
+    <div class="modal-head">
+      <h3>Registrar Movimiento de Caja</h3>
+      <button class="close-x" (click)="cerrarModales()">&times;</button>
+    </div>
+    
+    <form [formGroup]="pagoForm" (ngSubmit)="guardarNuevoPago()">
+      <div class="modal-body">
+        <div class="form-row">
+          <div class="form-group flex-1">
+            <label>Tipo de Transacción</label>
+            <select formControlName="tipo" class="select-field">
+              <option value="Ingreso">📥 Ingreso (Cobros)</option>
+              <option value="Egreso">📤 Egreso (Pagos/Gastos)</option>
+            </select>
+          </div>
+          <div class="form-group flex-1">
+            <label>Estado de Transacción</label>
+            <select formControlName="estado" class="select-field">
+              <option value="Pagado">✅ Pagado</option>
+              <option value="Pendiente">⚠️ Pendiente</option>
+              <option value="Vencido">❌ Vencido</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Concepto / Detalle</label>
+          <input type="text" formControlName="concepto" placeholder="Ej: Expensas Dpto B-102 o Compra de Lamparitas">
+        </div>
+
+        <div class="form-group">
+          <label>Asociado a (Persona / Proveedor)</label>
+          <input type="text" formControlName="referencia" placeholder="Ej: Ana López o Limpieza Integral SRL">
+        </div>
+
+        <div class="form-row">
+          <div class="form-group flex-1">
+            <label>Monto ($)</label>
+            <input type="number" formControlName="monto" placeholder="Ej: 25000">
+          </div>
+          <div class="form-group flex-1">
+            <label>Método</label>
+            <select formControlName="metodo" class="select-field">
+              <option value="Transferencia">Transferencia</option>
+              <option value="Efectivo">Efectivo</option>
+              <option value="Cheque">Cheque</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Fecha de Operación</label>
+          <input type="date" formControlName="fecha">
+        </div>
+      </div>
+
+      <div class="modal-foot">
+        <button type="button" class="btn-back" (click)="cerrarModales()">Cancelar</button>
+        <button type="submit" class="btn-save-orange" [disabled]="pagoForm.invalid">Asentar Registro</button>
+      </div>
+    </form>
+  </div>
+</div>
+}
+
+@if(mostrarModalGestion) {
+<div class="modal-shadow">
+  <div class="modal-box">
+    <div class="modal-head">
+      <h3>Conciliar Comprobante</h3>
+      <button class="close-x" (click)="cerrarModales()">&times;</button>
+    </div>
+    
+    <form [formGroup]="gestionForm" (ngSubmit)="actualizarEstadoLocal()">
+      <div class="modal-body">
+        <p class="txt-detail"><strong>Concepto:</strong> {{ pagoSeleccionado.concepto }}</p>
+        <p class="txt-detail"><strong>Entidad:</strong> {{ pagoSeleccionado.referencia }}</p>
+        <p class="txt-detail"><strong>Monto Operado:</strong> ${{ pagoSeleccionado.monto | number:'1.0-0' }}</p>
+        
+        <div class="form-group" style="margin-top: 15px;">
+          <label>Actualizar Estado del Pago:</label>
+          <select formControlName="nuevoEstado" class="select-field">
+            <option value="Pagado">✅ Pagado</option>
+            <option value="Pendiente">⚠️ Pendiente</option>
+            <option value="Vencido">❌ Vencido</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="modal-foot">
+        <button type="button" class="btn-back" (click)="cerrarModales()">Volver</button>
+        <button type="submit" class="btn-save-orange">Conciliar</button>
+      </div>
+    </form>
+  </div>
+</div>
+}

@@ -1,0 +1,102 @@
+.expensas-container {
+    padding: 30px;
+    /* Animación de entrada para el contenedor completo */
+    animation: fadeIn 0.6s ease-out;
+}
+
+h2 {
+    margin-bottom: 25px;
+    color: #1e293b;
+}
+
+.cards {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 25px;
+}
+
+.card {
+    flex: 1;
+    padding: 25px;
+    background: white;
+    border-radius: 15px;
+    text-align: center;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    /* Animación de "flotación" */
+    animation: slideUp 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    opacity: 0;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Retrasos escalonados para que no entren todas al mismo tiempo */
+.card:nth-child(1) { animation-delay: 0.1s; }
+.card:nth-child(2) { animation-delay: 0.2s; }
+.card:nth-child(3) { animation-delay: 0.3s; }
+
+.card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 12px 25px rgba(255, 106, 0, 0.15);
+}
+
+/* Tabla con diseño limpio */
+table {
+    width: 100%;
+    background: white;
+    border-radius: 15px;
+    overflow: hidden;
+    border-collapse: collapse;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    animation: fadeIn 0.8s ease-in-out;
+}
+
+th {
+    padding: 15px;
+    background: #f8fafc;
+    text-align: left;
+    color: #64748b;
+    font-weight: 600;
+}
+
+td {
+    padding: 15px;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+/* Badges de estado con transiciones */
+.estado {
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.pagada { background: #d1e7dd; color: #0f5132; }
+.pendiente { background: #fff3cd; color: #856404; }
+
+/* Botón moderno */
+.btn-ver {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 8px;
+    background: #ff6a00;
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.btn-ver:hover {
+    background: #e85d04;
+}
+
+/* --- ANIMACIONES --- */
+@keyframes slideUp {
+    from { transform: translateY(30px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}

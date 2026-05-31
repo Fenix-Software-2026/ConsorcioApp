@@ -1,0 +1,45 @@
+<div class="reservas-container">
+  <div class="header">
+    <h2>Reservas de Espacios</h2>
+    <p>Gestioná tus turnos en las áreas comunes del edificio.</p>
+  </div>
+
+  <div class="cards-container">
+    @for(espacio of espacios; track espacio.id){
+      <div class="reserva-card">
+        <div class="icono"><i [class]="espacio.icono"></i></div>
+        <h3>{{espacio.nombre}}</h3>
+        <p><i class="bi bi-clock"></i> {{espacio.horario}}</p>
+        
+        <span class="estado" [ngClass]="espacio.estado.toLowerCase()">
+          {{espacio.estado}}
+        </span>
+
+        <button [disabled]="espacio.estado === 'Reservado'" (click)="abrirModal(espacio)">
+          {{ espacio.estado === 'Reservado' ? 'Ocupado' : 'Reservar Turno' }}
+        </button>
+      </div>
+    }
+  </div>
+</div>
+
+@if(isModalOpen){
+  <div class="modal-backdrop">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3>Reserva: {{espacioSeleccionado.nombre}}</h3>
+        <button class="btn-close-x" (click)="isModalOpen=false">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-field">
+          <label>Fecha de la reserva</label>
+          <input type="date" [(ngModel)]="fechaSeleccionada">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-secondary" (click)="isModalOpen=false">Cancelar</button>
+        <button class="btn-primary" (click)="confirmarReserva()">Confirmar</button>
+      </div>
+    </div>
+  </div>
+}

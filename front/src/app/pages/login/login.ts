@@ -59,9 +59,31 @@ export class Login {
 
 
 
+    // aca guardo informacion basica del usuario en localStorage
+    // por ahora simulo auth hasta conectar backend real
+    // esto permite que navbar y otras pantallas sepan quien inicio sesion
+
+    const usuario = {
+
+      // guardo el email ingresado en el input username
+      email: this.loginForm.value.username,
+
+      // segun el boton usado asigno el rol correspondiente
+      rol: tipoAcceso === 'admin'
+        ? 'Administrador'
+        : 'Propietario / Inquilino'
+
+    };
+
+    // convierto el objeto a texto JSON porque localStorage
+    // solo puede guardar strings
+    localStorage.setItem(
+      'usuario',
+      JSON.stringify(usuario)
+    );
 
 
-    
+
     // aca hago la navegacion segun el tipo de usuario (simulacion de roles por ahora)
     setTimeout(() => {
 
@@ -76,6 +98,8 @@ export class Login {
       }
 
     }, 500);
+
     // el timeout es solo para que se vea el mensaje antes de cambiar de pantalla
   }
+
 }
