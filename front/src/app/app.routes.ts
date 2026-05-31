@@ -6,6 +6,9 @@ import { Dashboard } from './pages/dashboard/dashboard';
 import { DashboardOwner } from './pages/dashboard-owner/dashboard-owner';
 import { AdminHome } from './pages/admin-home/admin-home';
 import { OwnerHome } from './pages/owner-home/owner-home';
+import { adminGuard } from './auth/guards/adminGuard';
+import { ownerGuard } from './auth/guards/residenteGuard';
+
 import { Clientes } from './pages/clientes/clientes';
 import { Reclamos } from './pages/reclamos/reclamos';
 import { Expensas } from './pages/expensas/expensas';
@@ -22,14 +25,15 @@ import { Documentos } from './pages/documentos/documentos';
 import { ServiciosOwner } from './pages/servicios-owner/servicios-owner';
 import { Confirmacion } from './pages/confirmacion/confirmacion';
 import { Checkout } from './pages/checkout/checkout';
-import { authGuard } from './shared/guards/auth-guard';
-
 
 export const routes: Routes = [
   { path: '', component: Landing }, 
   { path: 'nosotros', component: AboutUs },
   { path: 'login', component: Login },
-  {path: 'dashboard',component: Dashboard,canActivate: [authGuard],
+  {
+    path: 'dashboard',
+    component: Dashboard,
+    canActivate: [adminGuard],
     children: [
       { path: '', component: AdminHome },
       { path: 'clientes', component: Clientes },
@@ -44,7 +48,8 @@ export const routes: Routes = [
 
    {
     path: 'owner',
-    component: DashboardOwner, canActivate: [authGuard],
+    component: DashboardOwner,
+    canActivate: [ownerGuard ],
     children: [
       { path: '', component: OwnerHome },
       { path: 'mis-expensas', component: MisExpensas },
@@ -59,6 +64,6 @@ export const routes: Routes = [
     ]
   },
 
-  { path: '', redirectTo: 'inicio', pathMatch: 'full' },
-  { path: '**', redirectTo: 'inicio' }
+  { path: '', redirectTo: '', pathMatch: 'full' },
+  { path: '**', redirectTo: '' }
 ];

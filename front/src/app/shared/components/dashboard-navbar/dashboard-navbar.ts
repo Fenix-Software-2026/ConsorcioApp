@@ -1,6 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
+import { AuthService } from '../../../auth/service/aurh';
 
 @Component({
   selector: 'app-dashboard-navbar',
@@ -63,29 +64,15 @@ export class DashboardNavbar {
     this.dropdownOpen = !this.dropdownOpen;
   }
 
-  logout() {
+  private authService = inject(AuthService);
+  private routes = inject(Router);
 
-    // elimino informacion del usuario guardada
-    // simula cerrar sesion hasta tener auth real
-
-    localStorage.removeItem('usuario');
-
-    // redirijo nuevamente al login
-
-    this.router.navigate(['/login']);
-
+  onLogout() {
+    // llama al servicio de auth para cerrar sesion
+    this.authService.logout();
+    // redirige al login
+    this.routes.navigate(['/login']);
   }
 
-  // devuelve la ruta correcta segun el rol del usuario
-// administrador -> dashboard/configuracion
-// propietario -> owner/configuracion
-
-getConfiguracionRuta(): string {
-
-  return this.usuario?.rol === 'Administrador'
-    ? '/dashboard/configuracion'
-    : '/owner/configuracion';
-
-}
 
 }
