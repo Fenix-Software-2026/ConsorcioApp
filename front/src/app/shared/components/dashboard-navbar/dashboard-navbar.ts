@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../../auth/service/aurh';
@@ -7,11 +7,16 @@ import { AuthService } from '../../../auth/service/aurh';
   selector: 'app-dashboard-navbar',
   standalone: true,
   imports: [CommonModule, RouterModule],
-  templateUrl: './dashboard-navbar.html',
+  templateUrl:'./dashboard-navbar.html',
   styleUrls: ['./dashboard-navbar.css']
 })
 export class DashboardNavbar {
 
+  // titulo del panel (admin / owner / etc)
+  @Input() usuarioName: string = '';
+
+  // email del usuario logueado (luego vendra de auth real)
+  @Input() usuarioRol: string = '';
   // antes esto venia por @Input()
   // ahora obtengo los datos directamente desde localStorage
   // para mostrar quien inicio sesion realmente
@@ -74,5 +79,5 @@ export class DashboardNavbar {
     this.routes.navigate(['/login']);
   }
 
-
+ 
 }

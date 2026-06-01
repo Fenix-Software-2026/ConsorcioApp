@@ -1,77 +1,78 @@
 <div class="navbar">
   <div class="nav-left"></div>
+
   <div class="navbar-right">
-
     <button class="dark-toggle" (click)="toggleDarkMode()">
-      <i class="fa"
-         [class.fa-sun]="isDark"
-         [class.fa-moon]="!isDark"></i>
-
-      </button>
+      <i
+        class="fa"
+        [class.fa-sun]="isDark"
+        [class.fa-moon]="!isDark">
+      </i>
+    </button>
 
     <div class="perfil" (click)="toggleDropdown()">
-      <div class="perfilCirculo">
 
+      <div class="perfilCirculo">
         {{ getInicial() }}
 
-      <span class="perfil-nombre">{{ usuarioName }}</span>
-      <!-- nombre del panel o rol (admin / owner), viene por input desde el componente -->
+        <span class="perfil-nombre">
+          {{ usuarioName }}
+        </span>
 
         {{ usuario.rol }}
+      </div>
 
-      </span>
       <div class="dropdown-menu" [class.show]="dropdownOpen">
+
         <div class="user-info">
+
           <div class="perfilCirculo">
-
             {{ getInicial() }}
-
-          <div>
-            <p class="user-name">{{ usuarioRol }}</p>
-            <!-- nombre o rol del usuario logueado -->
-
-            <p class="user-email">{{ usuarioName }}</p>
-            <!-- email del usuario, viene del input del componente -->
           </div>
+
           <div>
-
             <p class="user-name">
-
-              {{ usuario.rol }}
-
+              {{ usuarioRol }}
             </p>
+
             <p class="user-email">
-
-              {{ usuario.email }}
-
+              {{ usuarioName }}
             </p>
-            </div>
+          </div>
+
+          <div>
+            <p class="user-name">
+              {{ usuario.rol }}
+            </p>
+
+            <p class="user-email">
+              {{ usuario.email }}
+            </p>
+          </div>
 
         </div>
 
         <hr />
+
         <a routerLink="/dashboard" class="dropdown-item">
           <i class="fa-solid fa-user"></i>
           Mi perfil
         </a>
-        <a [routerLink]="getConfiguracionRuta()"
+
+        <a
           class="dropdown-item">
           <i class="fa-solid fa-gear"></i>
           Configuración
         </a>
-        <a class="dropdown-item logout"
-           (click)="logout()">
 
-        <a (click)="onLogout()" class="dropdown-item logout">
+        <a
+          class="dropdown-item logout"
+          (click)="onLogout()">
           <i class="fa-solid fa-right-from-bracket"></i>
-
           Cerrar sesión
-
         </a>
-        </div>
+      </div>
 
     </div>
-
   </div>
-
 </div>
