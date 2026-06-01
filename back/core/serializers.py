@@ -8,10 +8,47 @@ class UnidadSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class UsuarioSerializer(serializers.ModelSerializer):
+    nombre = serializers.CharField(source='first_name', required=False, allow_blank=True)
+    apellido = serializers.CharField(source='last_name', required=False, allow_blank=True)
+    esta_activo = serializers.BooleanField(source='is_active', default=True)
+
     class Meta:
         model = Usuario
-        extra_kwargs = {'password': {'write_only': True}} # No se envía el password al front
-        fields = ['id', 'nombre', 'apellido', 'email', 'password', 'rol', 'residente_actual', 'esta_activo', 'unidad']
+        fields = [
+            'id', 
+            'username',
+            'nombre',
+            'apellido',
+            'email', 
+            'rol', 
+            'residente_actual', 
+            'esta_activo',
+            'unidad', 
+            'password'
+        ]
+        extra_kwargs = {
+            'password': {'write_only': True, 'required': True},
+            'email': {'required': True}
+        }
+
+    def create(self, validated_data):
+        password = validated_data.pop('password')
+        
+        # Crea el usuario usando el manager nativo de Django para AbstractUser
+        usuario = Usuario.objects.create_user(**validated_data)
+        usuario.set_password(password)
+        usuario.save()
+        return usuario
+
+    def update(self, instance, validated_data):
+        # Permite actualizar los datos y la contraseña de forma segura si se envía
+        password = validated_data.pop('password', None)
+        for attr, value in validated_data.items():
+            setattr(instance, attr, value)
+        if password:
+            instance.set_password(password)
+        instance.save()
+        return instance
 
 class ReclamoSerializer(serializers.ModelSerializer):
     class Meta:
