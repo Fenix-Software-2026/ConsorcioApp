@@ -4,13 +4,13 @@ import { RouterModule, Router } from '@angular/router';
 import { CartService } from '../../services/cart.service';
 
 @Component({
-  selector: 'app-servicios-owner',
+  selector: 'app-servicios-residente',
   standalone: true,
   imports: [CommonModule, RouterModule],
-  templateUrl: './servicios-owner.html',
-  styleUrl: './servicios-owner.css'
+  templateUrl: './servicios-residente.html',
+  styleUrl: './servicios-residente.css'
 })
-export class ServiciosOwner implements OnInit {
+export class ServiciosResidente implements OnInit {
 
   servicios = [
     { nombre: 'Plomero', descripcion: 'Reparación de pérdidas, destapes y mantenimiento.', icono: 'bi bi-droplet-fill', precio: 4500 },
