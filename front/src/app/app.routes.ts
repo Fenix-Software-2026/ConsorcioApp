@@ -13,7 +13,7 @@ import { Clientes } from './pages/clientes/clientes';
 import { Reclamos } from './pages/reclamos/reclamos';
 import { Expensas } from './pages/expensas/expensas';
 import { Configuracion } from './pages/configuracion/configuracion';
-import { Servicios } from './pages/servicios/servicios';
+import { ServiciosAdmin } from './pages/servicios-admin/servicios-admin';
 import { Empleados } from './pages/empleados/empleados';
 import { Pagos } from './pages/pagos/pagos';
 import { MisExpensas } from './pages/mis-expensas/mis-expensas';
@@ -22,7 +22,7 @@ import { ConfiguracionOwner } from './pages/configuracion-owner/configuracion-ow
 import { Reservas } from './pages/reservas/reservas';
 import { Avisos } from './pages/avisos/avisos';
 import { Documentos } from './pages/documentos/documentos';
-import { ServiciosOwner } from './pages/servicios-owner/servicios-owner';
+import { ServiciosResidente } from './pages/servicios-residente/servicios-residente';
 import { Confirmacion } from './pages/confirmacion/confirmacion';
 import { Checkout } from './pages/checkout/checkout';
 
@@ -40,7 +40,7 @@ export const routes: Routes = [
       { path: 'reclamos', component: Reclamos },
       { path:'expensas', component: Expensas },
       { path:'configuracion', component: Configuracion },
-      { path:'servicios', component: Servicios },
+      { path:'servicios-admin', component: ServiciosAdmin },
       { path:'empleados', component: Empleados },
       { path:'pagos', component: Pagos } 
     ]
@@ -58,7 +58,7 @@ export const routes: Routes = [
       { path:'reservas', component: Reservas },
       { path:'avisos', component: Avisos },
       { path:'documentos', component: Documentos },
-      { path:'servicios', component: ServiciosOwner },
+      { path:'servicios', component: ServiciosResidente },
       { path:'confirmacion', component: Confirmacion },
       { path: 'checkout', component: Checkout },
     ]

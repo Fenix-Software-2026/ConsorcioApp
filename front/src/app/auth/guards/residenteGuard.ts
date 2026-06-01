@@ -11,12 +11,12 @@ export const ownerGuard: CanActivateFn = (route, state) => {
   
   const user = authService.currentUser();
 
-  // Revisa que esté logueado Y que su rol sea Propietario (o Vecino, según tu Django)
-  if (user && user.rol === 'propietario') {
-    return true; // 🟩 Sos Propietario, pasá a tu panel
+  // Revisar nomenclatura de roles
+  if (user && user.rol === 'residente') {
+    return true; // Estaba puesto para rol "propietario"
   }
 
-  console.warn('Acceso denegado: Solo Propietario.');
+  console.warn('Acceso denegado: Solo residente.');
   router.navigate(['/login']);
   return false;
 };

@@ -14,13 +14,13 @@ export interface ServicioConsorcio {
 }
 
 @Component({
-  selector: 'app-servicios',
+  selector: 'app-servicios-admin',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, FormsModule],
-  templateUrl: './servicios.html',
-  styleUrl: './servicios.css'
+  templateUrl: './servicios-admin.html',
+  styleUrl: './servicios-admin.css'
 })
-export class Servicios implements OnInit {
+export class ServiciosAdmin implements OnInit {
 
   // Listado local estático con tus datos base y los nuevos tipos sugeridos
   servicios: ServicioConsorcio[] = [
