@@ -12,12 +12,12 @@ class ReclamoViewSet(viewsets.ModelViewSet):
     
     def get_queryset(self):
         user = self.request.user
-        if user.is_staff or user.rol == 'administrador':
+        if user.rol == 'administrador':
             return Reclamo.objects.all()
         return Reclamo.objects.filter(unidad=user.unidad)
 
     def get_serializer_class(self):
-        if self.request.user.is_staff or self.request.user.rol == 'administrador':
+        if self.request.user.rol == 'administrador':
             return ReclamoAdminSerializer
         return ReclamoSerializer
 

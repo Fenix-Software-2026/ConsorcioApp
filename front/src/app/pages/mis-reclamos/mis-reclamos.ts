@@ -10,6 +10,7 @@ import { Observable } from 'rxjs';
 export interface Reclamo {
   id?: number;
   titulo: string;
+  categoria: string;
   descripcion: string;
   estado: string;
 }
@@ -28,7 +29,8 @@ export class ReclamoService {
     return this.http.get<Reclamo[]>(this.apiUrl);
   }
 
-  crearReclamo(reclamo: Reclamo): Observable<Reclamo> {
+  crearReclamo (reclamo: Reclamo): Observable<Reclamo> {
+  
     return this.http.post<Reclamo>(this.apiUrl, reclamo);
   }
 }
@@ -62,8 +64,9 @@ export class MisReclamos implements OnInit {
   inicializarFormulario(): void {
     this.reclamoForm = this.fb.group({
       titulo: ['', [Validators.required, Validators.minLength(5)]],
+      categoria: ['', [Validators.required]],
       descripcion: ['', [Validators.required, Validators.minLength(10)]],
-      estado: ['Pendiente']
+      estado: ['pendiente']
     });
   }
 
@@ -104,11 +107,11 @@ export class MisReclamos implements OnInit {
 
   cerrarModal(): void {
     this.mostrarModal = false;
-    this.reclamoForm.reset({ estado: 'Pendiente' });
+    this.reclamoForm.reset({ estado: 'pendiente' });
   }
 
   get totalReclamos(): number { return this.reclamos.length; }
-  get pendientes(): number { return this.reclamos.filter(r => r.estado === 'Pendiente').length; }
-  get enProceso(): number { return this.reclamos.filter(r => r.estado === 'En proceso').length; }
-  get resueltos(): number { return this.reclamos.filter(r => r.estado === 'Resuelto').length; }
+  get pendientes(): number { return this.reclamos.filter(r => r.estado === 'pendiente' || r.estado === 'Pendiente').length; }
+  get enProceso(): number { return this.reclamos.filter(r => r.estado === 'en_proceso' || r.estado === 'En proceso').length; }
+  get resueltos(): number { return this.reclamos.filter(r => r.estado === 'resuelto' || r.estado === 'Resuelto').length; }
 }

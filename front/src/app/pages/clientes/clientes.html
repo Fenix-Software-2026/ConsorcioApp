@@ -80,7 +80,7 @@
         <div class="input-grupo">
           <label>Nombre</label>
           <input type="text" formControlName="username" placeholder="Ej: Juan">
-          @if(usuarioForm.get('nombre')?.touched && usuarioForm.get('username')?.errors?.['required']) {
+          @if(usuarioForm.get('username')?.touched && usuarioForm.get('username')?.errors?.['required']) {
             <span class="error-msg">El nombre es obligatorio.</span>
           }
         </div>
@@ -105,12 +105,12 @@
           <label for="piso">Piso</label>
           <select id="piso" formControlName="piso" class="form-control">
             <option value="">Seleccione un piso</option>
-            <option *ngFor="let u of listaUnidades" [value]="u.piso">Piso {{ u.piso }}</option>@for (u of listaUnidades; track u.id) {
-            <option [value]="u.departamento">
+            @for (u of listaUnidades; track u.id) {
+            <option [value]="u.piso">
               Piso {{ u.piso }} 
             </option>
             } @empty {
-            <option disabled>No hay departamentos cargados</option>
+            <option disabled>No hay unidades cargadas</option>
             }
           </select>
         </div>

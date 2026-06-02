@@ -44,9 +44,9 @@
           </td>
           <td>
             <span class="badge-estado" 
-                  [class.pendiente]="reclamo.estado === 'Pendiente'"
-                  [class.proceso]="reclamo.estado === 'En proceso'"
-                  [class.resuelto]="reclamo.estado === 'Resuelto'">
+                  [class.pendiente]="reclamo.estado === 'pendiente' || reclamo.estado === 'Pendiente'"
+                  [class.proceso]="reclamo.estado === 'en_proceso' || reclamo.estado === 'En proceso'"
+                  [class.resuelto]="reclamo.estado === 'resuelto' || reclamo.estado === 'Resuelto'">
               {{ reclamo.estado }}
             </span>
           </td>
@@ -81,6 +81,26 @@
           <input type="text" formControlName="titulo" placeholder="Ej: Filtración en el techo de la cochera">
           @if(reclamoForm.get('titulo')?.touched && reclamoForm.get('titulo')?.errors?.['required']) {
             <span class="error-msg">El título es obligatorio para procesar el reclamo.</span>
+          }
+        </div>
+
+        <div class="form-field">
+          <label>Categoría</label>
+          <select formControlName="categoria">
+            <option value="" disabled selected>Seleccione una categoría</option>
+            <option value="plomeria">Plomería</option>
+            <option value="electricidad">Electricidad</option>
+            <option value="gas">Gas</option>
+            <option value="humedad">Humedad / Filtraciones</option>
+            <option value="ascensor">Ascensor</option>
+            <option value="limpieza">Limpieza</option>
+            <option value="seguridad">Seguridad / Accesos</option>
+            <option value="ruidos">Ruidos molestos</option>
+            <option value="internet">Internet / Antena</option>
+            <option value="otros">Otros</option>
+          </select>
+          @if(reclamoForm.get('categoria')?.touched && reclamoForm.get('categoria')?.errors?.['required']) {
+            <span class="error-msg">Por favor, seleccione una categoría.</span>
           }
         </div>
 
