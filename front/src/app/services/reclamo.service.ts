@@ -22,8 +22,8 @@ export class ReclamoService {
   constructor(private http: HttpClient) { }
 
   // GET: Trae todos los reclamos desde la base de datos de Django
-  getReclamos(): Observable<Reclamo[]> {
-    return this.http.get<Reclamo[]>(this.apiUrl);
+  getReclamos(): Observable<any[]> {
+    return this.http.get<any[]>(this.apiUrl);
   }
 
   // POST: Guarda un nuevo reclamo creado por el propietario
