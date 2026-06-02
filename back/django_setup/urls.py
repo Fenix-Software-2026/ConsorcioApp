@@ -12,7 +12,7 @@ class MiTokenView(TokenObtainPairView):#es un serializer, y los serializers no t
     serializer_class = MiTokenSerializer
     
 router = DefaultRouter()
-router.register(r'reclamos', ReclamoViewSet)
+router.register(r'reclamos', ReclamoViewSet, basename='reclamo')
 router.register(r'comunicados', ComunicadoViewSet)
 router.register(r'usuario', UsuarioViewSet)
 router.register(r'unidad', UnidadViewSet)

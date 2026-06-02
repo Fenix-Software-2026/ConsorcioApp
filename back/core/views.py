@@ -1,13 +1,36 @@
+from rest_framework.exceptions import PermissionDenied # <--- Asegurate de tener este import arriba
 from rest_framework import viewsets
 
 from core.permissions import EsAdminConsorcio, EsResidente
 from .models import Reclamo, Comunicado, Usuario, Unidad
-from .serializers import ReclamoSerializer, ComunicadoSerializer, UsuarioSerializer, UnidadSerializer
+from .serializers import ReclamoAdminSerializer, ReclamoSerializer, ComunicadoSerializer, UsuarioSerializer, UnidadSerializer
+
 
 class ReclamoViewSet(viewsets.ModelViewSet):
-    permission_classes = [EsResidente]
-    queryset = Reclamo.objects.all()
-    serializer_class = ReclamoSerializer
+    permission_classes = [EsResidente | EsAdminConsorcio]
+
+    
+    def get_queryset(self):
+        user = self.request.user
+        if user.is_staff or user.rol == 'administrador':
+            return Reclamo.objects.all()
+        return Reclamo.objects.filter(unidad=user.unidad)
+
+    def get_serializer_class(self):
+        if self.request.user.is_staff or self.request.user.rol == 'administrador':
+            return ReclamoAdminSerializer
+        return ReclamoSerializer
+
+    def perform_create(self, serializer):
+        usuario_logueado = self.request.user
+        
+        if usuario_logueado.is_staff or usuario_logueado.rol == 'administrador':
+            # 2. Corregido el raise con la excepción limpia de DRF
+            raise PermissionDenied("Los administradores no pueden crear reclamos.")
+            
+        serializer.save(usuario=usuario_logueado, unidad=usuario_logueado.unidad)
+        
+      
 
 class ComunicadoViewSet(viewsets.ModelViewSet):
     permission_classes = [EsAdminConsorcio]
