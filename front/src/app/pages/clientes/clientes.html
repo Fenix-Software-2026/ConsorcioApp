@@ -4,15 +4,15 @@
 
   <div class="cards">
     <div class="card">
-      <h3>{{ totalUsuarios }}</h3>
+      <h3>{{usuarios.length}}</h3>
       <p>Total Usuarios</p>
     </div>
     <div class="card">
-      <h3>{{ totalPropietarios }}</h3>
+      <h3>0</h3>
       <p>Propietarios</p>
     </div>
     <div class="card">
-      <h3>{{ totalInquilinos }}</h3>
+      <h3>0</h3>
       <p>Inquilinos</p>
     </div>
   </div>
@@ -35,14 +35,18 @@
         </tr>
       </thead>
       <tbody>
-        @for(usuario of usuariosFiltrados; track usuario.id){
+        @for(usuario of usuarios; track usuario.email){
         <tr>
-          <td>{{ usuario.nombre }} {{ usuario.apellido }}</td>
-          <td>Dpto: {{ usuario.unidad }}</td>
+          <td>{{ usuario.username }}</td>
+          @if(usuario.unidad_detalle){
+            <td>{{ usuario.unidad_detalle.piso}} - {{ usuario.unidad_detalle.departamento }}</td>
+          }@else {
+            <span>(Admin)</span>
+          }
           <td style="text-transform: capitalize;">{{ usuario.rol }}</td>
           <td>
-            <span class="estado-indicador" [class.activo]="usuario.esta_activo">
-              {{ usuario.esta_activo ? 'Activo' : 'Inactivo' }}
+            <span class="estado-indicador">
+              <!-- {{ usuario.esta_activo ? 'Activo' : 'Inactivo' }} -->
             </span>
           </td>
           <td>
@@ -75,19 +79,19 @@
         
         <div class="input-grupo">
           <label>Nombre</label>
-          <input type="text" formControlName="nombre" placeholder="Ej: Juan">
-          @if(usuarioForm.get('nombre')?.touched && usuarioForm.get('nombre')?.errors?.['required']) {
+          <input type="text" formControlName="username" placeholder="Ej: Juan">
+          @if(usuarioForm.get('username')?.touched && usuarioForm.get('username')?.errors?.['required']) {
             <span class="error-msg">El nombre es obligatorio.</span>
           }
         </div>
 
-        <div class="input-grupo">
+        <!-- <div class="input-grupo">
           <label>Apellido</label>
           <input type="text" formControlName="apellido" placeholder="Ej: Pérez">
           @if(usuarioForm.get('apellido')?.touched && usuarioForm.get('apellido')?.errors?.['required']) {
             <span class="error-msg">El apellido es obligatorio.</span>
           }
-        </div>
+        </div> -->
 
         <div class="input-grupo">
           <label>Correo Electrónico</label>
@@ -97,16 +101,31 @@
           }
         </div>
 
-        <div class="input-grupo">
-          <label>Unidad / Departamento (ID)</label>
-          <input type="number" formControlName="unidad" placeholder="Ej: 1">
+        <div class="form-group">
+          <label for="piso">Piso</label>
+          <select id="piso" formControlName="piso" class="form-control">
+            <option value="">Seleccione un piso</option>
+            @for (u of listaUnidades; track u.id) {
+            <option [value]="u.piso">
+              Piso {{ u.piso }} 
+            </option>
+            } @empty {
+            <option disabled>No hay unidades cargadas</option>
+            }
+          </select>
         </div>
-
-        <div class="input-grupo">
-          <label>Rol del Usuario</label>
-          <select formControlName="rol" class="select-rol">
-            <option value="propietario">Propietario</option>
-            <option value="inquilino">Inquilino</option>
+        
+        <div class="form-group">
+          <label for="departamento">Departamento / Unidad</label>
+          <select id="departamento" formControlName="departamento" class="form-control">
+            <option value="">Seleccione un departamento</option>
+          @for (u of listaUnidades; track u.id) {
+          <option [value]="u.departamento">
+            Depto {{ u.departamento }}
+          </option>
+          } @empty {
+          <option disabled>No hay departamentos cargados</option>
+          }
           </select>
         </div>
 

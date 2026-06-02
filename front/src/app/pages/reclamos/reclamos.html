@@ -12,7 +12,7 @@
 
   <div class="cards">
     <div class="card">
-      <h3>{{ totalReclamos }}</h3>
+      <h3>{{ reclamos.length }}</h3>
       <p>Total Reclamos</p>
     </div>
     <div class="card">
@@ -42,10 +42,10 @@
         </tr>
       </thead>
       <tbody>
-        @for(reclamo of reclamosFiltrados; track reclamo.numero){
+        @for(reclamo of reclamosFiltrados; track reclamo.id) {
         <tr>
-          <td>{{ reclamo.numero }}</td>
-          <td class="vecino-info">{{ reclamo.usuario_nombre }}</td>
+          <td>{{ reclamo.titulo }}</td>
+          <td class="vecino-info">{{ reclamo.titulo }}</td>
           <td>{{ reclamo.descripcion }}</td>
           <td>
             <span class="estado" 
@@ -55,12 +55,12 @@
               {{ reclamo.estado }}
             </span>
           </td>
-          <td>{{ reclamo.fecha }}</td>
+          <td>{{ reclamo.fecha_creacion | date:'yyyy-MM-dd HH:mm' }}</td>
           <td>
             <button class="btn-ver" (click)="abrirGestion(reclamo)">
               Gestionar
             </button>
-            <button class="btn-eliminar" (click)="eliminarReclamoVisual(reclamo.numero)" title="Eliminar de la vista">
+            <button class="btn-eliminar" (click)="eliminarReclamoVisual(reclamo.titulo)" title="Eliminar de la vista">
               🗑️
             </button>
           </td>
@@ -81,14 +81,14 @@
 <div class="modal-shadow">
   <div class="modal-box">
     <div class="modal-head">
-      <h3>Actualizar Estado del Reclamo #{{ reclamoSeleccionado.numero }}</h3>
+      <h3>Actualizar Estado del Reclamo #{{ reclamoSeleccionado.titulo }}</h3>
       <button class="close-x" (click)="cerrarModal()">&times;</button>
     </div>
     
     <form [formGroup]="estadoForm" (ngSubmit)="actualizarEstadoLocal()">
       <div class="modal-body">
         <p class="detalle-txt"><strong>Descripción:</strong> {{ reclamoSeleccionado.descripcion }}</p>
-        <p class="detalle-txt"><strong>Vecino:</strong> {{ reclamoSeleccionado.usuario_nombre }}</p>
+        <!-- <p class="detalle-txt"><strong>Vecino:</strong> {{ reclamoSeleccionado.usuario_nombre }}</p> -->
         
         <div class="select-box">
           <label>Asignar nuevo estado:</label>

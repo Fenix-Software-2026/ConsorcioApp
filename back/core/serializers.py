@@ -8,123 +8,43 @@ class UnidadSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class UsuarioSerializer(serializers.ModelSerializer):
-    nombre = serializers.CharField(
-        source='first_name',
-        required=False,
-        allow_blank=True
-    )
-    apellido = serializers.CharField(
-        source='last_name',
-        required=False,
-        allow_blank=True
-    )
-    esta_activo = serializers.BooleanField(
-        source='is_active',
-        default=True
-    )
-
-    # Para recibir desde Angular
-    piso = serializers.IntegerField(
-        write_only=True,
-        required=False
-    )
-    departamento = serializers.CharField(
-        write_only=True,
-        required=False
-    )
-
-    # Para devolver detalle de unidad
-    unidad_detalle = UnidadSerializer(
-        source='unidad',
-        read_only=True
-    )
+    # Campos que se usan para RECIBIR los datos desde Angular (solo escritura)
+    piso = serializers.IntegerField(write_only=True)
+    departamento = serializers.CharField(write_only=True)
+    
+    # Campo que se usa para DEVOLVER los datos al frontend (solo lectura)
+    # Al ponerle 'read_only=True', Django sabe que no debe exigirlo en el POST
+    unidad_detalle = UnidadSerializer(source='unidad', read_only=True)
 
     class Meta:
         model = Usuario
         fields = [
-            'id',
-            'username',
-            'nombre',
-            'apellido',
-            'email',
-            'rol',
-            'residente_actual',
-            'esta_activo',
-            'unidad',
-            'unidad_detalle',
-            'piso',
-            'departamento',
-            'password'
+            'username', 'email', 
+            'rol','piso', 'departamento' , 'unidad_detalle', 'password'
         ]
-
-        extra_kwargs = {
-            'password': {
-                'write_only': True,
-                'required': False
-            },
-            'email': {
-                'required': True
-            }
-        }
+        # Dejamos la password oculta en las respuestas GET por seguridad
+        extra_kwargs = {'password': {'write_only': True, 'required': False}}
 
     def create(self, validated_data):
-        # Extraemos piso/depto si vienen
-        piso = validated_data.pop('piso', None)
-        departamento = validated_data.pop(
-            'departamento',
-            None
+        # Extraemos piso y depto enviados por Angular
+        piso = validated_data.pop('piso')
+        departamento = validated_data.pop('departamento')
+
+        # Buscamos o creamos la unidad correspondiente
+        unidad_obj, _ = Unidad.objects.get_or_create(
+            piso=piso, 
+            departamento=departamento
         )
 
-        # Si Angular manda piso/depto
-        if piso is not None and departamento:
-            unidad_obj, _ = Unidad.objects.get_or_create(
-                piso=piso,
-                departamento=departamento
-            )
-            validated_data['unidad'] = unidad_obj
-
-        password = validated_data.pop(
-            'password',
-            '123456'
-        )
-
-        usuario = Usuario.objects.create_user(
-            password=password,
-            **validated_data
-        )
-
+        password = validated_data.pop('password', '123456')
+        
+        # Instanciamos y guardamos el usuario con su relación armada
+        usuario = Usuario(**validated_data)
+        usuario.set_password(password)
+        usuario.unidad = unidad_obj # type: ignore
+        usuario.save()
+        
         return usuario
-
-    def update(self, instance, validated_data):
-        # Si se actualiza piso/depto
-        piso = validated_data.pop('piso', None)
-        departamento = validated_data.pop(
-            'departamento',
-            None
-        )
-
-        if piso is not None and departamento:
-            unidad_obj, _ = Unidad.objects.get_or_create(
-                piso=piso,
-                departamento=departamento
-            )
-            instance.unidad = unidad_obj
-
-        # Password segura
-        password = validated_data.pop(
-            'password',
-            None
-        )
-
-        # Actualizar resto de campos
-        for attr, value in validated_data.items():
-            setattr(instance, attr, value)
-
-        if password:
-            instance.set_password(password)
-
-        instance.save()
-        return instance
 
 class ReclamoSerializer(serializers.ModelSerializer):
     class Meta:
