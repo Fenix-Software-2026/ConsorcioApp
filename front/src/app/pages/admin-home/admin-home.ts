@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router'; // IMPORTANTE: Agregamos esto
-import { DashboardSyncService } from '../../services/dashboard-sync.service';
+// import { DashboardSyncService } from '../../shared/service/dashboard-sync.service';
 
 @Component({
   selector: 'app-admin-home',
@@ -19,11 +19,11 @@ export class AdminHome implements OnInit {
     serviciosCriticos: 2
   };
 
-  constructor(private sync: DashboardSyncService) {}
+//   constructor(private sync: DashboardSyncService) {}
 
   ngOnInit() {
-    this.sync.getResumenGeneral().reclamos.subscribe(data => {
-      this.resumen.reclamosPendientes = data.filter((r: any) => r.estado !== 'Resuelto').length;
-    });
+//     this.sync.getResumenGeneral().reclamos.subscribe((data: { filter: (arg0: (r: any) => boolean) => { (): any; new(): any; length: number; }; }) => {
+//       this.resumen.reclamosPendientes = data.filter((r: any) => r.estado !== 'Resuelto').length;
+//     });
   }
 }

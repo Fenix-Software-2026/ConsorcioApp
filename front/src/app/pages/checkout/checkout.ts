@@ -2,7 +2,7 @@ import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms'; // <-- Cambiamos FormsModule por ReactiveFormsModule
-import { CartService } from '../../services/cart.service';
+import { CartService } from '../../shared/service/cartService';
 
 @Component({
   selector: 'app-checkout',

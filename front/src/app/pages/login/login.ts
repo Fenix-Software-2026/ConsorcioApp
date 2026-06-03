@@ -2,7 +2,7 @@ import { Component, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { AuthService } from '../../auth/service/aurh';
+import { AuthService } from '../../auth/services/aurh';
 
 @Component({
   selector: 'app-login',
@@ -29,7 +29,7 @@ export class Login {
 
     this.loginForm = this.fb.group({
       username: ['', [Validators.required]],
-      
+
 
       password: ['', [Validators.required, Validators.minLength(6)]]
       // password es obligatorio y tiene que tener minimo 6 caracteres
@@ -57,7 +57,7 @@ export class Login {
       // corto ejecucion si el form no es valido
     }
 
-   // Extraemos los datos del formulario reactivo
+    // Extraemos los datos del formulario reactivo
     const { username, password } = this.loginForm.value;
     // Llamada real a nuestro backend en Django
     this.authService.login(username, password).subscribe({
@@ -67,7 +67,7 @@ export class Login {
         // 1. Leemos los datos que el servicio YA desarmó y guardó en la Signal
         const usuarioLogueado = this.authService.currentUser();
         console.log('Usuario logueado:', usuarioLogueado);
-       if (usuarioLogueado && usuarioLogueado.rol === 'administrador') {
+        if (usuarioLogueado && usuarioLogueado.rol === 'administrador') {
           this.router.navigate(['/dashboard']); // Panel de Admin
         } else {
           this.router.navigate(['/owner']); // Panel de Propietarios/Vecinos
@@ -84,9 +84,9 @@ export class Login {
     });
 
 
-    
-    
-    
+
+
+
   }
 
 }

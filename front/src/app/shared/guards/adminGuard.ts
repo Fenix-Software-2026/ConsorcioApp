@@ -1,13 +1,13 @@
 import { inject } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
-import { AuthService } from '../service/aurh';
+import { AuthService } from '../../auth/services/aurh';
 
 
 
 export const adminGuard: CanActivateFn = (route, state) => {
   const router = inject(Router);
   const authService = inject(AuthService);
-  
+
   const user = authService.currentUser();
 
   // Revisa que esté logueado Y que su rol sea estrictamente Administrador

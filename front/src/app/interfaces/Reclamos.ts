@@ -3,7 +3,7 @@ export interface IReclamos {
     titulo: string;
     descripcion: string;
     categoria: string;
-    estado: string;
+    estado: IEstados;
     imagen_url: null | string;
     fecha_creacion: string | Date; 
     fecha_actualizacion: string | Date;
@@ -11,4 +11,4 @@ export interface IReclamos {
     // usuario: 4
 }
 
-   
+export type IEstados = 'pendiente' | 'en_proceso' | 'resuelto' | 'archivado';

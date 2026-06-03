@@ -1,0 +1,66 @@
+/* --- ESTILOS EXCLUSIVOS DEL MODAL FLOTANTE --- */
+.modal-fondo {
+  position: fixed;
+  top: 0; left: 0; width: 100vw; height: 100vh;
+  background: rgba(0,0,0,0.4);
+  backdrop-filter: blur(3px);
+  display: flex; justify-content: center; align-items: center;
+  z-index: 2500; padding: 15px;
+}
+
+.modal-caja {
+  background: white; border-radius: 15px; width: 100%; max-width: 480px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.15); overflow: hidden;
+}
+
+.modal-cabecera {
+  padding: 15px 20px; border-bottom: 1px solid #eee;
+  display: flex; justify-content: space-between; align-items: center;
+}
+
+.modal-cabecera h3 { margin: 0; color: #1e293b; }
+
+.btn-cerrar-x { 
+  background: none; border: none; font-size: 24px; color: #94a3b8; cursor: pointer; 
+}
+
+.modal-cuerpo { padding: 20px; display: flex; flex-direction: column; gap: 15px; }
+
+.input-grupo, .form-group { display: flex; flex-direction: column; gap: 5px; }
+
+.input-grupo label, .form-group label { font-weight: 600; font-size: 14px; color: #475569; }
+
+.input-grupo input, .form-control {
+  padding: 10px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 14px; width: 100%; box-sizing: border-box;
+}
+
+.form-control { background: white; }
+
+.error-msg { color: #ef4444; font-size: 12px; }
+
+.modal-pie {
+  padding: 15px 20px; background: #f8fafc; border-top: 1px solid #eee;
+  display: flex; justify-content: flex-end; gap: 10px;
+}
+
+button {
+  padding: 10px 15px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.btn-cancelar { background: #e2e8f0; color: #475569; }
+
+/* Botón naranja dentro del modal */
+.btn-naranja {
+  background: #f97316;
+  color: white;
+  font-weight: 600;
+}
+
+.btn-naranja:disabled {
+  background: #fed7aa;
+  color: #ffedd5;
+  cursor: not-allowed;
+}

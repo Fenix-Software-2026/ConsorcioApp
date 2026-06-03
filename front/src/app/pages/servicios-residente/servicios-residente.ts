@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
-import { CartService } from '../../services/cart.service';
+import { CartService } from '../../shared/service/cartService';
 
 @Component({
   selector: 'app-servicios-residente',
@@ -25,12 +25,12 @@ export class ServiciosResidente implements OnInit {
   carrito: any[] = [];
 
   constructor(
-    public cartService: CartService,
+    public CartService: CartService,
     private router: Router
   ) {}
 
   ngOnInit(): void {
-    this.cartService.carrito$.subscribe(data => {
+    this.CartService.carrito$.subscribe((data: any[]) => {
       this.carrito = data;
     });
   }
@@ -40,15 +40,15 @@ export class ServiciosResidente implements OnInit {
   }
 
   agregarAlCarrito(servicio: any): void {
-    this.cartService.add(servicio);
+    this.CartService.add(servicio);
   }
 
   eliminarDelCarrito(index: number): void {
-    this.cartService.remove(index);
+    this.CartService.remove(index);
   }
 
   get totalCarrito(): number {
-    return this.cartService.getTotal();
+    return this.CartService.getTotal();
   }
 
   get cantidadCarrito(): number {
@@ -56,7 +56,7 @@ export class ServiciosResidente implements OnInit {
   }
 
   irCheckout(): void {
-    const carritoActual = this.cartService.getCart();
+    const carritoActual = this.CartService.getCart();
 
     console.log("CHECKOUT SNAPSHOT:", carritoActual);
 

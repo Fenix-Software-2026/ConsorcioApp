@@ -1,16 +1,16 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable, signal, computed } from '@angular/core'; // 👈 Sumamos signal y computed
+import { Injectable, signal, computed, inject } from '@angular/core'; // 👈 Sumamos signal y computed
 import { Observable, tap } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
-  private apiUrl = 'http://localhost:8000/api/login/'; 
+  
+  private http = inject(HttpClient);
+  private apiUrl = 'http://localhost:8000/api/login/';
 
-  // Al arrancar, intenta leer el token del localStorage y desarmarlo
-  // Si hay token, arranca con los datos; si no, arranca en null.
-  private currentUserSignal = signal<any>(this.obtenerUsuarioInicial());
+  private currentUserSignal = signal<any | null>(this.obtenerUsuarioInicial());
 
   // Exponemos la Signal de forma pública (pero de solo lectura) para los componentes
   public currentUser = this.currentUserSignal.asReadonly();
@@ -18,7 +18,6 @@ export class AuthService {
   //COMPUTED: Crea un booleano reactivo para saber si está autenticado
   public isAuthenticated = computed(() => this.currentUserSignal() !== null);
 
-  constructor(private http: HttpClient) {}
 
   login(username: string, password: string): Observable<any> {
     return this.http.post<any>(this.apiUrl, { username, password }).pipe(
@@ -43,13 +42,13 @@ export class AuthService {
     this.currentUserSignal.set(null);
   }
 
-  getAccessToken() {
+  getAccessToken(): string | null {
     return localStorage.getItem('access_token');
   }
 
   // Función auxiliar privada para que el servicio recuerde al usuario al recargar la página (F5)
-  private obtenerUsuarioInicial(): any {
-    const token = localStorage.getItem('access_token');
+  private obtenerUsuarioInicial(): any | null {
+    const token = this.getAccessToken(); // Reutilizamos tu propio método aquí
     return token ? this.desarmarToken(token) : null;
   }
 

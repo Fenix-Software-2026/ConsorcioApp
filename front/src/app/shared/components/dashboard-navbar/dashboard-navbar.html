@@ -1,21 +1,27 @@
 <div class="navbar">
-  <div class="nav-left"></div>
+  <div class="nav-left">
+  </div>
 
   <div class="navbar-right">
 
     <div class="perfil" (click)="toggleDropdown()">
 
       <span class="perfil-nombre">
-        <i class="fa-solid fa-circle-user" style="font-size: 24px; margin-right: 8px;"></i>
-        {{ usuarioName || loggedUser()?.username || 'Mi Perfil' }}
+        <div class="avatar-circulo">
+          {{ getInicial() }}
+        </div>
+        {{ loggedUser()?.username || 'Mi Perfil' }}
       </span>
 
-      <div class="dropdown-menu" [class.show]="dropdownOpen">
+      <div class="dropdown-menu" [class.show]="dropdownOpen()">
 
         <div class="user-info">
           <div>
             <p class="user-name">
-              {{ usuarioName || loggedUser()?.username || 'Mi Perfil' }}
+              {{ loggedUser()?.username || 'Usuario' }}
+            </p>
+            <p class="user-role" style="font-size: 12px; color: #64748b; margin: 0; text-transform: capitalize;">
+              {{ loggedUser()?.rol }}
             </p>
           </div>
         </div>
@@ -27,15 +33,12 @@
           Mi perfil
         </a>
 
-        <a
-          class="dropdown-item">
-          <i class="fa-solid fa-gear"></i>
-          Configuración
+        <a class="dropdown-item" (click)="toggleDarkMode(); $event.stopPropagation()">
+          <i class="fa-solid fa-moon"></i>
+          Cambiar Modo
         </a>
 
-        <a
-          class="dropdown-item logout"
-          (click)="onLogout()">
+        <a class="dropdown-item logout" (click)="onLogout()">
           <i class="fa-solid fa-right-from-bracket"></i>
           Cerrar sesión
         </a>

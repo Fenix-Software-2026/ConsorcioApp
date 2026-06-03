@@ -133,3 +133,16 @@
 .sidebar .menu-item.active i {
   color: #e85d04;
 }
+.avatar-circulo {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background-color: #f97316; /* El naranja que están usando */
+  color: white;
+  border-radius: 50%;
+  font-weight: bold;
+  font-size: 14px;
+  margin-right: 8px;
+}
