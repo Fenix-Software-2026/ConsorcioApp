@@ -33,9 +33,28 @@ class ReclamoViewSet(viewsets.ModelViewSet):
       
 
 class ComunicadoViewSet(viewsets.ModelViewSet):
-    permission_classes = [EsAdminConsorcio]
+
     queryset = Comunicado.objects.all()
     serializer_class = ComunicadoSerializer
+
+    def get_permissions(self):
+
+        # GET -> admin y residente
+        if self.action in ['list', 'retrieve']:
+            permission_classes = [
+                EsAdminConsorcio | EsResidente
+            ]
+
+        # POST PUT DELETE -> solo admin
+        else:
+            permission_classes = [
+                EsAdminConsorcio
+            ]
+
+        return [
+            permission()
+            for permission in permission_classes
+        ]
     
 class UsuarioViewSet(viewsets.ModelViewSet):
     permission_classes = [EsAdminConsorcio]
