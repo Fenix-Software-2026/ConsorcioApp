@@ -48,7 +48,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'rest_framework_simplejwt',
-    'core'
+    'core',
+    'drf_spectacular',
 ]
 
 MIDDLEWARE = [
@@ -150,6 +151,17 @@ REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.IsAuthenticated',  # Por defecto todo requiere login
     ),
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+    
+
+}
+
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'API de Consorcio - ISPC',
+    'DESCRIPTION': 'Documentación de los endpoints para la gestión de residentes, unidades y reclamos.',
+    'VERSION': '1.0.0',
+    'SERVE_INCLUDE_SCHEMA': False,
+    'COMPONENT_SPLIT_PATCH': True,
 }
 
 
