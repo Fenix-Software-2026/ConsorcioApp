@@ -1,4 +1,4 @@
-import { Component, inject, Input } from '@angular/core';
+import { Component, inject, Input, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../../auth/service/aurh';
@@ -17,60 +17,22 @@ export class DashboardNavbar {
 
   // email del usuario logueado (luego vendra de auth real)
   @Input() usuarioRol: string = '';
-  // antes esto venia por @Input()
-  // ahora obtengo los datos directamente desde localStorage
-  // para mostrar quien inicio sesion realmente
-  usuario: any = {};
-
-  // estado visual del modo oscuro (solo frontend por ahora)
-  isDark: boolean = false;
 
   // controla si el dropdown del usuario esta abierto
   dropdownOpen = false;
 
-  constructor(private router: Router) {
+  private authService = inject(AuthService);
+  private routes = inject(Router);
 
-    // busco si existe informacion del usuario guardada
-    // localStorage devuelve texto, por eso luego uso JSON.parse()
+  // Utilizamos el signal del authService para que se actualice dinamicamente
+  loggedUser = computed(() => this.authService.currentUser());
 
-    const datosUsuario = localStorage.getItem('usuario');
-
-    // verifico que existan datos antes de convertirlos
-    // evita errores si alguien entra sin logearse
-
-    if (datosUsuario) {
-
-      this.usuario = JSON.parse(datosUsuario);
-
-    }
-
-  }
-
-  // devuelve la inicial para mostrar dentro del circulo
-  // ejemplo:
-  // Administrador → A
-  // Propietario / Inquilino → P
-
-  getInicial(): string {
-
-    return this.usuario?.rol
-      ? this.usuario.rol.charAt(0)
-      : 'U';
-      // U = usuario por defecto si no encuentra datos
-  }
-
-  toggleDarkMode() {
-    // cambia entre modo oscuro y claro
-    this.isDark = !this.isDark;
-  }
+  constructor() {}
 
   toggleDropdown() {
     // abre o cierra el menu del usuario
     this.dropdownOpen = !this.dropdownOpen;
   }
-
-  private authService = inject(AuthService);
-  private routes = inject(Router);
 
   onLogout() {
     // llama al servicio de auth para cerrar sesion
@@ -79,5 +41,4 @@ export class DashboardNavbar {
     this.routes.navigate(['/login']);
   }
 
- 
 }

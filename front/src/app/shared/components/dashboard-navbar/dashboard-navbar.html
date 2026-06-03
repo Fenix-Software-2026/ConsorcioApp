@@ -2,54 +2,22 @@
   <div class="nav-left"></div>
 
   <div class="navbar-right">
-    <button class="dark-toggle" (click)="toggleDarkMode()">
-      <i
-        class="fa"
-        [class.fa-sun]="isDark"
-        [class.fa-moon]="!isDark">
-      </i>
-    </button>
 
     <div class="perfil" (click)="toggleDropdown()">
 
-      <div class="perfilCirculo">
-        {{ getInicial() }}
-
-        <span class="perfil-nombre">
-          {{ usuarioName }}
-        </span>
-
-        {{ usuario.rol }}
-      </div>
+      <span class="perfil-nombre">
+        <i class="fa-solid fa-circle-user" style="font-size: 24px; margin-right: 8px;"></i>
+        {{ usuarioName || loggedUser()?.username || 'Mi Perfil' }}
+      </span>
 
       <div class="dropdown-menu" [class.show]="dropdownOpen">
 
         <div class="user-info">
-
-          <div class="perfilCirculo">
-            {{ getInicial() }}
-          </div>
-
           <div>
             <p class="user-name">
-              {{ usuarioRol }}
-            </p>
-
-            <p class="user-email">
-              {{ usuarioName }}
+              {{ usuarioName || loggedUser()?.username || 'Mi Perfil' }}
             </p>
           </div>
-
-          <div>
-            <p class="user-name">
-              {{ usuario.rol }}
-            </p>
-
-            <p class="user-email">
-              {{ usuario.email }}
-            </p>
-          </div>
-
         </div>
 
         <hr />
