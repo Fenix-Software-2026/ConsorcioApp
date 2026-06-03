@@ -7,9 +7,14 @@ from .serializers import ReclamoAdminSerializer, ReclamoSerializer, ComunicadoSe
 
 
 class ReclamoViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint para la gestión de reclamos del consorcio.
+    
+    Administradores: Pueden listar, visualizar y actualizar todos los reclamos.
+    Residentes: Solo visualizan y crean reclamos asociados a su unidad.
+    """
     permission_classes = [EsResidente | EsAdminConsorcio]
 
-    
     def get_queryset(self):
         user = self.request.user
         if user.rol == 'administrador':
@@ -25,7 +30,6 @@ class ReclamoViewSet(viewsets.ModelViewSet):
         usuario_logueado = self.request.user
         
         if usuario_logueado.is_staff or usuario_logueado.rol == 'administrador':
-            # 2. Corregido el raise con la excepción limpia de DRF
             raise PermissionDenied("Los administradores no pueden crear reclamos.")
             
         serializer.save(usuario=usuario_logueado, unidad=usuario_logueado.unidad)
@@ -33,18 +37,25 @@ class ReclamoViewSet(viewsets.ModelViewSet):
       
 
 class ComunicadoViewSet(viewsets.ModelViewSet):
-
+    """
+    API endpoint para la publicación de comunicados oficiales.
+    
+    Lectura (GET): Permitida para todos los usuarios autenticados.
+    Escritura (POST, PUT, DELETE): Restringida exclusivamente a los administradores.
+    """
     queryset = Comunicado.objects.all()
     serializer_class = ComunicadoSerializer
 
-    def get_permissions(self):
+    def perform_create(self, serializer):
+        # Django agarra al administrador dueño del token y se lo clava al comunicado solo
+        serializer.save(usuario=self.request.user)
 
+    def get_permissions(self):
         # GET -> admin y residente
         if self.action in ['list', 'retrieve']:
             permission_classes = [
                 EsAdminConsorcio | EsResidente
             ]
-
         # POST PUT DELETE -> solo admin
         else:
             permission_classes = [
@@ -57,15 +68,21 @@ class ComunicadoViewSet(viewsets.ModelViewSet):
         ]
     
 class UsuarioViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint para la administración de usuarios del sistema (CRUD completo).
+    
+    Acceso exclusivo para Administradores del Consorcio.
+    """
     permission_classes = [EsAdminConsorcio]
     queryset = Usuario.objects.all()
     serializer_class = UsuarioSerializer
 
 class UnidadViewSet(viewsets.ReadOnlyModelViewSet):
     """
-    Cambiamos ModelViewSet por ReadOnlyModelViewSet.
-    Esto deshabilita POST, PUT y DELETE automáticos. 
-    Solo permite GET (listar) para que el formulario de Angular arme el Select.
+    API endpoint para la consulta de unidades funcionales (departamentos/lotes).
+    
+    Vista de solo lectura (GET) protegida para administradores. 
+    Ideal para alimentar selectores en los formularios de registro de Angular.
     """
     permission_classes = [EsAdminConsorcio]
     queryset = Unidad.objects.all()
