@@ -1,8 +1,8 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { IReclamos } from '../../interfaces/Reclamos';
-import { ReclamoService } from '../../auth/service/ReclamoService';
+import { ReclamoService } from '../../shared/service/ReclamoService';
 
 
 
@@ -18,14 +18,14 @@ import { ReclamoService } from '../../auth/service/ReclamoService';
 export class Reclamos implements OnInit {
 
   private reclamosService = inject(ReclamoService);
-  reclamos: IReclamos[] = [];
+  private fb = inject(FormBuilder);
 
-  textoBusqueda: string = '';
+  reclamos = signal<IReclamos[]>([]); // Usamos Signal para que Angular sepa cuándo actualizar la vista
+  textoBusqueda = signal<string>('');
   mostrarModal: boolean = false;
   reclamoSeleccionado!: IReclamos;
   estadoForm!: FormGroup;
 
-  constructor(private fb: FormBuilder) {}
 
   ngOnInit(): void {
     this.cargarReclamosDelBackend();
@@ -39,7 +39,7 @@ export class Reclamos implements OnInit {
       this.reclamosService.getReclamos().subscribe({
         next: (data: any) => {
          console.log(data)
-          this.reclamos = data;
+          this.reclamos.set(data);
         },
         error: (err: any) => {
           console.error('Error al traer los reclamos:', err);
@@ -49,27 +49,29 @@ export class Reclamos implements OnInit {
 
 
   // --- BUSCADOR EN TIEMPO REAL ---
-  get reclamosFiltrados(): IReclamos[] {
-    if (!this.textoBusqueda.trim()) {
-      return this.reclamos;
-    }
-    return this.reclamos.filter(r => 
-      r.descripcion.toLowerCase().includes(this.textoBusqueda.toLowerCase()) ||
-      // r.estado.toLowerCase().includes(this.textoBusqueda.toLowerCase()) ||
-      r.titulo.toLowerCase().includes(this.textoBusqueda.toLowerCase())
+  reclamosFiltrados = computed(() => {
+    const texto = this.textoBusqueda().toLowerCase().trim();
+    const listaOriginal = this.reclamos();
+
+    if (!texto) return listaOriginal;
+
+    return listaOriginal.filter(r =>
+      (r.descripcion || '').toLowerCase().includes(texto) ||
+      (r.estado || '') ||
+      (r.titulo || '').toLowerCase().includes(texto)
     );
-  }
+  });
 
   // --- ELIMINAR RECLAMO DE FORMA VISUAL ---
-  eliminarReclamoVisual(numeroReclamo: string): void {
+  eliminarReclamoVisual(numeroReclamo: number): void {
     // Filtramos el arreglo dejando fuera el número que queremos borrar
-    this.reclamos = this.reclamos.filter(r => r.titulo !== numeroReclamo);
+    this.reclamos.set(this.reclamos().filter(r => r.id !== numeroReclamo)) ;
   }
 
   // --- ACCIÓN MASIVA: LIMPIAR RESUELTOS ---
   limpiarResueltos(): void {
     // Deja en la lista únicamente los que NO están resueltos
-    this.reclamos = this.reclamos.filter(r => r.titulo !== 'Resuelto');
+    this.reclamos.set(this.reclamos().filter(r => r.estado !== 'resuelto'));
   }
 
   // --- MODAL PARA CAMBIAR ESTADOS ---
@@ -82,10 +84,18 @@ export class Reclamos implements OnInit {
   actualizarEstadoLocal(): void {
     if (this.estadoForm.valid) {
       // Buscamos el reclamo en nuestra lista y mutamos su estado directamente
-      const index = this.reclamos.findIndex(r => r.titulo === this.reclamoSeleccionado.titulo);
+      const index = this.reclamos().findIndex(r => r.titulo === this.reclamoSeleccionado.titulo);
       if (index !== -1) {
-        this.reclamos[index].estado = this.estadoForm.value.nuevoEstado;
+        this.reclamos()[index].estado = this.estadoForm.value.nuevoEstado;
       }
+      this.reclamosService.editarReclamo(this.reclamoSeleccionado.id!, { estado: this.estadoForm.value.nuevoEstado }).subscribe({
+        next: (data: any) => {
+          console.log('Reclamo actualizado en el backend:', data);
+        },
+        error: (err: any) => {
+          console.error('Error al actualizar el reclamo en el backend:', err);
+        }
+      });
       this.cerrarModal();
     }
   }
@@ -95,8 +105,8 @@ export class Reclamos implements OnInit {
   }
 
   // --- GETTERS PARA LAS TARJETAS (Se recalculan solas al borrar o cambiar estados) ---
-  get totalReclamos(): number { return this.reclamos.length; }
-  get pendientes(): number { return this.reclamos.filter(r => r.estado === 'Pendiente').length; }
-  get enProceso(): number { return this.reclamos.filter(r => r.estado === 'En proceso').length; }
-  get resueltos(): number { return this.reclamos.filter(r => r.estado === 'Resuelto').length; }
+  totalReclamos = computed(() => this.reclamos().length);
+  pendientes = computed(() => this.reclamos().filter(r => r.estado === 'pendiente').length);
+  enProceso = computed(() => this.reclamos().filter(r => r.estado === 'en_proceso').length);
+  resueltos = computed(() => this.reclamos().filter(r => r.estado === 'resuelto').length);
 }

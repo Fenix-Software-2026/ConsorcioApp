@@ -1,13 +1,13 @@
 import { Component, inject, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
-import { AuthService } from '../../../auth/service/aurh';
+import { AuthService } from '../../../auth/services/aurh';
 
 @Component({
   selector: 'app-dashboard-navbar',
   standalone: true,
   imports: [CommonModule, RouterModule],
-  templateUrl:'./dashboard-navbar.html',
+  templateUrl: './dashboard-navbar.html',
   styleUrls: ['./dashboard-navbar.css']
 })
 export class DashboardNavbar {
@@ -56,7 +56,7 @@ export class DashboardNavbar {
     return this.usuario?.rol
       ? this.usuario.rol.charAt(0)
       : 'U';
-      // U = usuario por defecto si no encuentra datos
+    // U = usuario por defecto si no encuentra datos
   }
 
   toggleDarkMode() {
@@ -79,5 +79,5 @@ export class DashboardNavbar {
     this.routes.navigate(['/login']);
   }
 
- 
+
 }

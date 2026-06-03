@@ -1,4 +1,4 @@
-from rest_framework.exceptions import PermissionDenied # <--- Asegurate de tener este import arriba
+from rest_framework.exceptions import PermissionDenied 
 from rest_framework import viewsets
 
 from core.permissions import EsAdminConsorcio, EsResidente

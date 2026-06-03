@@ -19,7 +19,7 @@ class UsuarioSerializer(serializers.ModelSerializer):
     class Meta:
         model = Usuario
         fields = [
-            'username', 'email', 
+            'username', 'email', 'is_active',
             'rol','piso', 'departamento' , 'unidad_detalle'
         ]
         # Dejamos la password oculta en las respuestas GET por seguridad

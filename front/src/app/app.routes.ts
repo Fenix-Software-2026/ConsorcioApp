@@ -6,8 +6,6 @@ import { Dashboard } from './pages/dashboard/dashboard';
 import { DashboardOwner } from './pages/dashboard-owner/dashboard-owner';
 import { AdminHome } from './pages/admin-home/admin-home';
 import { OwnerHome } from './pages/owner-home/owner-home';
-import { adminGuard } from './auth/guards/adminGuard';
-import { ownerGuard } from './auth/guards/residenteGuard';
 
 import { Clientes } from './pages/clientes/clientes';
 import { Reclamos } from './pages/reclamos/reclamos';
@@ -25,6 +23,8 @@ import { Documentos } from './pages/documentos/documentos';
 import { ServiciosResidente } from './pages/servicios-residente/servicios-residente';
 import { Confirmacion } from './pages/confirmacion/confirmacion';
 import { Checkout } from './pages/checkout/checkout';
+import { adminGuard } from './shared/guards/adminGuard';
+import { ownerGuard } from './shared/guards/residenteGuard';
 
 export const routes: Routes = [
   { path: '', component: Landing }, 

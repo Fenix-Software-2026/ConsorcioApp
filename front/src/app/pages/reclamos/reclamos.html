@@ -5,26 +5,26 @@
   <div class="top-bar">
     <input type="text" placeholder="Buscar reclamo por descripción, vecino o estado..." [(ngModel)]="textoBusqueda">
 
-    <button class="btn-naranja-main" (click)="limpiarResueltos()" [disabled]="resueltos === 0">
+    <button class="btn-naranja-main" (click)="limpiarResueltos()" [disabled]="0 === 0">
       🧹 Limpiar Resueltos
     </button>
   </div>
 
   <div class="cards">
     <div class="card">
-      <h3>{{ reclamos.length }}</h3>
+      <h3>{{ reclamos().length }}</h3>
       <p>Total Reclamos</p>
     </div>
     <div class="card">
-      <h3>{{ pendientes }}</h3>
+      <h3>{{ pendientes() }}</h3>
       <p>Pendientes</p>
     </div>
     <div class="card">
-      <h3>{{ enProceso }}</h3>
+      <h3>{{ enProceso() }}</h3>
       <p>En proceso</p>
     </div>
     <div class="card">
-      <h3>{{ resueltos }}</h3>
+      <h3>{{ resueltos() }}</h3>
       <p>Resueltos</p>
     </div>
   </div>
@@ -42,16 +42,16 @@
         </tr>
       </thead>
       <tbody>
-        @for(reclamo of reclamosFiltrados; track reclamo.id) {
+        @for(reclamo of reclamosFiltrados(); track reclamo.id) {
         <tr>
           <td>{{ reclamo.titulo }}</td>
           <td class="vecino-info">{{ reclamo.titulo }}</td>
           <td>{{ reclamo.descripcion }}</td>
           <td>
             <span class="estado" 
-                  [class.pendiente]="reclamo.estado === 'Pendiente'"
-                  [class.proceso]="reclamo.estado === 'En proceso'"
-                  [class.resuelto]="reclamo.estado === 'Resuelto'">
+                  [class.pendiente]="reclamo.estado === 'pendiente'"
+                  [class.proceso]="reclamo.estado === 'en_proceso'"
+                  [class.resuelto]="reclamo.estado === 'resuelto'">
               {{ reclamo.estado }}
             </span>
           </td>
@@ -60,7 +60,7 @@
             <button class="btn-ver" (click)="abrirGestion(reclamo)">
               Gestionar
             </button>
-            <button class="btn-eliminar" (click)="eliminarReclamoVisual(reclamo.titulo)" title="Eliminar de la vista">
+            <button class="btn-eliminar" (click)="eliminarReclamoVisual(reclamo.id)" title="Eliminar de la vista">
               🗑️
             </button>
           </td>
@@ -88,14 +88,14 @@
     <form [formGroup]="estadoForm" (ngSubmit)="actualizarEstadoLocal()">
       <div class="modal-body">
         <p class="detalle-txt"><strong>Descripción:</strong> {{ reclamoSeleccionado.descripcion }}</p>
-        <!-- <p class="detalle-txt"><strong>Vecino:</strong> {{ reclamoSeleccionado.usuario_nombre }}</p> -->
+        <p class="detalle-txt"><strong>Vecino:</strong> {{ reclamoSeleccionado.id }}</p>
         
         <div class="select-box">
           <label>Asignar nuevo estado:</label>
           <select formControlName="nuevoEstado" class="select-field">
-            <option value="Pendiente">⚠️ Pendiente</option>
-            <option value="En proceso">🔧 En proceso</option>
-            <option value="Resuelto">✅ Resuelto</option>
+            <option value="pendiente">⚠️ Pendiente</option>
+            <option value="en_proceso">🔧 En proceso</option>
+            <option value="resuelto">✅ Resuelto</option>
           </select>
         </div>
       </div>

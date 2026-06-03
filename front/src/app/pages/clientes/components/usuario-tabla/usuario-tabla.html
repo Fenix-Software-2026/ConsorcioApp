@@ -1,0 +1,45 @@
+<div class="tabla-responsive-wrapper">
+    <table>
+        <thead>
+            <tr>
+                <th>Nombre Completo</th>
+                <th>Unidad</th>
+                <th>Tipo / Rol</th>
+                <th>Estado</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            @for(usuario of listaUsuarios(); track usuario.email){
+            <tr>
+                <td>{{ usuario.username }}</td>
+
+                <td>
+                    @if(usuario.unidad_detalle){
+                    Piso {{ usuario.unidad_detalle.piso}} - Depto {{ usuario.unidad_detalle.departamento }}
+                    } @else {
+                    <span style="color: #64748b; font-style: italic;">(Admin)</span>
+                    }
+                </td>
+
+                <td style="text-transform: capitalize;">{{ usuario.rol }}</td>
+                <td>
+                    <span class="estado-indicador" [class.activo]="usuario.is_active">
+                        {{ usuario.is_active ? 'Activo' : 'Inactivo' }}
+                    </span>
+                </td>
+                <td>
+                    <button class="btn-accion btn-ver">Ver</button>
+                    <button class="btn-accion btn-editar">Editar</button>
+                </td>
+            </tr>
+            } @empty {
+            <tr>
+                <td colspan="5" style="text-align: center; padding: 30px; color: #999;">
+                    No se encontraron usuarios registrados.
+                </td>
+            </tr>
+            }
+        </tbody>
+    </table>
+</div>

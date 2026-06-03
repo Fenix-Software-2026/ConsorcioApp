@@ -1,0 +1,59 @@
+/* --- ESTILOS EXCLUSIVOS DE LA TABLA DE USUARIOS --- */
+.tabla-responsive-wrapper {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  border-radius: 15px;
+  box-shadow: 0 2px 8px rgba(0,0,0,.1);
+}
+
+table {
+  width: 100%;
+  background: white;
+  border-radius: 15px;
+  overflow: hidden;
+  min-width: 650px; /* Asegura legibilidad en pantallas compactas */
+}
+
+th {
+  background: #f4f4f4;
+  padding: 15px;
+  text-align: left;
+}
+
+td {
+  padding: 15px;
+  border-bottom: 1px solid #eee;
+}
+
+button {
+  padding: 10px 15px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+/* Botones de acción dentro de las filas */
+.btn-accion {
+  padding: 6px 12px;
+  margin-right: 5px;
+  font-size: 13px;
+}
+
+.btn-ver { background: #e2e8f0; color: #334155; }
+.btn-editar { background: #fef3c7; color: #d97706; }
+
+/* Indicador estético para el estado de usuario */
+.estado-indicador {
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: bold;
+  background: #f1f5f9;
+  color: #64748b;
+}
+
+.estado-indicador.activo {
+  background: #d1e7dd;
+  color: #0f5132;
+}

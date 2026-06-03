@@ -1,14 +1,14 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ReclamoService {
+  private http = inject(HttpClient);
   private apiUrl = 'http://localhost:8000/api/reclamos/'; // Endpoint de tu API en Django
 
-  constructor(private http: HttpClient) { }
 
   getReclamos(): Observable< any []> {
     return this.http.get<any []>(this.apiUrl);
