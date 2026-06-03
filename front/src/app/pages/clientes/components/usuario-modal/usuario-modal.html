@@ -1,0 +1,58 @@
+
+<div class="modal-fondo">
+  <div class="modal-caja">
+    <div class="modal-cabecera">
+      <h3>Registrar Nuevo Integrante</h3>
+      <button class="btn-cerrar-x" (click)="cerrarModal()">&times;</button>
+    </div>
+    
+    <form [formGroup]="usuarioForm" (ngSubmit)="guardarNuevoUsuario()">
+      <div class="modal-cuerpo">
+        
+        <div class="input-grupo">
+          <label>Nombre</label>
+          <input type="text" formControlName="username" placeholder="Ej: Juan">
+          @if(usuarioForm.get('nombre')?.touched && usuarioForm.get('username')?.errors?.['required']) {
+            <span class="error-msg">El nombre es obligatorio.</span>
+          }
+        </div>
+
+        <!-- <div class="input-grupo">
+          <label>Apellido</label>
+          <input type="text" formControlName="apellido" placeholder="Ej: Pérez">
+          @if(usuarioForm.get('apellido')?.touched && usuarioForm.get('apellido')?.errors?.['required']) {
+            <span class="error-msg">El apellido es obligatorio.</span>
+          }
+        </div> -->
+
+        <div class="input-grupo">
+          <label>Correo Electrónico</label>
+          <input type="email" formControlName="email" placeholder="juanperez@email.com">
+          @if(usuarioForm.get('email')?.touched && usuarioForm.get('email')?.errors?.['email']) {
+            <span class="error-msg">Ingresa un formato de email válido.</span>
+          }
+        </div>
+
+        <div class="form-group">
+          <label for="departamento">Departamento / Unidad</label>
+          <select id="departamento" formControlName="unidad_id" class="form-control">
+            <option value="">Seleccione un departamento</option>
+            @for (u of listaUnidades(); track u.id) {
+                <option [value]="u.id">
+                    piso{{u.piso}} - Depto {{ u.departamento }}
+                </option>
+            } @empty {
+          <option disabled>No hay departamentos cargados</option>
+          }
+          </select>
+        </div>
+
+      </div>
+
+      <div class="modal-pie">
+        <button type="button" class="btn-cancelar" (click)="cerrarModal()">Cancelar</button>
+        <button type="submit" class="btn-naranja" [disabled]="usuarioForm.invalid">Guardar Usuario</button>
+      </div>
+    </form>
+  </div>
+</div>

@@ -1,6 +1,7 @@
-import { Component, Input } from '@angular/core';
+import { Component, inject, computed, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
+import { AuthService } from '../../../auth/services/aurh'; // Revisá si quedó así tipeado 'aurh' en tu archivo real
 
 @Component({
   selector: 'app-dashboard-navbar',
@@ -10,27 +11,35 @@ import { RouterModule } from '@angular/router';
   styleUrls: ['./dashboard-navbar.css']
 })
 export class DashboardNavbar {
+  private authService = inject(AuthService);
+  private router = inject(Router);
 
-  // titulo del panel (admin / owner / etc)
-  @Input() panelTitle: string = 'Administrador';
+  // 🔄 Signals locales para la interfaz de la barra
+  dropdownOpen = signal<boolean>(false);
+  isDark = signal<boolean>(false);
 
-  // email del usuario logueado (luego vendra de auth real)
-  @Input() userEmail: string = 'usuario@gmail.com';
+  // 🚀 Conectamos directo con el estado global de autenticación
+  loggedUser = computed(() => this.authService.currentUser());
 
-  // estado visual del modo oscuro (solo frontend por ahora)
-  isDark: boolean = false;
+  // 🎨 Computed inteligente para sacar la inicial del rol dinámicamente
+  getInicial = computed(() => {
+    const usuario = this.loggedUser();
+    // Si Django te devuelve 'rol', usás usuario.rol. Si devuelve 'username', usuario.username
+    return usuario?.rol ? usuario.rol.charAt(0).toUpperCase() : 'User';
+  });
 
-  // controla si el dropdown del usuario esta abierto
-  dropdownOpen = false;
-
-  toggleDarkMode() {
-    // cambia entre modo oscuro y claro
-    this.isDark = !this.isDark;
+  toggleDropdown(): void {
+    this.dropdownOpen.update(value => !value);
   }
 
-  toggleDropdown() {
-    // abre o cierra el menu del usuario
-    this.dropdownOpen = !this.dropdownOpen;
+  toggleDarkMode(): void {
+    this.isDark.update(value => !value);
+    // Opcional: Podés meter la lógica para clavarle la clase al body
+    document.body.classList.toggle('dark-mode', this.isDark());
   }
 
+  onLogout(): void {
+    this.authService.logout();
+    this.router.navigate(['/login']);
+  }
 }

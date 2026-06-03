@@ -1,205 +1,57 @@
-.admin-home {
-    padding: 25px;
-    background-color: #f5f6fa;
-    min-height: 100vh;
-}
-
+/* --- HERO Y ESTILO PREMIUM --- */
 .hero {
     display: flex;
     justify-content: space-between;
-    align-items: center;
-
     background: white;
-    border-radius: 16px;
-
-    padding: 30px;
-
-    margin-bottom: 25px;
-
-    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-}
-
-.hero-text {
-    max-width: 55%;
-}
-
-.hero h1 {
-    font-size: 32px;
-    color: #333;
-    margin-bottom: 10px;
-}
-
-.hero p {
-    color: #666;
-    margin-bottom: 20px;
-}
-
-.hero-alerts {
-    display: flex;
-    gap: 15px;
-    flex-wrap: wrap;
-}
-
-.hero-alerts span {
-    background: rgba(255,106,0,0.1);
-    color: #e85d04;
-
-    padding: 8px 14px;
-
-    border-radius: 8px;
-
-    font-size: 14px;
-    font-weight: 500;
-}
-
-.hero-image img {
-    width: 320px;
-    border-radius: 14px;
-    object-fit: cover;
-}
-
-.metrics {
-    display: grid;
-
-    grid-template-columns: repeat(auto-fit, minmax(220px,1fr));
-
-    gap: 20px;
-
-    margin-bottom: 25px;
-}
-
-.metric-card {
-    background: white;
-
-    border-radius: 14px;
-
-    padding: 20px;
-
-    display: flex;
+    border-radius: 20px;
+    padding: 40px;
+    margin-bottom: 30px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.05);
     align-items: center;
-    gap: 18px;
-
-    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-
-    cursor: pointer;
-
-    transition:
-      transform 0.25s ease,
-      box-shadow 0.25s ease,
-      background-color 0.25s ease;
 }
 
-.metric-card:hover {
+.hero-text h1 { font-size: 34px; color: #1e293b; margin-bottom: 15px; }
+.hero-text p { color: #64748b; max-width: 80%; line-height: 1.6; }
 
-    transform: translateY(-6px);
+.hero-stats-quick { display: flex; gap: 15px; margin-top: 20px; }
+.stat-badge { 
+    padding: 8px 16px; border-radius: 50px; font-size: 12px; font-weight: 600;
+    display: flex; align-items: center; gap: 8px; background: #f1f5f9; color: #475569;
+}
+.stat-badge.orange { background: #fff7ed; color: #ea580c; border: 1px solid #fed7aa; }
 
-    box-shadow: 0 10px 25px rgba(0,0,0,0.12);
-
-    background-color: #fffaf5;
+.hero-image { position: relative; border-radius: 16px; overflow: hidden; }
+.hero-image img { width: 350px; height: 200px; object-fit: cover; }
+.overlay-text { 
+    position: absolute; bottom: 15px; left: 15px; color: white; 
+    background: rgba(0,0,0,0.4); padding: 5px 12px; border-radius: 6px; font-size: 12px;
 }
 
-.metric-card i {
-    font-size: 28px;
-    color: #ff6a00;
-}
-
-.metric-card h3 {
-    margin: 0;
-    font-size: 24px;
-    color: #333;
-}
-
-.metric-card p {
-    margin: 0;
-    color: #777;
-}
-
-.dashboard-grid {
-    display: grid;
-
-    grid-template-columns: repeat(auto-fit, minmax(320px,1fr));
-
-    gap: 20px;
+/* --- TARJETAS DE MÓDULOS --- */
+.dashboard-grid { 
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 25px; 
 }
 
 .dashboard-card {
-
-    background: white;
-
-    border-radius: 14px;
-
-    padding: 22px;
-
-    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-
-    transition:
-      border-color 0.3s ease,
-      transform 0.3s ease,
-      box-shadow 0.3s ease;
-
-    border: 2px solid transparent;
-
-    position: relative;
-
-    overflow: hidden;
-
-    cursor: pointer;
+    background: white; padding: 30px; border-radius: 20px; text-align: center;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.04); transition: all 0.3s ease;
+    border: 1px solid #f8fafc;
 }
 
-.dashboard-card:hover {
+.dashboard-card:hover { transform: translateY(-8px); box-shadow: 0 15px 30px rgba(255,106,0,0.15); }
 
-    border-color: rgba(255, 106, 0, 0.4);
-
-    transform: scale(1.02);
-
-    box-shadow: 0 12px 30px rgba(255, 106, 0, 0.12);
+.card-icon { 
+    width: 50px; height: 50px; background: #fff7ed; color: #ff6a00;
+    border-radius: 12px; display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 15px auto; font-size: 22px;
 }
 
-.dashboard-card h2 {
-    margin-bottom: 16px;
-    color: #333;
-    font-size: 20px;
-}
+.status-num { font-size: 2.5rem; font-weight: 800; color: #1e293b; margin: 5px 0; }
+.dashboard-card h2 { font-size: 0.9rem; color: #64748b; text-transform: uppercase; letter-spacing: 1px; }
+.dashboard-card span { font-size: 0.8rem; color: #94a3b8; }
 
-.dashboard-card ul {
-    padding-left: 18px;
-    list-style: none;
-    padding: 0;
-    margin: 0;
-}
+/* Barra de progreso moderna */
+.progress-bar-bg { background: #e2e8f0; height: 8px; border-radius: 4px; margin: 15px 0; overflow: hidden; }
+.progress-fill { background: #ff6a00; height: 100%; border-radius: 4px; transition: width 1s ease; }
 
-.dashboard-card li {
-    margin-bottom: 12px;
-    color: #555;
-}
-
-/* iconos bosstrap */
-.metric-card i {
-    font-size: 30px;
-    color: #ff6a00;
-}
-
-.dashboard-card h2 i {
-    color: #ff6a00;
-    margin-right: 8px;
-}
-
-.dashboard-card ul li i {
-    color: #e85d04;
-    margin-right: 10px;
-}
-
-.hero-alerts span i {
-    margin-right: 6px;
-}
-
-.dashboard-card li {
-    display: flex;
-    align-items: center;
-
-    gap: 10px;
-
-    margin-bottom: 14px;
-
-    color: #555;
-}
+.trend-text { font-size: 12px; color: #64748b; font-weight: 600; }

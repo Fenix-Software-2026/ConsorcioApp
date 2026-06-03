@@ -1,0 +1,36 @@
+<div class="usuarios-container">
+
+  <h2>Gestión de Usuarios</h2>
+
+  <div class="cards">
+    <div class="card">
+      <h3>{{usuarios().length}}</h3>
+      <p>Total Usuarios</p>
+    </div>
+    <div class="card">
+      <h3>{{listaUnidades.length}}</h3>
+      <p>Departamentos</p>
+    </div>
+    <div class="card">
+      <h3>{{listaUnidades.length - usuarios().length}}</h3>
+      <p>Desocupados</p>
+    </div>
+  </div>
+
+  <div class="acciones">
+    <input type="text" placeholder="Buscar usuario..." [(ngModel)]="textoBusqueda">
+    
+    <button class="btn-naranja" (click)="abrirModal()">+ Nuevo Usuario</button>
+  </div>
+
+  <usuario-tabla [listaUsuarios]="usuarios()"/>
+
+</div>
+
+@if(mostrarModal) {
+<usuario-modal
+  [listaUnidades]="listaUnidades"
+  (alCerrar)="cerrarModal()"
+  (alGuardar)="cargarUsuariosDelBackend()">
+</usuario-modal>
+}

@@ -1,0 +1,20 @@
+<div class="documentos-container">
+  <div class="header">
+    <h2>Documentos del Consorcio</h2>
+    <p>Accedé de forma rápida a toda la documentación oficial.</p>
+  </div>
+
+  <div class="documentos-grid">
+    @for(doc of documentos; track doc.nombre){
+      <div class="documento-card">
+        <div class="icono"><i [class]="doc.icono"></i></div>
+        <h3>{{doc.nombre}}</h3>
+        <span class="badge">{{doc.tipo}} • {{doc.cat}}</span>
+        <p><i class="bi bi-calendar-event"></i> {{doc.fecha}}</p>
+        <button (click)="descargar(doc)">
+          <i class="bi bi-download"></i> Descargar
+        </button>
+      </div>
+    }
+  </div>
+</div>

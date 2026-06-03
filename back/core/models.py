@@ -1,28 +1,36 @@
 
 
 from django.db import models
-class Usuario(models.Model):
-    ROL = [     
-        ('residente',   'Residente'),
-        ('administrador',  'Administrador'),
-    ]
+from django.contrib.auth.models import AbstractUser
+
+class Usuario(AbstractUser):
+    class Rol(models.TextChoices):
+        administrador = 'administrador', 'Administrador'
+        residente = 'residente', 'Residente'
    
-    nombre = models.CharField(max_length=100)
-    apellido = models.CharField(max_length=150)
-    email = models.EmailField(max_length=100, unique=True)
-    password = models.CharField(max_length=255)
-    rol = models.CharField(max_length=20, choices=ROL, default='residente')
+    rol = models.CharField(max_length=20, choices=Rol.choices, default='residente')
     residente_actual = models.BooleanField(default=True)
-    esta_activo = models.BooleanField(default=True)
     
-    unidad = models.ForeignKey('Unidad', on_delete=models.PROTECT) 
+    unidad = models.OneToOneField(
+        'Unidad',
+        on_delete=models.PROTECT,
+        related_name='usuario',
+        null=True,
+        blank=True
+    )
 
     def __str__(self):
-        return f"{self.nombre} {self.apellido} ({self.rol})"
+        return f"{self.first_name} {self.last_name} ({self.rol})"
 
 class Unidad(models.Model):
     piso = models.SmallIntegerField()
     departamento = models.CharField(max_length=5)
+
+    class Meta:
+        # Esto le dice a MySQL que la COMBINACIÓN de piso y depto tiene que ser única
+        constraints = [
+            models.UniqueConstraint(fields=['piso', 'departamento'], name='unique_piso_departamento')
+        ]
 
     def __str__(self):
         return f"Piso {self.piso} - Depto {self.departamento}"

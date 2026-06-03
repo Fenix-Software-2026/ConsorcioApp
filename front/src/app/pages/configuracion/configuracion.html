@@ -1,0 +1,150 @@
+<div class="configuracion-container">
+
+  <h2>Configuración del Consorcio y Accesos</h2>
+
+  <div class="config-grid">
+    
+    <div class="form-container">
+      <h3 class="section-title">🏢 Datos de la Administración</h3>
+      <p class="section-subtitle">Información del consorcio que se imprime en las expensas.</p>
+      
+      <div class="campo">
+        <label>Nombre del Consorcio *</label>
+        <input type="text" [(ngModel)]="configuracion.nombreConsorcio">
+      </div>
+
+      <div class="campo">
+        <label>Dirección Física *</label>
+        <input type="text" [(ngModel)]="configuracion.direccion">
+      </div>
+
+      <div class="campo">
+        <label>Email Corporativo *</label>
+        <input type="email" [(ngModel)]="configuracion.email">
+      </div>
+
+      <div class="campo">
+        <label>Teléfono</label>
+        <input type="text" [(ngModel)]="configuracion.telefono">
+      </div>
+
+      <div class="form-row">
+        <div class="campo flex-1">
+          <label>Interés Mora (%)</label>
+          <input type="number" step="0.1" [(ngModel)]="configuracion.interesMora">
+        </div>
+        <div class="campo flex-1">
+          <label>Día Vencimiento</label>
+          <input type="number" [(ngModel)]="configuracion.diaVencimiento">
+        </div>
+      </div>
+
+      <button class="btn-guardar" (click)="guardarConfiguracionLocal()" [disabled]="guardandoConfig">
+        @if (guardandoConfig) {
+          <span class="spinner"></span> Registrando...
+        } @else {
+          Guardar Configuración
+        }
+      </button>
+    </div>
+
+    <div class="colaboradores-container">
+      <div class="colab-header">
+        <div>
+          <h3 class="section-title">👥 Equipo y Cuentas de Acceso</h3>
+          <p class="section-subtitle">Gestioná usuarios, contraseñas temporales y bloqueos.</p>
+        </div>
+        <button class="btn-nuevo-colab" (click)="abrirModalColaborador()">+ Crear Cuenta</button>
+      </div>
+
+      <div class="colab-list">
+        @for (c of colaboradores; track c.username) {
+          <div class="colab-card" [class.colab-disabled]="c.estado === 'Suspendido'">
+            <div class="colab-info">
+              <span class="colab-avatar">🔑</span>
+              <div>
+                <h4>{{ c.nombre }}</h4>
+                <p>&#64;{{ c.username }} • <span class="rol-txt">{{ c.rol }}</span></p>
+              </div>
+            </div>
+            <div class="colab-actions">
+              <button class="btn-reset-pass" (click)="blanquearClave(c)" title="Resetear contraseña">
+                🔄 Clave
+              </button>
+              <button class="btn-status" 
+                      [class.btn-active]="c.estado === 'Activo'"
+                      (click)="alternarEstadoColaborador(c)">
+                {{ c.estado }}
+              </button>
+              <button class="btn-trash" (click)="eliminarColaborador(c.username)">🗑️</button>
+            </div>
+          </div>
+        } @empty {
+          <div class="colab-vacio">
+            <p>No tenés colaboradores asignados. Solo tu cuenta raíz tiene acceso.</p>
+          </div>
+        }
+      </div>
+    </div>
+
+  </div>
+</div>
+
+@if (mostrarModalColaborador) {
+<div class="modal-shadow">
+  <div class="modal-box">
+    <div class="modal-head">
+      <h3>Crear Cuenta de Seguridad</h3>
+      <button class="close-x" (click)="cerrarModalColaborador()">&times;</button>
+    </div>
+    <div class="modal-body">
+      <div class="campo">
+        <label>Nombre Completo del Operador</label>
+        <input type="text" [(ngModel)]="nuevoColaborador.nombre" placeholder="Ej: Ana Clara Silva">
+      </div>
+
+      <div class="campo">
+        <label>Asignar Nombre de Usuario (Login)</label>
+        <input type="text" [(ngModel)]="nuevoColaborador.username" (input)="sugerirContrasena()" placeholder="Ej: ana_silva">
+      </div>
+
+      <div class="campo">
+        <label>Contraseña Provisoria de Ingreso</label>
+        <div class="password-wrapper">
+          <input [type]="verPasswordForm ? 'text' : 'password'" 
+                 [(ngModel)]="nuevoColaborador.passwordProvisorio" 
+                 placeholder="Escribí o usa la sugerida">
+          <button type="button" class="btn-toggle-eye" (click)="toggleVisibilidadPassword()">
+            {{ verPasswordForm ? '👁️' : '🙈' }}
+          </button>
+        </div>
+        <small class="help-text">El colaborador deberá cambiarla obligatoriamente al loguearse.</small>
+      </div>
+
+      <div class="campo">
+        <label>Permisos de Acceso (Rol)</label>
+        <select [(ngModel)]="nuevoColaborador.rol" class="select-field">
+          <option value="Asistente / Secretario">Asistente / Secretario (Solo Operaciones)</option>
+          <option value="Co-Administrador">Co-Administrador (Control de Caja e Impuestos)</option>
+        </select>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn-back" (click)="cerrarModalColaborador()">Cancelar</button>
+      <button class="btn-save-orange" (click)="agregarColaborador()">Generar Credenciales</button>
+    </div>
+  </div>
+</div>
+}
+
+@if (mostrarToast) {
+<div class="toast-success">
+  <div class="toast-content">
+    <span class="toast-icon">✨</span>
+    <div>
+      <h4>Cambios Guardados</h4>
+      <p>La configuración edilicia se actualizó correctamente en el sistema.</p>
+    </div>
+  </div>
+</div>
+}

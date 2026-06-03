@@ -35,7 +35,7 @@ export class Barralateral {
     {
       name: 'Servicios',
       icon: 'fa-solid fa-screwdriver-wrench',
-      route: '/dashboard/servicios'
+      route: '/dashboard/servicios-admin'
     },
     {
       name: 'Empleados',

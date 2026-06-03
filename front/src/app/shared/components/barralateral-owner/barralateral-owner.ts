@@ -16,43 +16,49 @@ export class BarralateralOwner {
     {
       name: 'Inicio',
       icon: 'bi bi-house-door-fill',
-      route: '/dashboard/owner-home'
+      route: '/owner'
     },
 
     {
       name: 'Mis Expensas',
       icon: 'bi bi-receipt-cutoff',
-      route: '/dashboard/mis-expensas'
-    },
+      route: '/owner/mis-expensas'
+   },
 
     {
       name: 'Mis Reclamos',
       icon: 'bi bi-tools',
-      route: '/dashboard/mis-reclamos'
+      route: '/owner/mis-reclamos'
     },
 
     {
       name: 'Reservas',
       icon: 'bi bi-calendar-check-fill',
-      route: '/dashboard/reservas'
+      route: '/owner/reservas'
     },
+
+    {
+       name:'Servicios',
+       icon:'bi bi-tools',
+       route:'/owner/servicios'
+   },
 
     {
       name: 'Avisos',
       icon: 'bi bi-megaphone-fill',
-      route: '/dashboard/avisos'
+      route: '/owner/avisos'
     },
 
     {
       name: 'Documentos',
       icon: 'bi bi-folder2-open',
-      route: '/dashboard/documentos'
+      route: '/owner/documentos'
     },
 
     {
       name: 'Configuración',
       icon: 'bi bi-gear-fill',
-      route: '/dashboard/configuracion'
+      route: '/owner/configuracion'
     }
 
   ];

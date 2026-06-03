@@ -1,0 +1,162 @@
+<div class="servicios-container">
+
+  <h2>Gestión de Servicios</h2>
+
+  <div class="top-bar">
+    <input type="text" placeholder="Buscar por servicio, empresa o estado..." [(ngModel)]="textoBusqueda">
+
+    <button class="btn-naranja-main" (click)="abrirAlta()">
+      + Nuevo Servicio
+    </button>
+  </div>
+
+  <div class="cards">
+    <div class="card">
+      <h3>{{ totalServicios }}</h3>
+      <p>Total Servicios</p>
+    </div>
+
+    <div class="card">
+      <h3>{{ activos }}</h3>
+      <p>Activos</p>
+    </div>
+
+    <div class="card">
+      <h3>{{ pendientes }}</h3>
+      <p>Pendientes</p>
+    </div>
+  </div>
+
+  <div class="table-responsive-scroll">
+    <table>
+      <thead>
+        <tr>
+          <th>Servicio</th>
+          <th>Proveedor / Empresa</th>
+          <th>Frecuencia</th>
+          <th>Estado</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        @for(servicio of serviciosFiltrados; track servicio.proveedor){
+        <tr>
+          <td class="servicio-nombre-destacado">{{ servicio.nombre }}</td>
+          <td>{{ servicio.proveedor }}</td>
+          <td>{{ servicio.frecuencia }}</td>
+          <td>
+            <span class="estado" 
+                  [class.activo]="servicio.estado === 'Activo'"
+                  [class.pendiente]="servicio.estado === 'Pendiente'">
+              {{ servicio.estado }}
+            </span>
+          </td>
+          <td>
+            <button class="btn-ver" (click)="abrirGestion(servicio)">
+              Gestionar
+            </button>
+            <button class="btn-eliminar" (click)="eliminarServicioVisual(servicio.nombre, servicio.proveedor)" title="Remover de la vista">
+              🗑️
+            </button>
+          </td>
+        </tr>
+        } @empty {
+        <tr>
+          <td colspan="5" class="tabla-vacia">
+            No se registran prestaciones activas bajo este término.
+          </td>
+        </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</div>
+
+@if(mostrarModalAlta) {
+<div class="modal-shadow">
+  <div class="modal-box">
+    <div class="modal-head">
+      <h3>Contratar Nuevo Servicio</h3>
+      <button class="close-x" (click)="cerrarModales()">&times;</button>
+    </div>
+    
+    <form [formGroup]="servicioForm" (ngSubmit)="guardarNuevoServicio()">
+      <div class="modal-body">
+        <div class="form-group">
+          <label>Tipo de Servicio / Rubro</label>
+          <select formControlName="nombre" class="select-field">
+            <option value="" disabled selected>Seleccione una opción</option>
+            <option value="Limpieza">🧹 Limpieza General</option>
+            <option value="Mantenimiento Ascensores">🔧 Mantenimiento Ascensores</option>
+            <option value="Seguridad">🛡️ Seguridad Privada</option>
+            <option value="Fumigación">🐜 Fumigación / Plagas</option>
+            <option value="Mantenimiento Bombas">🚰 Mantenimiento Bombas de Agua</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Razón Social / Proveedor</label>
+          <input type="text" formControlName="proveedor" placeholder="Ej: Córdoba Elevadores S.A.">
+        </div>
+
+        <div class="form-row">
+          <div class="form-group flex-1">
+            <label>Frecuencia de Visita</label>
+            <select formControlName="frecuencia" class="select-field">
+              <option value="Diaria">Diaria</option>
+              <option value="Semanal">Semanal</option>
+              <option value="Quincenal">Quincenal</option>
+              <option value="Mensual">Mensual</option>
+              <option value="Bimestral">Bimestral</option>
+            </select>
+          </div>
+
+          <div class="form-group flex-1">
+            <label>Estado Inicial</label>
+            <select formControlName="estado" class="select-field">
+              <option value="Activo">✅ Activo</option>
+              <option value="Pendiente">⚠️ Pendiente</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-foot">
+        <button type="button" class="btn-back" (click)="cerrarModales()">Cancelar</button>
+        <button type="submit" class="btn-save-orange" [disabled]="servicioForm.invalid">Dar de Alta</button>
+      </div>
+    </form>
+  </div>
+</div>
+}
+@if(mostrarModalGestion) {
+<div class="modal-shadow">
+  <div class="modal-box">
+    <div class="modal-head">
+      <h3>Gestionar Servicio: {{ servicioSeleccionado.nombre }}</h3>
+      <button class="close-x" (click)="cerrarModales()">&times;</button>
+    </div>
+    
+    <form [formGroup]="gestionForm" (ngSubmit)="actualizarEstadoLocal()">
+      <div class="modal-body">
+        <p class="txt-detail"><strong>Empresa contratada:</strong> {{ servicioSeleccionado.proveedor }}</p>
+        <p class="txt-detail"><strong>Frecuencia de abono:</strong> {{ servicioSeleccionado.frecuencia }}</p>
+        
+        <div class="form-group" style="margin-top: 15px;">
+          <label>Cambiar Estado Operativo:</label>
+          <select formControlName="nuevoEstado" class="select-field">
+            <option value="Activo">✅ Activo</option>
+            <option value="Pendiente">⚠️ Pendiente</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="modal-foot">
+        <button type="button" class="btn-back" (click)="cerrarModales()">Volver</button>
+        <button type="submit" class="btn-save-orange">Aplicar Cambios</button>
+      </div>
+    </form>
+  </div>
+</div>
+}

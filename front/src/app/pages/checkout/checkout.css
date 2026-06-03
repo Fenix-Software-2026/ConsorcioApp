@@ -1,0 +1,219 @@
+/* --- CONTENEDOR GENERAL --- */
+.checkout-container {
+  padding: 40px;
+  background-color: #f8f9fa;
+  min-height: calc(100vh - 80px);
+}
+
+/* --- DISEÑO EN PARALELO (GRILLA) --- */
+.checkout-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr; /* Dos columnas iguales */
+  gap: 30px;
+  max-width: 1200px;
+  margin: 0 auto;
+  align-items: start;
+}
+
+/* --- ESTILO DE LAS TARJETAS (CARDS) --- */
+.card {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 35px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+  border: 1px solid #f0f0f0;
+}
+
+.card h2 {
+  font-size: 24px;
+  color: #222;
+  margin-bottom: 20px;
+  font-weight: 700;
+}
+
+.subtitle {
+  color: #777;
+  font-size: 14px;
+  margin-top: -15px;
+  margin-bottom: 25px;
+}
+
+/* --- DETALLES DEL RESUMEN --- */
+.items-lista {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.items-lista .row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 16px;
+  color: #444;
+}
+
+hr {
+  border: 0;
+  border-top: 1px solid #eaeaea;
+  margin: 20px 0;
+}
+
+.total {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 18px;
+  color: #222;
+}
+
+.total strong {
+  font-size: 24px;
+  color: #ff6b00;
+  font-weight: 800;
+}
+
+/* --- FORMULARIO DE PAGO --- */
+.formulario-pago {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.input-group label {
+  font-size: 14px;
+  font-weight: 600;
+  color: #555;
+}
+
+.input-group input {
+  padding: 12px 16px;
+  border: 1px solid #dcdcdc;
+  border-radius: 10px;
+  font-size: 15px;
+  background-color: #fdfdfd;
+  transition: all 0.2s ease;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.input-group input:focus {
+  outline: none;
+  border-color: #28a745;
+  background-color: #ffffff;
+  box-shadow: 0 0 0 3px rgba(40, 167, 69, 0.1);
+}
+
+.row-inputs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+/* --- VALIDACIONES REACTIVAS (ESTILOS) --- */
+.input-error {
+  border-color: #dc3545 !important;
+  background-color: #fff8f8 !important;
+}
+
+.error-text {
+  color: #dc3545;
+  font-size: 12px;
+  font-weight: 600;
+  margin-top: 2px;
+}
+
+/* --- BOTÓN CONFIRMAR Y PAGAR --- */
+.btn-confirmar {
+  width: 100%;
+  padding: 15px;
+  background-color: #28a745; /* Verde original */
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  transition: all 0.2s ease;
+  margin-top: 10px;
+}
+
+.btn-confirmar:hover:not(:disabled) {
+  background-color: #218838;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 15px rgba(40, 167, 69, 0.25);
+}
+
+.btn-confirmar:disabled {
+  background-color: #6c757d !important;
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+/* --- PANTALLA DE CARGA (PROCESANDO CENTRADO) --- */
+.loading-card {
+  max-width: 700px;
+  margin: 60px auto;
+  text-align: center;
+  padding: 50px 30px;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.spinner {
+  font-size: 50px;
+  color: #ff6b00;
+  display: inline-block;
+  animation: spin 2s infinite linear;
+  margin-bottom: 20px;
+}
+
+.loading-card h2 {
+  font-size: 26px;
+  color: #333;
+  margin-bottom: 12px;
+}
+
+.loading-card p {
+  color: #666;
+  font-size: 15px;
+}
+
+/* Animaciones */
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* --- TOAST FLOTANTE --- */
+.toast-notification {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background-color: #17a2b8;
+  color: white;
+  padding: 12px 24px;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  z-index: 1100;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}

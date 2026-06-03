@@ -1,0 +1,163 @@
+<div class="expensas-container">
+
+  <h2>Gestión de Expensas</h2>
+
+  <div class="top-bar">
+    <input type="text" placeholder="Buscar por unidad, propietario o estado..." [(ngModel)]="textoBusqueda">
+
+    <button class="btn-naranja-main" (click)="abrirAlta()">
+      + Nueva Expensa
+    </button>
+  </div>
+
+  <div class="cards">
+    <div class="card">
+      <h3>{{ totalExpensas }}</h3>
+      <p>Total Expensas</p>
+    </div>
+    <div class="card">
+      <h3>{{ pagadas }}</h3>
+      <p>Pagadas</p>
+    </div>
+    <div class="card">
+      <h3>{{ pendientes }}</h3>
+      <p>Pendientes</p>
+    </div>
+    <div class="card">
+      <h3>{{ vencidas }}</h3>
+      <p>Vencidas</p>
+    </div>
+  </div>
+
+  <div class="table-responsive-scroll">
+    <table>
+      <thead>
+        <tr>
+          <th>Unidad</th>
+          <th>Propietario</th>
+          <th>Tipo</th>
+          <th>Monto</th>
+          <th>Vencimiento</th>
+          <th>Estado</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for(expensa of expensasFiltradas; track expensa.unidad){
+        <tr>
+          <td>{{ expensa.unidad }}</td>
+          <td>{{ expensa.propietario }}</td>
+          <td><span class="badge-tipo">{{ expensa.tipo }}</span></td>
+          <td>${{ expensa.monto }}</td>
+          <td>{{ expensa.vencimiento }}</td>
+          <td>
+            <span class="estado"
+                  [class.pagada]="expensa.estado === 'Pagada'"
+                  [class.pendiente]="expensa.estado === 'Pendiente'"
+                  [class.vencida]="expensa.estado === 'Vencida'">
+              {{ expensa.estado }}
+            </span>
+          </td>
+          <td>
+            <button class="btn-ver" (click)="abrirGestion(expensa)">
+              Gestionar
+            </button>
+            <button class="btn-eliminar" (click)="eliminarExpensaVisual(expensa.unidad)" title="Eliminar/Borrar registro">
+              🗑️
+            </button>
+          </td>
+        </tr>
+        } @empty {
+        <tr>
+          <td colspan="7" class="tabla-vacia">
+            No se registran expensas bajo los parámetros buscados.
+          </td>
+        </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</div>
+
+@if(mostrarModalAlta) {
+<div class="modal-shadow">
+  <div class="modal-box">
+    <div class="modal-head">
+      <h3>Emitir Nueva Expensa</h3>
+      <button class="close-x" (click)="cerrarModales()">&times;</button>
+    </div>
+    <form [formGroup]="expensaForm" (ngSubmit)="guardarNuevaExpensa()">
+      <div class="modal-body">
+        <div class="form-group">
+          <label>Unidad / Departamento</label>
+          <input type="text" formControlName="unidad" placeholder="Ej: A-203">
+        </div>
+        <div class="form-group">
+          <label>Nombre del Propietario</label>
+          <input type="text" formControlName="propietario" placeholder="Ej: Juan Pérez">
+        </div>
+        <div class="form-row">
+          <div class="form-group flex-1">
+            <label>Monto ($)</label>
+            <input type="number" formControlName="monto" placeholder="Monto total">
+          </div>
+          <div class="form-group flex-1">
+            <label>Tipo de Expensa</label>
+            <select formControlName="tipo" class="select-field">
+              <option value="Común">Común</option>
+              <option value="Extraordinaria">Extraordinaria</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group flex-1">
+            <label>Vencimiento</label>
+            <input type="date" formControlName="vencimiento">
+          </div>
+          <div class="form-group flex-1">
+            <label>Estado Inicial</label>
+            <select formControlName="estado" class="select-field">
+              <option value="Pendiente">⚠️ Pendiente</option>
+              <option value="Pagada">✅ Pagada</option>
+              <option value="Vencida">❌ Vencida</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="modal-foot">
+        <button type="button" class="btn-back" (click)="cerrarModales()">Cancelar</button>
+        <button type="submit" class="btn-save-orange" [disabled]="expensaForm.invalid">Emitir Expensa</button>
+      </div>
+    </form>
+  </div>
+</div>
+}
+
+@if(mostrarModalGestion) {
+<div class="modal-shadow">
+  <div class="modal-box">
+    <div class="modal-head">
+      <h3>Modificar Estado - Unidad {{ expensaSeleccionada.unidad }}</h3>
+      <button class="close-x" (click)="cerrarModales()">&times;</button>
+    </div>
+    <form [formGroup]="gestionForm" (ngSubmit)="actualizarEstadoLocal()">
+      <div class="modal-body">
+        <p class="txt-detail"><strong>Propietario:</strong> {{ expensaSeleccionada.propietario }}</p>
+        <p class="txt-detail"><strong>Monto Adeudado:</strong> ${{ expensaSeleccionada.monto }}</p>
+        <div class="form-group" style="margin-top: 15px;">
+          <label>Actualizar Estado:</label>
+          <select formControlName="nuevoEstado" class="select-field">
+            <option value="Pendiente">⚠️ Pendiente</option>
+            <option value="Pagada">✅ Pagada</option>
+            <option value="Vencida">❌ Vencida</option>
+          </select>
+        </div>
+      </div>
+      <div class="modal-foot">
+        <button type="button" class="btn-back" (click)="cerrarModales()">Volver</button>
+        <button type="submit" class="btn-save-orange">Guardar Cambios</button>
+      </div>
+    </form>
+  </div>
+</div>
+}

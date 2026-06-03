@@ -1,0 +1,26 @@
+.avisos-container { padding: 40px; animation: fadeIn 0.5s ease-out; }
+.avisos-grid { display: grid; gap: 20px; }
+
+.aviso-card {
+  display: flex; align-items: center; gap: 20px; background: white; 
+  padding: 25px; border-radius: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+  transition: 0.3s; border-left: 5px solid transparent;
+}
+.aviso-card.prioridad-alta { border-left-color: #ff6a00; }
+.aviso-card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.08); }
+
+.icono {
+  width: 60px; height: 60px; display: flex; justify-content: center; align-items: center;
+  border-radius: 50%; font-size: 24px; background: #fff5eb; color: #ff6a00;
+}
+.contenido { flex: 1; }
+.meta { display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; }
+.fecha { font-size: 12px; font-weight: 600; color: #94a3b8; }
+
+.btn-check {
+  background: none; border: none; font-size: 24px; color: #cbd5e1;
+  cursor: pointer; transition: 0.3s;
+}
+.btn-check:hover { color: #ff6a00; transform: scale(1.1); }
+
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }

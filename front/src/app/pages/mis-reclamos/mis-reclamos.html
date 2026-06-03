@@ -1,0 +1,123 @@
+<div class="reclamos-container">
+
+  <div class="header-section">
+    <h2>Mis Reclamos</h2>
+    <button class="btn-nuevo" (click)="abrirModal()">+ Nuevo Reclamo</button>
+  </div>
+
+  <div class="cards-grid">
+    <div class="card-status">
+      <h3>{{ totalReclamos }}</h3>
+      <p>Total Reclamos</p>
+    </div>
+    <div class="card-status status-pendiente">
+      <h3>{{ pendientes }}</h3>
+      <p>Pendientes</p>
+    </div>
+    <div class="card-status status-proceso">
+      <h3>{{ enProceso }}</h3>
+      <p>En proceso</p>
+    </div>
+    <div class="card-status status-resuelto">
+      <h3>{{ resueltos }}</h3>
+      <p>Resueltos</p>
+    </div>
+  </div>
+
+  <div class="table-responsive">
+    <table class="reclamos-table">
+      <thead>
+        <tr>
+          <th>N°</th>
+          <th>Título / Descripción</th>
+          <th>Estado</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for(reclamo of reclamos; track reclamo.id){
+        <tr>
+          <td class="col-id">#{{ reclamo.id }}</td>
+          <td>
+            <span class="reclamo-titulo">{{ reclamo.titulo }}</span>
+            <p class="reclamo-desc">{{ reclamo.descripcion }}</p>
+          </td>
+          <td>
+            <span class="badge-estado" 
+                  [class.pendiente]="reclamo.estado === 'pendiente' || reclamo.estado === 'Pendiente'"
+                  [class.proceso]="reclamo.estado === 'en_proceso' || reclamo.estado === 'En proceso'"
+                  [class.resuelto]="reclamo.estado === 'resuelto' || reclamo.estado === 'Resuelto'">
+              {{ reclamo.estado }}
+            </span>
+          </td>
+          <td>
+            <button class="btn-ver">Ver detalle</button>
+          </td>
+        </tr>
+        } @empty {
+        <tr>
+          <td colspan="4" class="table-empty">
+            No hay reclamos cargados en este consorcio.
+          </td>
+        </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</div>
+
+@if(mostrarModal) {
+<div class="modal-backdrop">
+  <div class="modal-card">
+    <div class="modal-header">
+      <h3>Registrar Nuevo Reclamo</h3>
+      <button class="btn-close-x" (click)="cerrarModal()">&times;</button>
+    </div>
+    
+    <form [formGroup]="reclamoForm" (ngSubmit)="guardarNuevoReclamo()">
+      <div class="modal-body">
+        <div class="form-field">
+          <label>Asunto / Título</label>
+          <input type="text" formControlName="titulo" placeholder="Ej: Filtración en el techo de la cochera">
+          @if(reclamoForm.get('titulo')?.touched && reclamoForm.get('titulo')?.errors?.['required']) {
+            <span class="error-msg">El título es obligatorio para procesar el reclamo.</span>
+          }
+        </div>
+
+        <div class="form-field">
+          <label>Categoría</label>
+          <select formControlName="categoria">
+            <option value="" disabled selected>Seleccione una categoría</option>
+            <option value="plomeria">Plomería</option>
+            <option value="electricidad">Electricidad</option>
+            <option value="gas">Gas</option>
+            <option value="humedad">Humedad / Filtraciones</option>
+            <option value="ascensor">Ascensor</option>
+            <option value="limpieza">Limpieza</option>
+            <option value="seguridad">Seguridad / Accesos</option>
+            <option value="ruidos">Ruidos molestos</option>
+            <option value="internet">Internet / Antena</option>
+            <option value="otros">Otros</option>
+          </select>
+          @if(reclamoForm.get('categoria')?.touched && reclamoForm.get('categoria')?.errors?.['required']) {
+            <span class="error-msg">Por favor, seleccione una categoría.</span>
+          }
+        </div>
+
+        <div class="form-field">
+          <label>Detalle del inconveniente</label>
+          <textarea formControlName="descripcion" rows="4" placeholder="Describe detalladamente lo que sucede para ayudar a la administración..."></textarea>
+          @if(reclamoForm.get('descripcion')?.touched && reclamoForm.get('descripcion')?.errors?.['required']) {
+            <span class="error-msg">Por favor, agrega una descripción del problema.</span>
+          }
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn-secondary" (click)="cerrarModal()">Cancelar</button>
+        <button type="submit" class="btn-primary" [disabled]="reclamoForm.invalid">Guardar Reclamo</button>
+      </div>
+    </form>
+  </div>
+</div>
+}

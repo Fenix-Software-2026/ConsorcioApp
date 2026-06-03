@@ -1,12 +1,12 @@
-import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 
 import { DashboardNavbar } from '../../shared/components/dashboard-navbar/dashboard-navbar';
 import { Barralateral } from '../../shared/components/barralateral/barralateral';
+import { Component, computed, inject } from '@angular/core';
+import { AuthService } from '../../auth/services/aurh';
 
 @Component({
   selector: 'app-dashboard',
-  standalone: true,
   imports: [
     RouterOutlet,
     DashboardNavbar,
@@ -15,4 +15,18 @@ import { Barralateral } from '../../shared/components/barralateral/barralateral'
   templateUrl: './dashboard.html',
   styleUrls: ['./dashboard.css']
 })
-export class Dashboard {}
+export class Dashboard {
+  private authService = inject(AuthService);
+  //  Escuchan reactivamente al servicio
+  usuarioName = computed(() => {
+    const user = this.authService.currentUser();
+    return user ? (user.username) : 'Residente';
+  });
+
+  usuarioRol = computed(() => {
+    const user = this.authService.currentUser();
+    return user ? user.rol : 'Propietario';
+  });
+
+  // Solo inyectamos el servicio en el constructor, no hace falta ngOnInit
+}

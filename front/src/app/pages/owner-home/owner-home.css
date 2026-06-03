@@ -1,1 +1,43 @@
-@import "../admin-home/admin-home.css";
+.owner-home { padding: 40px; }
+
+/* Hero y Metrics */
+.hero { margin-bottom: 40px; background: #fff; padding: 40px; border-radius: 20px; box-shadow: 0 10px 20px rgba(0,0,0,0.05); }
+.hero h1 { font-size: 32px; color: #1e293b; }
+.hero-alerts span { background: #fff5eb; color: #ff6a00; padding: 8px 16px; border-radius: 50px; font-weight: 600; font-size: 14px; }
+
+/* Metrics: Animación Hover (se elevan) */
+.metrics { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 40px; }
+.metric-card { 
+  background: white; padding: 25px; border-radius: 20px; display: flex; align-items: center; gap: 15px; 
+  box-shadow: 0 5px 15px rgba(0,0,0,0.05); transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.metric-card:hover { transform: translateY(-10px); box-shadow: 0 15px 25px rgba(0,0,0,0.1); }
+.metric-card i { font-size: 30px; color: #ff6a00; }
+
+/* Grid: Estáticas con Hover de Sombra */
+.dashboard-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 25px; }
+.dashboard-card { 
+  background: white; padding: 25px; border-radius: 20px; 
+  box-shadow: 0 4px 6px rgba(0,0,0,0.05); /* Sombra estática suave */
+  transition: all 0.3s ease; cursor: pointer;
+}
+
+
+/* Títulos Modernos */
+.dashboard-card h2 {
+  font-size: 13px; font-weight: 800; letter-spacing: 1.2px; text-transform: uppercase;
+  color: #94a3b8; margin-bottom: 15px;
+}
+
+/* Botón Moderno */
+.action-btn {
+  margin-top: 15px; background: #fff5eb; color: #ff6a00; border: none; 
+  padding: 8px 12px; border-radius: 8px; font-size: 12px; font-weight: 700; 
+  cursor: pointer; transition: 0.3s; width: 100%;
+}
+.action-btn:hover { background: #ff6a00; color: white; }
+
+/* Emergencias */
+.emergency-card { border-top: 4px solid #ef4444; }
+.emergency-card h2 { color: #ef4444 !important; }
+
