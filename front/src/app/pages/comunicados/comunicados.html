@@ -1,0 +1,80 @@
+<div class="comunicados-container">
+  
+  <div class="form-card">
+    <h2>Publicar Nuevo Comunicado</h2>
+    
+    <form [formGroup]="comunicadoForm" (ngSubmit)="guardarComunicado()">
+      
+      <div class="form-group">
+        <label for="titulo">Título del Comunicado</label>
+        <input 
+          id="titulo" 
+          type="text" 
+          formControlName="titulo" 
+          placeholder="Ej: Corte de agua programado"
+        >
+        <small class="error-msg" *ngIf="comunicadoForm.get('titulo')?.touched && comunicadoForm.get('titulo')?.errors?.['required']">
+          ⚠️ El título es obligatorio para publicar.
+        </small>
+        <small class="error-msg" *ngIf="comunicadoForm.get('titulo')?.errors?.['maxlength']">
+          ⚠️ El título no puede superar los 200 caracteres.
+        </small>
+      </div>
+
+      <div class="form-group">
+        <label for="contenido">Contenido / Detalles</label>
+        <textarea 
+          id="contenido" 
+          formControlName="contenido" 
+          rows="5" 
+          placeholder="Escriba el comunicado detallado aquí..."
+        ></textarea>
+        <small class="error-msg" *ngIf="comunicadoForm.get('contenido')?.touched && comunicadoForm.get('contenido')?.errors?.['required']">
+          ⚠️ El contenido del comunicado no puede estar vacío.
+        </small>
+      </div>
+
+      <div class="form-group-checkbox">
+        <input 
+          id="es_urgente" 
+          type="checkbox" 
+          formControlName="es_urgente"
+        >
+        <label for="es_urgente">Urgente (resaltará en la lista)</label>
+      </div>
+
+      <button type="submit" [disabled]="comunicadoForm.invalid" class="btn-submit">
+        Enviar Comunicado
+      </button>
+      
+    </form>
+  </div>
+
+  <hr class="separator">
+
+  <div class="list-card">
+    <h2>Historial de Comunicados</h2>
+    
+    <div class="empty-state" *ngIf="listaComunicados.length === 0">
+      <p>No hay comunicados registrados hasta el momento.</p>
+    </div>
+    
+    <div 
+      class="comunicado-item" 
+      *ngFor="let c of listaComunicados" 
+      [class.urgente-style]="c.es_urgente"
+    >
+      <div class="comunicado-header">
+        <h3>{{ c.titulo }}</h3>
+        <span class="badge-urgente" *ngIf="c.es_urgente">⚠️ URGENTE</span>
+      </div>
+      
+      <p class="comunicado-body">{{ c.contenido }}</p>
+      
+      <div class="comunicado-footer">
+        <small>Publicado: {{ c.fecha_publicacion | date:'dd/MM/yyyy HH:mm' }}</small>
+      </div>
+    </div>
+  </div>
+
+</div>

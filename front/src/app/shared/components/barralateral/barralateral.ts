@@ -22,6 +22,11 @@ export class Barralateral {
       icon: 'fa-solid fa-users',
       route: '/dashboard/clientes'
     },
+    { 
+      name: 'Comunicados',
+      icon: 'fa-solid fa-bullhorn',
+      route: '/dashboard/comunicados'
+    },
     {
       name: 'Reclamos',
       icon: 'fa-solid fa-circle-exclamation',
