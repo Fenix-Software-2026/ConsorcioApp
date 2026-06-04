@@ -30,6 +30,12 @@ export class BarralateralOwner {
       icon: 'bi bi-tools',
       route: '/owner/mis-reclamos'
     },
+    {
+      name: 'Comunicados',
+      icon: 'bi bi-info-circle-fill',
+      route: '/owner/comunicados'
+
+    },
 
     {
       name: 'Reservas',

@@ -1,6 +1,6 @@
 <div class="comunicados-container">
   
-  <div class="form-card">
+  <div class="form-card" *ngIf="isAdmin">
     <h2>Publicar Nuevo Comunicado</h2>
     
     <form [formGroup]="comunicadoForm" (ngSubmit)="guardarComunicado()">
@@ -50,7 +50,7 @@
     </form>
   </div>
 
-  <hr class="separator">
+  <hr class="separator" *ngIf="isAdmin">
 
   <div class="list-card">
     <h2>Historial de Comunicados</h2>
@@ -73,6 +73,9 @@
       
       <div class="comunicado-footer">
         <small>Publicado: {{ c.fecha_publicacion | date:'dd/MM/yyyy HH:mm' }}</small>
+        <button *ngIf="isAdmin" class="btn-delete" (click)="eliminarComunicado(c.id)" style="margin-left: auto; background-color: #ff4d4f; color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer;">
+          🗑️ Eliminar
+        </button>
       </div>
     </div>
   </div>

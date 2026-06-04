@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common'; 
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms'; // 👈 Los imports de arriba quedan igual
-
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms'; 
 import { ComunicadoService } from '../../shared/service/comunicadoservice'; 
 import { Comunicado } from '../../interfaces/comunicado-interface'; 
+import { AuthService } from '../../auth/services/aurh';
 
 @Component({
   selector: 'app-comunicados',
@@ -15,14 +15,20 @@ import { Comunicado } from '../../interfaces/comunicado-interface';
 export class ComunicadosComponent implements OnInit {
   listaComunicados: Comunicado[] = [];
   comunicadoForm!: FormGroup; 
+  isAdmin: boolean = false;
 
  
   constructor(
     private comunicadoService: ComunicadoService,
-    private fb: FormBuilder 
+    private fb: FormBuilder,
+    private authService: AuthService
   ) {}
   
   ngOnInit(): void {
+    const user = this.authService.currentUser();
+    // Verifica si el usuario logueado tiene rol de administrador.
+    this.isAdmin = user?.rol === 'admin' || user?.rol === 'Administrador' || user?.rol === 'administrador';
+
     this.initForm();
     this.cargarComunicados();
   }
@@ -66,5 +72,21 @@ export class ComunicadosComponent implements OnInit {
     console.error('Error al guardar en el backend', err);
   }
   });
+  }
+
+  eliminarComunicado(id: number | undefined): void {
+    if (!id) return;
+    
+    if (confirm('¿Está seguro de que desea eliminar este comunicado?')) {
+      this.comunicadoService.deleteComunicado(id).subscribe({
+        next: () => {
+          this.listaComunicados = this.listaComunicados.filter(c => c.id !== id);
+          console.log('Comunicado eliminado con éxito');
+        },
+        error: (err) => {
+          console.error('Error al eliminar el comunicado', err);
+        }
+      });
+    }
   }
 }

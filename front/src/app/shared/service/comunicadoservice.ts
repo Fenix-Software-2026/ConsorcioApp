@@ -22,5 +22,7 @@ export class ComunicadoService {
     return this.http.post<Comunicado>(this.apiUrl, comunicado);
   }
 
-  // deleteComunicado() ---- me faltaria el delete, no fusionen ramas todavia xfa :(
+  deleteComunicado(id: number): Observable<any> {
+    return this.http.delete(`${this.apiUrl}${id}/`);
+  }
 }

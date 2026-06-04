@@ -104,6 +104,10 @@ export const routes: Routes = [
         path: 'mis-reclamos', 
         loadComponent: () => import('./pages/mis-reclamos/mis-reclamos').then(m => m.MisReclamos) 
       },
+      {
+        path: 'comunicados',
+        loadComponent: () => import('./pages/comunicados/comunicados').then(m => m.ComunicadosComponent)
+      },
       { 
         path: 'configuracion', 
         loadComponent: () => import('./pages/configuracion-owner/configuracion-owner').then(m => m.ConfiguracionOwner) 
