@@ -55,6 +55,10 @@ export const routes: Routes = [
         path: 'clientes', 
         loadComponent: () => import('./pages/clientes/clientes').then(m => m.Clientes) 
       },
+      {
+        path: 'comunicados',
+        loadComponent: () => import('./pages/comunicados/comunicados').then(m => m.ComunicadosComponent)
+      },
       { 
         path: 'reclamos', 
         loadComponent: () => import('./pages/reclamos/reclamos').then(m => m.Reclamos) 
@@ -99,6 +103,10 @@ export const routes: Routes = [
       { 
         path: 'mis-reclamos', 
         loadComponent: () => import('./pages/mis-reclamos/mis-reclamos').then(m => m.MisReclamos) 
+      },
+      {
+        path: 'comunicados',
+        loadComponent: () => import('./pages/comunicados/comunicados').then(m => m.ComunicadosComponent)
       },
       { 
         path: 'configuracion', 
