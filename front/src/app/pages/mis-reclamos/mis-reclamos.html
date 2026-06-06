@@ -7,19 +7,19 @@
 
   <div class="cards-grid">
     <div class="card-status">
-      <h3>{{ totalReclamos }}</h3>
+      <h3>{{ totalReclamos() }}</h3>
       <p>Total Reclamos</p>
     </div>
     <div class="card-status status-pendiente">
-      <h3>{{ pendientes }}</h3>
+      <h3>{{ pendientes() }}</h3>
       <p>Pendientes</p>
     </div>
     <div class="card-status status-proceso">
-      <h3>{{ enProceso }}</h3>
+      <h3>{{ enProceso() }}</h3>
       <p>En proceso</p>
     </div>
     <div class="card-status status-resuelto">
-      <h3>{{ resueltos }}</h3>
+      <h3>{{ resueltos() }}</h3>
       <p>Resueltos</p>
     </div>
   </div>
@@ -35,7 +35,7 @@
         </tr>
       </thead>
       <tbody>
-        @for(reclamo of reclamos; track reclamo.id){
+        @for(reclamo of reclamos(); track reclamo.id){
         <tr>
           <td class="col-id">#{{ reclamo.id }}</td>
           <td>
@@ -44,14 +44,14 @@
           </td>
           <td>
             <span class="badge-estado" 
-                  [class.pendiente]="reclamo.estado === 'pendiente' || reclamo.estado === 'Pendiente'"
-                  [class.proceso]="reclamo.estado === 'en_proceso' || reclamo.estado === 'En proceso'"
-                  [class.resuelto]="reclamo.estado === 'resuelto' || reclamo.estado === 'Resuelto'">
+                  [class.pendiente]="reclamo.estado === 'pendiente' || 'Pendiente'"
+                  [class.proceso]="reclamo.estado === 'en_proceso' ||  'En proceso'"
+                  [class.resuelto]="reclamo.estado === 'resuelto' || 'Resuelto'">
               {{ reclamo.estado }}
             </span>
           </td>
           <td>
-            <button class="btn-ver">Ver detalle</button>
+            <button class="btn-ver" (click)="abrirModalEditar(reclamo)">Ver detalle</button>
           </td>
         </tr>
         } @empty {
@@ -80,7 +80,11 @@
           <label>Asunto / Título</label>
           <input type="text" formControlName="titulo" placeholder="Ej: Filtración en el techo de la cochera">
           @if(reclamoForm.get('titulo')?.touched && reclamoForm.get('titulo')?.errors?.['required']) {
-            <span class="error-msg">El título es obligatorio para procesar el reclamo.</span>
+          <span class="error-msg">El título es obligatorio para procesar el reclamo.</span>
+          }
+          
+          @if(reclamoForm.get('titulo')?.touched && reclamoForm.get('titulo')?.errors?.['minlength']) {
+          <span class="error-msg">El título debe tener al menos 5 letras.</span>
           }
         </div>
 
@@ -109,6 +113,59 @@
           <textarea formControlName="descripcion" rows="4" placeholder="Describe detalladamente lo que sucede para ayudar a la administración..."></textarea>
           @if(reclamoForm.get('descripcion')?.touched && reclamoForm.get('descripcion')?.errors?.['required']) {
             <span class="error-msg">Por favor, agrega una descripción del problema.</span>
+          }
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn-secondary" (click)="cerrarModal()">Cancelar</button>
+        <button type="submit" class="btn-primary" [disabled]="reclamoForm.invalid">Guardar Reclamo</button>
+      </div>
+    </form>
+  </div>
+</div>
+}
+
+@if(mostrarModalEditar) {
+<div class="modal-backdrop">
+  <div class="modal-card">
+    <div class="modal-header">
+      <h3>Editar Reclamo</h3>
+      <button class="btn-close-x" (click)="cerrarModal()">&times;</button>
+    </div>
+
+    <form [formGroup]="reclamoForm" (ngSubmit)="guardarNuevoReclamo()">
+      <div class="modal-body">
+        <div class="form-field">
+          <label></label>
+        </div>
+
+        <div class="form-field">
+          <label>Categoría</label>
+          <select formControlName="categoria">
+            <option value="" disabled selected>Seleccione una categoría</option>
+            <option value="plomeria">Plomería</option>
+            <option value="electricidad">Electricidad</option>
+            <option value="gas">Gas</option>
+            <option value="humedad">Humedad / Filtraciones</option>
+            <option value="ascensor">Ascensor</option>
+            <option value="limpieza">Limpieza</option>
+            <option value="seguridad">Seguridad / Accesos</option>
+            <option value="ruidos">Ruidos molestos</option>
+            <option value="internet">Internet / Antena</option>
+            <option value="otros">Otros</option>
+          </select>
+          @if(reclamoForm.get('categoria')?.touched && reclamoForm.get('categoria')?.errors?.['required']) {
+          <span class="error-msg">Por favor, seleccione una categoría.</span>
+          }
+        </div>
+
+        <div class="form-field">
+          <label>Detalle del inconveniente</label>
+          <textarea formControlName="descripcion" rows="4"
+            placeholder="Describe detalladamente lo que sucede para ayudar a la administración..."></textarea>
+          @if(reclamoForm.get('descripcion')?.touched && reclamoForm.get('descripcion')?.errors?.['required']) {
+          <span class="error-msg">Por favor, agrega una descripción del problema.</span>
           }
         </div>
       </div>
