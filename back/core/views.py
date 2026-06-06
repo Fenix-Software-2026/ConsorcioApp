@@ -1,10 +1,12 @@
 from rest_framework.exceptions import PermissionDenied 
 from rest_framework import viewsets
-
+from rest_framework.decorators import action
+from rest_framework.response import Response
+from rest_framework import status
 from core.permissions import EsAdminConsorcio, EsResidente
 from .models import Reclamo, Comunicado, Usuario, Unidad
 from .serializers import ReclamoAdminSerializer, ReclamoSerializer, ComunicadoSerializer, UsuarioSerializer, UnidadSerializer
-
+from rest_framework.permissions import IsAuthenticated
 
 class ReclamoViewSet(viewsets.ModelViewSet):
     """
@@ -69,13 +71,54 @@ class ComunicadoViewSet(viewsets.ModelViewSet):
     
 class UsuarioViewSet(viewsets.ModelViewSet):
     """
-    API endpoint para la administración de usuarios del sistema (CRUD completo).
+    API endpoint para la administración de usuarios del sistema.
     
-    Acceso exclusivo para Administradores del Consorcio.
+    Por defecto, las operaciones CRUD completas (listar, crear, editar, eliminar) 
+    están restringidas únicamente a los Administradores del Consorcio.
     """
     permission_classes = [EsAdminConsorcio]
     queryset = Usuario.objects.all()
     serializer_class = UsuarioSerializer
+
+    @action(detail=False, methods=['get', 'patch'], permission_classes=[IsAuthenticated])
+    def mi_perfil(self, request):
+        """
+        Endpoint privado para que el usuario logueado gestione su propia cuenta.
+        Sobrescribe el permiso general para permitir el acceso a cualquier residente.
+
+        Métodos soportados:
+        - GET: Devuelve el detalle del usuario autenticado (incluyendo su unidad).
+        - PATCH: Permite actualizar campos específicos (ej: cambio de password) 
+                 sin necesidad de enviar todo el objeto completo.
+        """
+        usuario_actual = request.user 
+        
+        # --- LÓGICA PARA LEER EL PERFIL (GET) ---
+        if request.method == 'GET':
+            serializer = self.get_serializer(usuario_actual)
+            return Response(serializer.data)
+            
+        # --- LÓGICA PARA ACTUALIZAR EL PERFIL (PATCH) ---
+        elif request.method == 'PATCH':
+            # partial=True permite que el residente envíe solo la contraseña 
+            # sin que Django exija los demás campos obligatorios.
+            serializer = self.get_serializer(
+                usuario_actual, 
+                data=request.data, 
+                partial=True
+            )
+            
+            if serializer.is_valid():
+                # El método save() disparará el def update() de tu UsuarioSerializer,
+                # donde ya tenés escrita la lógica para encriptar la nueva password.
+                serializer.save()
+                return Response(
+                    {"mensaje": "Los datos de tu perfil se actualizaron correctamente."}, 
+                    status=status.HTTP_200_OK
+                )
+                
+            # Si la validación falla, devolvemos los errores exactos
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class UnidadViewSet(viewsets.ReadOnlyModelViewSet):
     """
