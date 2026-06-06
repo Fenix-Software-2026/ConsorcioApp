@@ -42,9 +42,18 @@ export class ReclamoService {
         this.#reclamos.update(lista =>
           lista.map(r => r.id === id ? reclamoModificado : r)
         );
-        console.log(`Reclamo N° ${id} actualizado a: ${nuevoEstado}`);
       },
       error: (err) => console.error('Error al actualizar estado:', err)
+    });
+  }
+
+  public actualizarReclamo(id: number, datosActualizados: Partial<IReclamos>): void {
+    const urlId = `${this.#apiUrl}${id}/`;
+    this.#http.put<IReclamos>(urlId, datosActualizados).subscribe({
+      next: (reclamoModificado) => {
+        this.#reclamos.update(lista =>  lista.map(r => r.id === id ? reclamoModificado : r));
+      },
+      error: (err) => console.error('Error al actualizar reclamo:', err)
     });
   }
 
