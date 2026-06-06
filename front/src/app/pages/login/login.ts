@@ -29,8 +29,6 @@ export class Login {
 
     this.loginForm = this.fb.group({
       username: ['', [Validators.required]],
-
-
       password: ['', [Validators.required, Validators.minLength(6)]]
       // password es obligatorio y tiene que tener minimo 6 caracteres
     });
@@ -62,7 +60,6 @@ export class Login {
     // Llamada real a nuestro backend en Django
     this.authService.login(username, password).subscribe({
       next: (response) => {
-        console.log('Respuesta del backend exitosa:', response);
         this.mensaje.set('¡Bienvenido al sistema!');
         // 1. Leemos los datos que el servicio YA desarmó y guardó en la Signal
         const usuarioLogueado = this.authService.currentUser();

@@ -5,7 +5,7 @@
   <div class="top-bar">
     <input type="text" placeholder="Buscar reclamo por descripción, vecino o estado..." [(ngModel)]="textoBusqueda">
 
-    <button class="btn-naranja-main" (click)="limpiarResueltos()" [disabled]="0 === 0">
+    <button class="btn-filtro" (click)="limpiarResueltos()" [class.filtro-activo]="ocultarResueltos()">
       🧹 Limpiar Resueltos
     </button>
   </div>
@@ -42,7 +42,7 @@
         </tr>
       </thead>
       <tbody>
-        @for(reclamo of reclamosFiltrados(); track reclamo.id) {
+        @for(reclamo of reclamosAMostrar(); track reclamo.id) {
         <tr>
           <td>{{ reclamo.titulo }}</td>
           <td class="vecino-info">{{ reclamo.titulo }}</td>
@@ -60,9 +60,7 @@
             <button class="btn-ver" (click)="abrirGestion(reclamo)">
               Gestionar
             </button>
-            <button class="btn-eliminar" (click)="eliminarReclamoVisual(reclamo.id)" title="Eliminar de la vista">
-              🗑️
-            </button>
+          
           </td>
         </tr>
         } @empty {

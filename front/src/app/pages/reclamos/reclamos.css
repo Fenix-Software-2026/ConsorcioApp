@@ -185,3 +185,21 @@ table { min-width: 700px; }
 .btn-back { background: #e2e8f0; color: #475569; font-weight: 600; }
 .btn-save-orange { background: #f97316; color: white; font-weight: 600; }
 .btn-save-orange:hover { background: #ea580c; }
+
+/* Estado APAGADO (Por defecto) */
+.btn-filtro {
+  background-color: #fd7e14;
+  color: white;
+  border-color: #fd7e14;
+  padding: 8px 16px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.3s ease; /* Para que el cambio de color sea suave */
+}
+
+/* Estado PRENDIDO (La clase que agrega Angular) */
+.btn-filtro.filtro-activo {
+  background-color: #e0e0e0;  
+  color: #666;  
+  border: 1px solid #ccc;
+}
