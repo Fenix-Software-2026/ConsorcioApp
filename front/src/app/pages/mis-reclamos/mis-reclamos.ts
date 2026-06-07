@@ -3,12 +3,13 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { IReclamos } from '../../interfaces/Reclamos';
 import { ReclamoService } from '../../shared/service/ReclamoService';
+import { ReclamoModal } from "./reclamo-modal/reclamo-modal/reclamo-modal";
 
 
 @Component({
   selector: 'app-mis-reclamos',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule], 
+  imports: [CommonModule, ReactiveFormsModule, ReclamoModal], 
   templateUrl: './mis-reclamos.html',
   styleUrl: './mis-reclamos.css'
 })
@@ -17,6 +18,7 @@ export class MisReclamos implements OnInit {
   #fb = inject(FormBuilder);
 
   reclamos = this.#reclamoService.reclamos;
+  reclamoSelected!: IReclamos;
   mostrarModal: boolean = false;
   mostrarModalEditar: boolean = false;
   reclamoForm!: FormGroup;
@@ -44,10 +46,15 @@ export class MisReclamos implements OnInit {
       this.cerrarModal();
     }
   }
+
+  actualizarReclamos(data:IReclamos): void {
+    this.#reclamoService.actualizarReclamo(this.reclamoSelected.id, data);
+    this.cerrarModal();
+  }
+
   abrirModalEditar(reclamo: IReclamos): void {
     this.mostrarModalEditar = true;
-    
-    console.log(reclamo)
+    this.reclamoSelected = reclamo
   }
 
   abrirModal(): void {

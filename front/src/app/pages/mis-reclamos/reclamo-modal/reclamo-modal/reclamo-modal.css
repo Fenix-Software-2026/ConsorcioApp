@@ -1,0 +1,41 @@
+:host {
+  display: block;
+}
+.modal-backdrop {
+  position: fixed;
+  top: 0; left: 0; width: 100vw; height: 100vh;
+  background: rgba(15, 23, 42, 0.4); backdrop-filter: blur(3px);
+  display: flex; justify-content: center; align-items: center; z-index: 3000;
+}
+.modal-card {
+  background: white; border-radius: 16px; width: 90%; max-width: 450px;
+  box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1); overflow: hidden;
+}
+.modal-header {
+  padding: 15px 20px; border-bottom: 1px solid #f1f5f9;
+  display: flex; justify-content: space-between; align-items: center;
+}
+.modal-header h3 { margin: 0; font-size: 16px; color: #1e293b; }
+.btn-close-x { background: none; border: none; font-size: 22px; color: #94a3b8; cursor: pointer; }
+.modal-body { padding: 20px; }
+.detalle-txt { margin: 0 0 10px 0; font-size: 14px; color: #475569; }
+.select-box { margin-top: 15px; display: flex; flex-direction: column; gap: 6px; }
+.select-box label { font-weight: 600; font-size: 13px; color: #334155; }
+.select-field { padding: 10px; border-radius: 8px; border: 1px solid #cbd5e1; background: white; font-size: 14px; }
+.modal-foot {
+  padding: 12px 20px; background: #f8fafc; border-top: 1px solid #f1f5f9;
+  display: flex; justify-content: flex-end; gap: 10px;
+}
+.btn-back { background: #e2e8f0; color: #475569; font-weight: 600; }
+.btn-save-orange { background: #f97316; color: white; font-weight: 600; }
+.btn-save-orange:hover { background: #ea580c; }
+
+modal-header { padding: 20px; border-bottom: 1px solid #e2e8f0; display: flex; justify-content: space-between; align-items: center; }
+.modal-body { padding: 20px; }
+.form-field { margin-bottom: 20px; }
+.form-field label { display: block; font-weight: 600; font-size: 14px; color: #475569; margin-bottom: 6px; }
+.form-field input, .form-field textarea { width: 100%; padding: 10px 12px; border: 1px solid #cbd5e1; border-radius: 8px; font-family: inherit; font-size: 14px; box-sizing: border-box; transition: border-color 0.2s; }
+.form-field input:focus, .form-field textarea:focus { outline: none; border-color: #2563eb; box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1); }
+.modal-footer { padding: 15px 20px; background: #f8fafc; border-top: 1px solid #e2e8f0; display: flex; justify-content: flex-end; gap: 12px; }
+.btn-primary { background: #f97316; color: white; border: none; padding: 10px 16px; border-radius: 8px; font-weight: 600; cursor: pointer; transition: background 0.2s; }
+.btn-primary:hover { background: #ea580c; }
