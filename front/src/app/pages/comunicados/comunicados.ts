@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common'; 
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms'; 
 import { ComunicadoService } from '../../shared/service/comunicadoservice'; 
@@ -21,7 +21,8 @@ export class ComunicadosComponent implements OnInit {
   constructor(
     private comunicadoService: ComunicadoService,
     private fb: FormBuilder,
-    private authService: AuthService
+    private authService: AuthService,
+    private cdr: ChangeDetectorRef
   ) {}
   
   ngOnInit(): void {
@@ -46,6 +47,8 @@ export class ComunicadosComponent implements OnInit {
       (data) => {
         this.listaComunicados = data;
         console.log('Comunicados cargados:', this.listaComunicados);
+        
+        this.cdr.detectChanges();
       },
       (err) => {
         console.error('Error al traer los comunicados', err);
