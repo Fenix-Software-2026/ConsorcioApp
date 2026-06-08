@@ -18,7 +18,6 @@ import { MisExpensas } from './pages/mis-expensas/mis-expensas';
 import { MisReclamos } from './pages/mis-reclamos/mis-reclamos';
 import { ConfiguracionOwner } from './pages/configuracion-owner/configuracion-owner';
 import { Reservas } from './pages/reservas/reservas';
-import { Avisos } from './pages/avisos/avisos';
 import { Documentos } from './pages/documentos/documentos';
 import { ServiciosResidente } from './pages/servicios-residente/servicios-residente';
 import { Confirmacion } from './pages/confirmacion/confirmacion';
@@ -115,10 +114,6 @@ export const routes: Routes = [
       { 
         path: 'reservas', 
         loadComponent: () => import('./pages/reservas/reservas').then(m => m.Reservas) 
-      },
-      { 
-        path: 'avisos', 
-        loadComponent: () => import('./pages/avisos/avisos').then(m => m.Avisos) 
       },
       { 
         path: 'documentos', 

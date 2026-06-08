@@ -3,33 +3,21 @@
 
   <div class="config-grid">
     <div class="perfil-card">
-      <div class="avatar-container">
-        <img [src]="usuario.fotoUrl" alt="Perfil" class="avatar-img">
+      <div class="campo"><label>Usuario</label>
+        <h3>{{residente()?.username}}</h3>
       </div>
-      <h3>{{residente()?.username}}</h3>
-
-      <p>Residente • Unidad {{residente()?.unidad_detalle?.piso}}-{{residente()?.unidad_detalle?.departamento}}</p>
-
-      <input type="file" #fileInput (change)="onFileSelected($event)" accept="image/*" hidden>
-      <button class="editar-btn" (click)="fileInput.click()">
-        <i class="bi bi-camera"></i> Cambiar foto
-      </button>
-    </div>
-
-    <div class="config-card">
-      <h3>Información Personal</h3>
+      <br>
       <div class="form-row">
-        <div class="campo"><label>Nombre</label>
-           <p class="texto-dato">{{ residente()?.username }}</p>
+        <div class="campo"><label>Unidad</label>
+          <p class="texto-dato">{{residente()?.unidad_detalle?.piso}}-{{residente()?.unidad_detalle?.departamento}}</p>
         </div>
-        <div class="campo"><label>Nombre</label>
+        <div class="campo"><label>Email</label>
           <p class="texto-dato">{{ residente()?.email }}</p>
         </div>
       </div>
-      <div class="campo"><label>Unidad</label>
-        <p class="texto-dato">{{residente()?.unidad_detalle?.piso}}-{{residente()?.unidad_detalle?.departamento}}</p>
-      </div>
+    </div>
 
+    <div class="config-card">
       <h3 class="subtitulo">Seguridad</h3>
     <form [formGroup]="passwordForm" (ngSubmit)="guardarPerfil()">
     
