@@ -52,32 +52,58 @@
 
   <hr class="separator" *ngIf="isAdmin">
 
-  <div class="list-card">
-    <h2>Historial de Comunicados</h2>
-    
+  
+  <h2>Historial de Comunicados</h2>
+
     <div class="empty-state" *ngIf="listaComunicados.length === 0">
       <p>No hay comunicados registrados hasta el momento.</p>
     </div>
-    
-    <div 
-      class="comunicado-item" 
-      *ngFor="let c of listaComunicados" 
-      [class.urgente-style]="c.es_urgente"
+
+    <div
+      class="comunicado-card"
+      *ngFor="let c of listaComunicados"
+      [class.urgente]="c.es_urgente"
     >
-      <div class="comunicado-header">
-        <h3>{{ c.titulo }}</h3>
-        <span class="badge-urgente" *ngIf="c.es_urgente">⚠️ URGENTE</span>
+
+      <div class="icono">
+        <i class="bi bi-megaphone-fill"></i>
       </div>
-      
-      <p class="comunicado-body">{{ c.contenido }}</p>
-      
-      <div class="comunicado-footer">
-        <small>Publicado: {{ c.fecha_publicacion | date:'dd/MM/yyyy HH:mm' }}</small>
-        <button *ngIf="isAdmin" class="btn-delete" (click)="eliminarComunicado(c.id)" style="margin-left: auto; background-color: #ff4d4f; color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer;">
-          🗑️ Eliminar
-        </button>
+
+      <div class="contenido">
+
+        <div class="meta">
+
+          <h3>{{ c.titulo }}</h3>
+
+          <div class="header-right">
+
+            <span
+              class="badge-urgente"
+              *ngIf="c.es_urgente"
+            >
+              ⚠️ URGENTE
+            </span>
+
+            <span class="fecha">
+              {{ c.fecha_publicacion | date:'dd/MM/yyyy HH:mm' }}
+            </span>
+
+          </div>
+
+        </div>
+
+        <p>{{ c.contenido }}</p>
+
       </div>
+
+      <button
+        *ngIf="isAdmin"
+        class="btn-delete"
+        (click)="eliminarComunicado(c.id)"
+      >
+        <i class="bi bi-trash"></i>
+      </button>
+
     </div>
-  </div>
 
 </div>

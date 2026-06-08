@@ -119,3 +119,94 @@ h2 {
   border-radius: 12px;
   margin-bottom: 15
 }
+
+.comunicado-card {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  background: white;
+  padding: 25px;
+  border-radius: 20px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+  transition: 0.3s;
+  border-left: 5px solid transparent;
+  margin-bottom: 20px;
+}
+
+.comunicado-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0,0,0,0.08);
+}
+
+.comunicado-card.urgente {
+  border-left-color: #ff6a00;
+}
+
+.icono {
+  width: 60px;
+  height: 60px;
+  min-width: 60px;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  border-radius: 50%;
+
+  background: #fff5eb;
+  color: #ff6a00;
+
+  font-size: 24px;
+}
+
+.contenido {
+  flex: 1;
+}
+
+.meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 15px;
+  margin-bottom: 8px;
+}
+
+.meta h3 {
+  margin: 0;
+}
+
+.header-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+}
+
+.fecha {
+  font-size: 12px;
+  font-weight: 600;
+  color: #94a3b8;
+}
+
+.badge-urgente {
+  background: #fff5eb;
+  color: #ff6a00;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.btn-delete {
+  background: none;
+  border: none;
+  color: #cbd5e1;
+  font-size: 22px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.btn-delete:hover {
+  color: #ef4444;
+  transform: scale(1.1);
+}

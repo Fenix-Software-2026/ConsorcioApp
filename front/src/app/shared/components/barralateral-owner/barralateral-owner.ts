@@ -50,12 +50,6 @@ export class BarralateralOwner {
    },
 
     {
-      name: 'Avisos',
-      icon: 'bi bi-megaphone-fill',
-      route: '/owner/avisos'
-    },
-
-    {
       name: 'Documentos',
       icon: 'bi bi-folder2-open',
       route: '/owner/documentos'
