@@ -30,4 +30,14 @@ export class UsuarioService {
     const url = `${this.apiUrl}${id}/`;
     return this.http.delete<any>(url);
   }
+
+  public obtenerMiPerfil(): Observable<Usuario> {
+    const url = `${this.apiUrl}mi_perfil/`;
+    return this.http.get<Usuario>(url);
+  }
+
+  public cambiarMiPassword(nuevaClave: string): Observable<any> {
+    const url = `${this.apiUrl}mi_perfil/`;
+    return this.http.patch<any>(url, { password: nuevaClave });
+  }
 }

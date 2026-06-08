@@ -16,86 +16,66 @@ import { ReclamoService } from '../../shared/service/ReclamoService';
 
 
 export class Reclamos implements OnInit {
+  #reclamosService = inject(ReclamoService);
+  #fb = inject(FormBuilder);
 
-  private reclamosService = inject(ReclamoService);
-  private fb = inject(FormBuilder);
-
-  reclamos = signal<IReclamos[]>([]); // Usamos Signal para que Angular sepa cuándo actualizar la vista
+  reclamos = this.#reclamosService.reclamos; // Nos suscribimos a los reclamos del servicio
   textoBusqueda = signal<string>('');
+  ocultarResueltos = signal<boolean>(false); 
+  
   mostrarModal: boolean = false;
   reclamoSeleccionado!: IReclamos;
-  estadoForm!: FormGroup;
-
 
   ngOnInit(): void {
-    this.cargarReclamosDelBackend();
-    this.estadoForm = this.fb.group({
-      nuevoEstado: ['Pendiente', Validators.required]
-    });
+    this.#reclamosService.cargarReclamos(); // Carga los reclamos al iniciar el componente
   }
 
+  reclamosAMostrar = computed(() => {
+    let lista = this.reclamos();
+    const texto = this.textoBusqueda().toLowerCase().trim();
 
-    cargarReclamosDelBackend(): void {
-      this.reclamosService.getReclamos().subscribe({
-        next: (data: any) => {
-         console.log(data)
-          this.reclamos.set(data);
-        },
-        error: (err: any) => {
-          console.error('Error al traer los reclamos:', err);
-        }
-      });
+    if (texto !== '') {
+      lista = lista.filter(r =>
+        (r.descripcion || '').toLowerCase().includes(texto) ||
+        (r.titulo || '').toLowerCase().includes(texto) ||
+        (r.estado || '').toLowerCase().includes(texto)
+      );
     }
 
+    if (this.ocultarResueltos() === true) {
+      lista = lista.filter(r => r.estado !== 'resuelto');
+    }
 
-  // --- BUSCADOR EN TIEMPO REAL ---
-  reclamosFiltrados = computed(() => {
-    const texto = this.textoBusqueda().toLowerCase().trim();
-    const listaOriginal = this.reclamos();
-
-    if (!texto) return listaOriginal;
-
-    return listaOriginal.filter(r =>
-      (r.descripcion || '').toLowerCase().includes(texto) ||
-      (r.estado || '') ||
-      (r.titulo || '').toLowerCase().includes(texto)
-    );
+    // Finalmente, devolvemos lo que haya quedado.
+    return lista;
   });
+  
 
-  // --- ELIMINAR RECLAMO DE FORMA VISUAL ---
-  eliminarReclamoVisual(numeroReclamo: number): void {
-    // Filtramos el arreglo dejando fuera el número que queremos borrar
-    this.reclamos.set(this.reclamos().filter(r => r.id !== numeroReclamo)) ;
-  }
+  estadoForm: FormGroup = this.#fb.group({
+    // Estructura: [ 'Valor por defecto', [Validadores] ]
+    nuevoEstado: ['pendiente', Validators.required],
+  });
 
   // --- ACCIÓN MASIVA: LIMPIAR RESUELTOS ---
   limpiarResueltos(): void {
-    // Deja en la lista únicamente los que NO están resueltos
-    this.reclamos.set(this.reclamos().filter(r => r.estado !== 'resuelto'));
+    this.ocultarResueltos.update(valor => !valor);
   }
 
   // --- MODAL PARA CAMBIAR ESTADOS ---
   abrirGestion(reclamo: IReclamos): void {
     this.reclamoSeleccionado = reclamo;
-    this.estadoForm.setValue({ nuevoEstado: reclamo.titulo }); // Pre-carga el estado actual en el select
+    this.estadoForm.patchValue({ nuevoEstado: reclamo.estado }); // Pre-carga el estado actual en el select
     this.mostrarModal = true;
   }
 
   actualizarEstadoLocal(): void {
     if (this.estadoForm.valid) {
       // Buscamos el reclamo en nuestra lista y mutamos su estado directamente
-      const index = this.reclamos().findIndex(r => r.titulo === this.reclamoSeleccionado.titulo);
+      const index = this.reclamos().findIndex(r => r.id === this.reclamoSeleccionado.id);
       if (index !== -1) {
         this.reclamos()[index].estado = this.estadoForm.value.nuevoEstado;
       }
-      this.reclamosService.editarReclamo(this.reclamoSeleccionado.id!, { estado: this.estadoForm.value.nuevoEstado }).subscribe({
-        next: (data: any) => {
-          console.log('Reclamo actualizado en el backend:', data);
-        },
-        error: (err: any) => {
-          console.error('Error al actualizar el reclamo en el backend:', err);
-        }
-      });
+      this.#reclamosService.actualizarEstadoReclamo( this.reclamoSeleccionado.id, this.estadoForm.value.nuevoEstado );
       this.cerrarModal();
     }
   }

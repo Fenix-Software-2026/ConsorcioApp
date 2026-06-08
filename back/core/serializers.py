@@ -138,6 +138,7 @@ class ComunicadoSerializer(serializers.ModelSerializer):
         model = Comunicado
         fields = '__all__'
 
+        read_only_fields = ['usuario']
 
 class ReclamoAdminSerializer(serializers.ModelSerializer):
     class Meta:
