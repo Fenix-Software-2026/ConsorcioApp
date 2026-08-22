@@ -6,6 +6,7 @@ django-environ==0.13.0
 djangorestframework==3.17.1
 djangorestframework_simplejwt==5.5.1
 drf-spectacular==0.29.0
+gunicorn==26.1.0
 inflection==0.5.1
 jsonschema==4.26.0
 jsonschema-specifications==2025.9.1
@@ -18,3 +19,4 @@ rpds-py==2026.5.1
 sqlparse==0.5.5
 tzdata==2026.1
 uritemplate==4.2.0
+whitenoise==6.12.0
