@@ -73,6 +73,7 @@ class Reclamo(models.Model):
         return f"{self.titulo} - {self.estado}"
    
 class Comunicado(models.Model):
+
     titulo = models.CharField(max_length=200)
     contenido = models.TextField()
     fecha_publicacion = models.DateTimeField(auto_now_add=True)
@@ -83,3 +84,4 @@ class Comunicado(models.Model):
 
     def __str__(self):
         return self.titulo
+

@@ -35,8 +35,7 @@ class ReclamoViewSet(viewsets.ModelViewSet):
             raise PermissionDenied("Los administradores no pueden crear reclamos.")
             
         serializer.save(usuario=usuario_logueado, unidad=usuario_logueado.unidad)
-        
-      
+
 
 class ComunicadoViewSet(viewsets.ModelViewSet):
     """
