@@ -10,7 +10,7 @@ from rest_framework import status
 from core.permissions import EsAdminConsorcio, EsResidente
 from .models import Reclamo, Comunicado, Usuario, Unidad
 from .serializers import ReclamoAdminSerializer, ReclamoSerializer, ComunicadoSerializer, UsuarioSerializer, UnidadSerializer
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
 
 class ReclamoViewSet(viewsets.ModelViewSet):
     """
