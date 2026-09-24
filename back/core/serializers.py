@@ -1,3 +1,6 @@
+import secrets
+import string
+
 from rest_framework import serializers
 from .models import Reclamo, Comunicado, Unidad, Usuario
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
@@ -83,16 +86,38 @@ class UsuarioSerializer(serializers.ModelSerializer):
             )
             validated_data['unidad'] = unidad_obj
 
-        password = validated_data.pop(
-            'password',
-            '123456'
-        )
+        # Generar una contraseña aleatoria segura si no viene especificada
+        password = validated_data.pop('password', None)
+        if not password:
+            # Definir conjuntos de caracteres obligatorios para cumplir con la política de seguridad
+            lower = string.ascii_lowercase
+            upper = string.ascii_uppercase
+            digits = string.digits
+            special = "!@#$%^&*()"
+
+            # Asegurar al menos un carácter de cada tipo
+            password_chars = [
+                secrets.choice(lower),
+                secrets.choice(upper),
+                secrets.choice(digits),
+                secrets.choice(special)
+            ]
+
+            # Completar hasta tener 10 caracteres en total con caracteres aleatorios de cualquier tipo
+            all_chars = lower + upper + digits + special
+            for _ in range(6):
+                password_chars.append(secrets.choice(all_chars))
+
+            # Mezclar para que no queden siempre en el mismo orden
+            secrets.SystemRandom().shuffle(password_chars)
+            password = "".join(password_chars)
 
         usuario = Usuario.objects.create_user(
             password=password,
             **validated_data
         )
-
+        
+        # Aquí puedes implementar el envío por SMTP usando `password` como la clave provisoria
         return usuario
 
     def update(self, instance, validated_data):
