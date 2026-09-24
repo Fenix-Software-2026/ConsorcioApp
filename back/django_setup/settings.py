@@ -172,6 +172,7 @@ SIMPLE_JWT = {
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:4200",
+    "https://gaston.alwaysdata.net"
 ]
 
 # Configuración de Correo (SMTP)
