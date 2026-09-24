@@ -1,5 +1,6 @@
 import secrets
 import string
+from django.core.mail import send_mail
 
 from rest_framework import serializers
 from .models import Reclamo, Comunicado, Unidad, Usuario
@@ -116,6 +117,25 @@ class UsuarioSerializer(serializers.ModelSerializer):
             password=password,
             **validated_data
         )
+
+        # Enviar correo electrónico con la contraseña provisoria si es residente
+        if usuario.rol == 'residente' and usuario.email:
+            try:
+                send_mail(
+                    subject='Acceso a ConsorcioApp - Tus credenciales provisorias',
+                    message=(
+                        f"Hola {usuario.first_name},\n\n"
+                        f"Se ha registrado tu cuenta en ConsorcioApp.\n"
+                        f"Tu nombre de usuario para iniciar sesión es: {usuario.username}\n"
+                        f"Tu contraseña provisoria segura es: {password}\n\n"
+                        f"Te recomendamos cambiarla desde tu perfil al ingresar por primera vez."
+                    ),
+                    from_email=None,  # Utiliza el DEFAULT_FROM_EMAIL del settings.py
+                    recipient_list=[usuario.email],
+                    fail_silently=False,
+                )
+            except Exception as e:
+                print(f"Error al enviar el correo de credenciales: {e}")
         
         # Aquí puedes implementar el envío por SMTP usando `password` como la clave provisoria
         return usuario
