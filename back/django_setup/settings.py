@@ -17,12 +17,21 @@ from datetime import timedelta
 
 load_dotenv()
 
+
+# Convierte una variable como "dominio1.com,dominio2.com" en una lista de
+# valores que Django pueda usar en ALLOWED_HOSTS o CORS_ALLOWED_ORIGINS.
 def env_list(name):
     return [
         value.strip()
         for value in os.getenv(name, '').split(',')
         if value.strip()
     ]
+
+
+# Las variables de entorno son texto. Esta función convierte valores como
+# "true", "yes", "on" o "1" en el booleano True.
+def env_bool(name, default=False):
+    return os.getenv(name, str(default)).lower() in ('1', 'true', 'yes', 'on')
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -41,6 +50,7 @@ if not SECRET_KEY:
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
+# Dominios y direcciones desde los que Django acepta solicitudes.
 ALLOWED_HOSTS = env_list('ALLOWED_HOSTS')
 
 
@@ -167,6 +177,7 @@ REST_FRAMEWORK = {
         'rest_framework.throttling.UserRateThrottle'
     ],
     'DEFAULT_THROTTLE_RATES': {
+        # Cantidad máxima de solicitudes por período.
         'anon': os.getenv('THROTTLE_ANON_RATE', '30/minute'),
         'user': os.getenv('THROTTLE_USER_RATE', '100/minute'),
         'login': os.getenv('THROTTLE_LOGIN_RATE', '5/minute'),
@@ -185,17 +196,33 @@ SPECTACULAR_SETTINGS = {
 
 
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),
-    'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
+    # Si un access token se filtra, esta duración limita el tiempo de uso.
+    'ACCESS_TOKEN_LIFETIME': timedelta(
+        minutes=int(os.getenv('JWT_ACCESS_TOKEN_MINUTES', '60'))
+    ),
+    # Permite renovar el access token durante este período.
+    'REFRESH_TOKEN_LIFETIME': timedelta(
+        days=int(os.getenv('JWT_REFRESH_TOKEN_DAYS', '7'))
+    ),
 }
 
+
+# Orígenes permitidos para solicitudes realizadas desde navegadores.
 CORS_ALLOWED_ORIGINS = env_list('CORS_ALLOWED_ORIGINS')
 
 # Configuración de Correo (SMTP)
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = os.getenv('EMAIL_HOST', 'smtp.gmail.com')
 EMAIL_PORT = int(os.getenv('EMAIL_PORT', 587))
-EMAIL_USE_TLS = True
+# TLS cifra la conexión entre Django y el servidor SMTP.
+EMAIL_USE_TLS = env_bool('EMAIL_USE_TLS', True)
 EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER', '')
 EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD', '')
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+
+# En producción se fuerza HTTPS y se protegen las cookies de sesión y CSRF.
+if not DEBUG:
+    SECURE_SSL_REDIRECT = True
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
