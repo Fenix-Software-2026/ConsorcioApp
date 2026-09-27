@@ -46,6 +46,8 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 
 if not SECRET_KEY:
     raise ValueError("Falta SECRET_KEY en el .env")
+if len(SECRET_KEY) < 50:
+    raise ValueError("SECRET_KEY debe tener al menos 50 caracteres")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
@@ -220,9 +222,17 @@ EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER', '')
 EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD', '')
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
-# En producción se fuerza HTTPS y se protegen las cookies de sesión y CSRF.
-if not DEBUG:
-    SECURE_SSL_REDIRECT = True
-    SESSION_COOKIE_SECURE = True
-    CSRF_COOKIE_SECURE = True
+# Estas opciones se configuran en .env para poder distinguir desarrollo de
+# producción sin modificar el código.
+SECURE_SSL_REDIRECT = env_bool('SECURE_SSL_REDIRECT', not DEBUG)
+SESSION_COOKIE_SECURE = env_bool('SESSION_COOKIE_SECURE', not DEBUG)
+CSRF_COOKIE_SECURE = env_bool('CSRF_COOKIE_SECURE', not DEBUG)
+
+if env_bool('TRUST_PROXY_SSL', not DEBUG):
     SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
+# TODO: Activar HSTS cuando toda la aplicación use HTTPS de forma estable.
+# Una vez activado, los navegadores evitarán HTTP durante este período.
+# SECURE_HSTS_SECONDS = 31536000
+# SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+# SECURE_HSTS_PRELOAD = True
