@@ -71,6 +71,16 @@ class UsuarioSerializer(serializers.ModelSerializer):
             }
         }
 
+    def validate_email(self, value):
+        from django.contrib.auth import get_user_model
+        User = get_user_model()
+        
+        # Filtramos a ver si alguien ya tiene ese mail
+        if User.objects.filter(email=value).exists():
+            raise serializers.ValidationError("Ya existe un residente con este correo electrónico.")
+        return value
+
+
     def create(self, validated_data):
         # Extraemos piso/depto si vienen
         piso = validated_data.pop('piso', None)
