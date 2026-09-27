@@ -4,6 +4,7 @@ from django.contrib import admin
 from core.views import ComunicadoViewSet, ReclamoViewSet, UsuarioViewSet, UnidadViewSet
 from core.serializers import MiTokenSerializer
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView, SpectacularRedocView
+from rest_framework.throttling import ScopedRateThrottle
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
     TokenRefreshView,
@@ -11,6 +12,8 @@ from rest_framework_simplejwt.views import (
 
 class MiTokenView(TokenObtainPairView):#es un serializer, y los serializers no tienen as_view, entonces lo que hacemos es crear una clase que herede de TokenObtainPairView y le decimos que use nuestro serializer personalizado
     serializer_class = MiTokenSerializer
+    throttle_classes = [ScopedRateThrottle]
+    throttle_scope = 'login'
     
 router = DefaultRouter()
 router.register(r'reclamos', ReclamoViewSet, basename='reclamo')

@@ -17,6 +17,14 @@ from datetime import timedelta
 
 load_dotenv()
 
+def env_list(name):
+    return [
+        value.strip()
+        for value in os.getenv(name, '').split(',')
+        if value.strip()
+    ]
+
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -33,7 +41,7 @@ if not SECRET_KEY:
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = env_list('ALLOWED_HOSTS')
 
 
 # Application definition
@@ -154,6 +162,15 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.IsAuthenticated',  # Por defecto todo requiere login
     ),
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+    'DEFAULT_THROTTLE_CLASSES': [
+        'rest_framework.throttling.AnonRateThrottle',
+        'rest_framework.throttling.UserRateThrottle'
+    ],
+    'DEFAULT_THROTTLE_RATES': {
+        'anon': os.getenv('THROTTLE_ANON_RATE', '30/minute'),
+        'user': os.getenv('THROTTLE_USER_RATE', '100/minute'),
+        'login': os.getenv('THROTTLE_LOGIN_RATE', '5/minute'),
+    }
     
 
 }
@@ -168,14 +185,11 @@ SPECTACULAR_SETTINGS = {
 
 
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=300),
-    'REFRESH_TOKEN_LIFETIME': timedelta(days=30),
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
 }
 
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:4200",
-    "https://gaston.alwaysdata.net"
-]
+CORS_ALLOWED_ORIGINS = env_list('CORS_ALLOWED_ORIGINS')
 
 # Configuración de Correo (SMTP)
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
