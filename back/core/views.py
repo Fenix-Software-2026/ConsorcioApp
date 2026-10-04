@@ -9,7 +9,14 @@ from rest_framework.response import Response
 from rest_framework import status
 from core.permissions import EsAdminConsorcio, EsResidente
 from .models import Reclamo, Comunicado, Usuario, Unidad
-from .serializers import ReclamoAdminSerializer, ReclamoSerializer, ComunicadoSerializer, UsuarioSerializer, UnidadSerializer
+from .serializers import (
+    ReclamoAdminSerializer,
+    ReclamoSerializer,
+    ComunicadoSerializer,
+    UsuarioSerializer,
+    PerfilUsuarioSerializer,
+    UnidadSerializer
+)
 from rest_framework.permissions import IsAuthenticated, AllowAny
 
 class ReclamoViewSet(viewsets.ModelViewSet):
@@ -83,6 +90,12 @@ class UsuarioViewSet(viewsets.ModelViewSet):
     permission_classes = [EsAdminConsorcio]
     queryset = Usuario.objects.all()
     serializer_class = UsuarioSerializer
+
+    # Tarea 5: Asigna PerfilUsuarioSerializer al endpoint mi_perfil para proteger datos sensibles
+    def get_serializer_class(self):
+        if self.action == 'mi_perfil':
+            return PerfilUsuarioSerializer
+        return UsuarioSerializer
 
     @action(detail=False, methods=['get', 'patch'], permission_classes=[IsAuthenticated])
     def mi_perfil(self, request):
