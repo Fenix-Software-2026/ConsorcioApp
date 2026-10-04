@@ -1,6 +1,8 @@
 import secrets
 import string
 from django.core.mail import send_mail
+from django.contrib.auth.password_validation import validate_password
+from django.core.exceptions import ValidationError as DjangoValidationError
 
 from rest_framework import serializers
 from .models import Reclamo, Comunicado, Unidad, Usuario
@@ -80,6 +82,13 @@ class UsuarioSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError("Ya existe un residente con este correo electrónico.")
         return value
 
+    # Tarea 3: Valida la robustez de la contraseña con los validadores nativos de Django
+    def validate_password(self, value):
+        try:
+            validate_password(value, user=self.instance)
+        except DjangoValidationError as error:
+            raise serializers.ValidationError(list(error.messages))
+        return value
 
     def create(self, validated_data):
         # Extraemos piso/depto si vienen
@@ -220,6 +229,14 @@ class PerfilUsuarioSerializer(serializers.ModelSerializer):
                 'required': False
             }
         }
+
+    # Tarea 3: Valida la robustez de la contraseña con los validadores nativos de Django
+    def validate_password(self, value):
+        try:
+            validate_password(value, user=self.instance)
+        except DjangoValidationError as error:
+            raise serializers.ValidationError(list(error.messages))
+        return value
 
     def update(self, instance, validated_data):
         password = validated_data.pop('password', None)
