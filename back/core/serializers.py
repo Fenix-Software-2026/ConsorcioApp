@@ -181,6 +181,58 @@ class UsuarioSerializer(serializers.ModelSerializer):
         instance.save()
         return instance
 
+# Tarea 2: Serializer específico para gestionar el perfil del usuario autenticado sin exponer campos sensibles
+class PerfilUsuarioSerializer(serializers.ModelSerializer):
+    nombre = serializers.CharField(
+        source='first_name',
+        required=False,
+        allow_blank=True
+    )
+    apellido = serializers.CharField(
+        source='last_name',
+        required=False,
+        allow_blank=True
+    )
+    unidad_detalle = UnidadSerializer(
+        source='unidad',
+        read_only=True
+    )
+
+    class Meta:
+        model = Usuario
+        fields = [
+            'id',
+            'username',
+            'nombre',
+            'apellido',
+            'email',
+            'rol',
+            'unidad_detalle',
+            'password'
+        ]
+        read_only_fields = ['id', 'username', 'rol']
+        extra_kwargs = {
+            'password': {
+                'write_only': True,
+                'required': False
+            },
+            'email': {
+                'required': False
+            }
+        }
+
+    def update(self, instance, validated_data):
+        password = validated_data.pop('password', None)
+
+        for attr, value in validated_data.items():
+            setattr(instance, attr, value)
+
+        if password:
+            instance.set_password(password)
+
+        instance.save()
+        return instance
+
 class ReclamoSerializer(serializers.ModelSerializer):
     class Meta:
         model = Reclamo
