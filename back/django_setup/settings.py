@@ -50,7 +50,7 @@ if len(SECRET_KEY) < 50:
     raise ValueError("SECRET_KEY debe tener al menos 50 caracteres")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = env_bool('DEBUG', False)
 
 # Dominios y direcciones desde los que Django acepta solicitudes.
 ALLOWED_HOSTS = env_list('ALLOWED_HOSTS')
