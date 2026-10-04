@@ -73,12 +73,15 @@ class UsuarioSerializer(serializers.ModelSerializer):
             }
         }
 
+    # Tarea 4: Permite conservar el propio email al editar y evita duplicados en otros usuarios
     def validate_email(self, value):
         from django.contrib.auth import get_user_model
         User = get_user_model()
-        
-        # Filtramos a ver si alguien ya tiene ese mail
-        if User.objects.filter(email=value).exists():
+
+        consulta = User.objects.filter(email=value)
+        if self.instance:
+            consulta = consulta.exclude(pk=self.instance.pk)
+        if consulta.exists():
             raise serializers.ValidationError("Ya existe un residente con este correo electrónico.")
         return value
 
@@ -236,6 +239,18 @@ class PerfilUsuarioSerializer(serializers.ModelSerializer):
             validate_password(value, user=self.instance)
         except DjangoValidationError as error:
             raise serializers.ValidationError(list(error.messages))
+        return value
+
+    # Tarea 4: Permite conservar el propio email al editar y evita duplicados en otros usuarios
+    def validate_email(self, value):
+        from django.contrib.auth import get_user_model
+        User = get_user_model()
+
+        consulta = User.objects.filter(email=value)
+        if self.instance:
+            consulta = consulta.exclude(pk=self.instance.pk)
+        if consulta.exists():
+            raise serializers.ValidationError("Ya existe un residente con este correo electrónico.")
         return value
 
     def update(self, instance, validated_data):
