@@ -195,6 +195,15 @@ class UsuarioSerializer(serializers.ModelSerializer):
 
 # Tarea 2: Serializer específico para gestionar el perfil del usuario autenticado sin exponer campos sensibles
 class PerfilUsuarioSerializer(serializers.ModelSerializer):
+    current_password = serializers.CharField(
+        write_only=True,
+        required=False
+    )
+    new_password = serializers.CharField(
+        write_only=True,
+        required=False
+    )
+
     nombre = serializers.CharField(
         source='first_name',
         required=False,
@@ -220,26 +229,42 @@ class PerfilUsuarioSerializer(serializers.ModelSerializer):
             'email',
             'rol',
             'unidad_detalle',
-            'password'
+            'current_password',
+            'new_password'
         ]
         read_only_fields = ['id', 'username', 'rol']
         extra_kwargs = {
-            'password': {
-                'write_only': True,
-                'required': False
-            },
             'email': {
                 'required': False
             }
         }
 
-    # Tarea 3: Valida la robustez de la contraseña con los validadores nativos de Django
-    def validate_password(self, value):
-        try:
-            validate_password(value, user=self.instance)
-        except DjangoValidationError as error:
-            raise serializers.ValidationError(list(error.messages))
-        return value
+    def validate(self, attrs):
+        current_password = attrs.get('current_password')
+        new_password = attrs.get('new_password')
+
+        # Las dos contraseñas son obligatorias cuando se solicita un cambio.
+        if current_password or new_password:
+            if not current_password or not new_password:
+                raise serializers.ValidationError({
+                    'current_password': (
+                        'Debes proporcionar la contraseña actual y la nueva contraseña.'
+                    )
+                })
+
+            if not self.instance.check_password(current_password):
+                raise serializers.ValidationError({
+                    'current_password': 'La contraseña actual es incorrecta.'
+                })
+
+            try:
+                validate_password(new_password, user=self.instance)
+            except DjangoValidationError as error:
+                raise serializers.ValidationError({
+                    'new_password': list(error.messages)
+                })
+
+        return attrs
 
     # Tarea 4: Permite conservar el propio email al editar y evita duplicados en otros usuarios
     def validate_email(self, value):
@@ -254,13 +279,14 @@ class PerfilUsuarioSerializer(serializers.ModelSerializer):
         return value
 
     def update(self, instance, validated_data):
-        password = validated_data.pop('password', None)
+        validated_data.pop('current_password', None)
+        new_password = validated_data.pop('new_password', None)
 
         for attr, value in validated_data.items():
             setattr(instance, attr, value)
 
-        if password:
-            instance.set_password(password)
+        if new_password:
+            instance.set_password(new_password)
 
         instance.save()
         return instance

@@ -37,19 +37,40 @@ class PruebasPerfilUsuario(APITestCase):
         self.assertEqual(self.residente.first_name, 'Juan')
 
     def test_rechazo_password_debil(self):
-        datos = {'password': '1234'}
+        datos = {
+            'current_password': 'PasswordRobusta2026!',
+            'new_password': '1234'
+        }
         respuesta = self.client.patch('/api/usuario/mi_perfil/', datos, format='json')
         self.assertEqual(respuesta.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertIn('password', respuesta.data)
+        self.assertIn('new_password', respuesta.data)
 
     def test_aceptacion_password_segura(self):
         nueva_clave = 'ClaveMuySegura2026!'
-        datos = {'password': nueva_clave}
+        datos = {
+            'current_password': 'PasswordRobusta2026!',
+            'new_password': nueva_clave
+        }
         respuesta = self.client.patch('/api/usuario/mi_perfil/', datos, format='json')
         self.assertEqual(respuesta.status_code, status.HTTP_200_OK)
 
         self.residente.refresh_from_db()
         self.assertTrue(self.residente.check_password(nueva_clave))
+
+    def test_rechazo_password_actual_incorrecta(self):
+        datos = {
+            'current_password': 'ClaveIncorrecta2026!',
+            'new_password': 'ClaveMuySegura2026!'
+        }
+        respuesta = self.client.patch('/api/usuario/mi_perfil/', datos, format='json')
+        self.assertEqual(respuesta.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertIn('current_password', respuesta.data)
+
+    def test_rechazo_cambio_password_sin_password_actual(self):
+        datos = {'new_password': 'ClaveMuySegura2026!'}
+        respuesta = self.client.patch('/api/usuario/mi_perfil/', datos, format='json')
+        self.assertEqual(respuesta.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertIn('current_password', respuesta.data)
 
     def test_actualizar_perfil_conservando_mismo_email(self):
         datos = {
@@ -114,9 +135,25 @@ class PruebasReclamosConsorcio(APITestCase):
         self.assertEqual(len(respuesta.data), 1)
         self.assertEqual(respuesta.data[0]['id'], self.reclamo1.id)
 
+    def test_residente_no_puede_ver_reclamo_de_otra_unidad(self):
+        self.client.force_authenticate(user=self.residente1)
+        respuesta = self.client.get(f'/api/reclamos/{self.reclamo2.id}/')
+        self.assertEqual(respuesta.status_code, status.HTTP_404_NOT_FOUND)
+
     def test_admin_visualiza_todos_los_reclamos(self):
         self.client.force_authenticate(user=self.admin)
         respuesta = self.client.get('/api/reclamos/')
         self.assertEqual(respuesta.status_code, status.HTTP_200_OK)
         self.assertEqual(len(respuesta.data), 2)
 
+    def test_admin_puede_actualizar_estado_de_reclamo(self):
+        self.client.force_authenticate(user=self.admin)
+        respuesta = self.client.patch(
+            f'/api/reclamos/{self.reclamo1.id}/',
+            {'estado': 'en_proceso'},
+            format='json'
+        )
+        self.assertEqual(respuesta.status_code, status.HTTP_200_OK)
+
+        self.reclamo1.refresh_from_db()
+        self.assertEqual(self.reclamo1.estado, 'en_proceso')

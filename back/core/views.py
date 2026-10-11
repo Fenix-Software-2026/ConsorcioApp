@@ -105,7 +105,8 @@ class UsuarioViewSet(viewsets.ModelViewSet):
 
         Métodos soportados:
         - GET: Devuelve el detalle del usuario autenticado (incluyendo su unidad).
-        - PATCH: Permite actualizar campos específicos (ej: cambio de password) 
+        - PATCH: Permite actualizar campos específicos. Para cambiar la contraseña
+                 recibe current_password y new_password.
                  sin necesidad de enviar todo el objeto completo.
         """
         usuario_actual = request.user 
@@ -117,8 +118,6 @@ class UsuarioViewSet(viewsets.ModelViewSet):
             
         # --- LÓGICA PARA ACTUALIZAR EL PERFIL (PATCH) ---
         elif request.method == 'PATCH':
-            # partial=True permite que el residente envíe solo la contraseña 
-            # sin que Django exija los demás campos obligatorios.
             serializer = self.get_serializer(
                 usuario_actual, 
                 data=request.data, 
@@ -126,8 +125,6 @@ class UsuarioViewSet(viewsets.ModelViewSet):
             )
             
             if serializer.is_valid():
-                # El método save() disparará el def update() de tu UsuarioSerializer,
-                # donde ya tenés escrita la lógica para encriptar la nueva password.
                 serializer.save()
                 return Response(
                     {"mensaje": "Los datos de tu perfil se actualizaron correctamente."}, 
