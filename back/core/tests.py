@@ -3,6 +3,7 @@ from django.contrib.auth import get_user_model
 from rest_framework import status
 from rest_framework.test import APITestCase
 from core.models import Reclamo, Unidad
+from core.serializers import UsuarioSerializer
 
 Usuario = get_user_model()
 
@@ -83,6 +84,50 @@ class PruebasPerfilUsuario(APITestCase):
         self.residente.refresh_from_db()
         self.assertEqual(self.residente.email, 'residente1@correo.com')
         self.assertEqual(self.residente.first_name, 'Carlos')
+
+    def test_rechaza_alta_con_unidad_ocupada(self):
+        datos = {
+            'username': 'residente2',
+            'email': 'residente2@correo.com',
+            'password': 'PasswordRobusta2026!',
+            'unidad': self.unidad1.id
+        }
+        serializer = UsuarioSerializer(data=datos)
+
+        self.assertFalse(serializer.is_valid())
+        self.assertEqual(
+            serializer.errors['unidad'][0],
+            'La unidad seleccionada ya tiene un residente asignado.'
+        )
+
+    def test_rechaza_cambio_a_unidad_ocupada(self):
+        datos = {'unidad': self.unidad1.id}
+        serializer = UsuarioSerializer(
+            instance=Usuario.objects.create_user(
+                username='residente2',
+                email='residente2@correo.com',
+                password='PasswordRobusta2026!',
+                rol='residente',
+                unidad=self.unidad2
+            ),
+            data=datos,
+            partial=True
+        )
+
+        self.assertFalse(serializer.is_valid())
+        self.assertEqual(
+            serializer.errors['unidad'][0],
+            'La unidad seleccionada ya tiene un residente asignado.'
+        )
+
+    def test_permite_conservar_la_unidad_actual(self):
+        serializer = UsuarioSerializer(
+            instance=self.residente,
+            data={'unidad': self.unidad1.id},
+            partial=True
+        )
+
+        self.assertTrue(serializer.is_valid(), serializer.errors)
 
 
 class PruebasReclamosConsorcio(APITestCase):

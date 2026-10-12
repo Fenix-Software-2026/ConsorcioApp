@@ -68,6 +68,9 @@ class UsuarioSerializer(serializers.ModelSerializer):
                 'write_only': True,
                 'required': False
             },
+            'unidad': {
+                'validators': []
+            },
             'email': {
                 'required': True
             }
@@ -92,6 +95,29 @@ class UsuarioSerializer(serializers.ModelSerializer):
         except DjangoValidationError as error:
             raise serializers.ValidationError(list(error.messages))
         return value
+
+    def validate(self, attrs):
+        unidad = attrs.get('unidad')
+        piso = attrs.get('piso')
+        departamento = attrs.get('departamento')
+
+        # Resolver la unidad enviada por ID o por piso/departamento.
+        if unidad is None and piso is not None and departamento:
+            unidad = Unidad.objects.filter(
+                piso=piso,
+                departamento=departamento
+            ).first()
+
+        if unidad and Usuario.objects.filter(
+            unidad=unidad
+        ).exclude(
+            pk=self.instance.pk if self.instance else None
+        ).exists():
+            raise serializers.ValidationError({
+                'unidad': 'La unidad seleccionada ya tiene un residente asignado.'
+            })
+
+        return attrs
 
     def create(self, validated_data):
         # Extraemos piso/depto si vienen
