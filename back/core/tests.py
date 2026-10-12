@@ -1,5 +1,6 @@
 # Tarea 6: Pruebas automatizadas de seguridad de perfil, validación de contraseñas y reclamos
 from django.contrib.auth import get_user_model
+from unittest.mock import patch
 from rest_framework import status
 from rest_framework.test import APITestCase
 from core.models import Reclamo, Unidad
@@ -128,6 +129,37 @@ class PruebasPerfilUsuario(APITestCase):
         )
 
         self.assertTrue(serializer.is_valid(), serializer.errors)
+
+    @patch('core.serializers.send_mail')
+    def test_alta_informa_si_falla_el_envio_de_credenciales(self, enviar_correo):
+        enviar_correo.side_effect = Exception('SMTP no disponible')
+        administrador = Usuario.objects.create_user(
+            username='admin1',
+            email='admin1@correo.com',
+            password='PasswordRobusta2026!',
+            rol='administrador',
+            is_staff=True
+        )
+        self.client.force_authenticate(user=administrador)
+
+        respuesta = self.client.post(
+            '/api/usuario/',
+            {
+                'username': 'residente2',
+                'email': 'residente2@correo.com',
+                'nombre': 'Ana',
+                'apellido': 'Perez',
+                'password': 'PasswordRobusta2026!',
+                'unidad': self.unidad2.id,
+                'rol': 'residente'
+            },
+            format='json'
+        )
+
+        self.assertEqual(respuesta.status_code, status.HTTP_201_CREATED)
+        self.assertIn('advertencia', respuesta.data)
+        self.assertNotIn('password', respuesta.data)
+        self.assertTrue(Usuario.objects.filter(username='residente2').exists())
 
 
 class PruebasReclamosConsorcio(APITestCase):

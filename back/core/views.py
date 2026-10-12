@@ -97,6 +97,25 @@ class UsuarioViewSet(viewsets.ModelViewSet):
             return PerfilUsuarioSerializer
         return UsuarioSerializer
 
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        usuario = serializer.save()
+        respuesta = serializer.data
+
+        if getattr(usuario, '_credenciales_no_enviadas', False):
+            respuesta['advertencia'] = (
+                'El usuario fue creado, pero no se pudieron enviar '
+                'las credenciales por correo.'
+            )
+
+        headers = self.get_success_headers(respuesta)
+        return Response(
+            respuesta,
+            status=status.HTTP_201_CREATED,
+            headers=headers
+        )
+
     @action(detail=False, methods=['get', 'patch'], permission_classes=[IsAuthenticated])
     def mi_perfil(self, request):
         """

@@ -1,5 +1,6 @@
 import secrets
 import string
+import logging
 from django.core.mail import send_mail
 from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError as DjangoValidationError
@@ -7,6 +8,8 @@ from django.core.exceptions import ValidationError as DjangoValidationError
 from rest_framework import serializers
 from .models import Reclamo, Comunicado, Unidad, Usuario
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+
+logger = logging.getLogger(__name__)
 
 class UnidadSerializer(serializers.ModelSerializer):
     class Meta:
@@ -166,6 +169,8 @@ class UsuarioSerializer(serializers.ModelSerializer):
             **validated_data
         )
 
+        usuario._credenciales_no_enviadas = False
+
         # Enviar correo electrónico con la contraseña provisoria si es residente
         if usuario.rol == 'residente' and usuario.email:
             try:
@@ -182,8 +187,12 @@ class UsuarioSerializer(serializers.ModelSerializer):
                     recipient_list=[usuario.email],
                     fail_silently=False,
                 )
-            except Exception as e:
-                print(f"Error al enviar el correo de credenciales: {e}")
+            except Exception:
+                usuario._credenciales_no_enviadas = True
+                logger.exception(
+                    'No se pudieron enviar las credenciales al usuario %s.',
+                    usuario.username
+                )
         
         # Aquí puedes implementar el envío por SMTP usando `password` como la clave provisoria
         return usuario
