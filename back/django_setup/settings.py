@@ -13,9 +13,27 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 from dotenv import load_dotenv
 from pathlib import Path
 import os
+import sys
 from datetime import timedelta
 
 load_dotenv()
+
+
+# Convierte una variable como "dominio1.com,dominio2.com" en una lista de
+# valores que Django pueda usar en ALLOWED_HOSTS o CORS_ALLOWED_ORIGINS.
+def env_list(name):
+    return [
+        value.strip()
+        for value in os.getenv(name, '').split(',')
+        if value.strip()
+    ]
+
+
+# Las variables de entorno son texto. Esta función convierte valores como
+# "true", "yes", "on" o "1" en el booleano True.
+def env_bool(name, default=False):
+    return os.getenv(name, str(default)).lower() in ('1', 'true', 'yes', 'on')
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -29,11 +47,14 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 
 if not SECRET_KEY:
     raise ValueError("Falta SECRET_KEY en el .env")
+if len(SECRET_KEY) < 50:
+    raise ValueError("SECRET_KEY debe tener al menos 50 caracteres")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = env_bool('DEBUG', False)
 
-ALLOWED_HOSTS = []
+# Dominios y direcciones desde los que Django acepta solicitudes.
+ALLOWED_HOSTS = env_list('ALLOWED_HOSTS')
 
 
 # Application definition
@@ -53,8 +74,9 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
-    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',  # <--- Justo acá abajo
+    'corsheaders.middleware.CorsMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -104,6 +126,12 @@ DATABASES = {
     }
 }
 
+if 'test' in sys.argv:
+    DATABASES['default'] = {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db_test.sqlite3',
+    }
+
 
 # Password validation
 # https://docs.djangoproject.com/en/6.0/ref/settings/#auth-password-validators
@@ -140,6 +168,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
 STATIC_URL = 'static/'
+STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'  
 AUTH_USER_MODEL = 'core.Usuario'
@@ -152,6 +181,16 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.IsAuthenticated',  # Por defecto todo requiere login
     ),
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+    'DEFAULT_THROTTLE_CLASSES': [
+        'rest_framework.throttling.AnonRateThrottle',
+        'rest_framework.throttling.UserRateThrottle'
+    ],
+    'DEFAULT_THROTTLE_RATES': {
+        # Cantidad máxima de solicitudes por período.
+        'anon': os.getenv('THROTTLE_ANON_RATE', '30/minute'),
+        'user': os.getenv('THROTTLE_USER_RATE', '100/minute'),
+        'login': os.getenv('THROTTLE_LOGIN_RATE', '5/minute'),
+    }
     
 
 }
@@ -166,10 +205,41 @@ SPECTACULAR_SETTINGS = {
 
 
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),
-    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
+    # Si un access token se filtra, esta duración limita el tiempo de uso.
+    'ACCESS_TOKEN_LIFETIME': timedelta(
+        minutes=int(os.getenv('JWT_ACCESS_TOKEN_MINUTES', '60'))
+    ),
+    # Permite renovar el access token durante este período.
+    'REFRESH_TOKEN_LIFETIME': timedelta(
+        days=int(os.getenv('JWT_REFRESH_TOKEN_DAYS', '7'))
+    ),
 }
 
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:4200",
-]
+
+# Orígenes permitidos para solicitudes realizadas desde navegadores.
+CORS_ALLOWED_ORIGINS = env_list('CORS_ALLOWED_ORIGINS')
+
+# Configuración de Correo (SMTP)
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = os.getenv('EMAIL_HOST', 'smtp.gmail.com')
+EMAIL_PORT = int(os.getenv('EMAIL_PORT', 587))
+# TLS cifra la conexión entre Django y el servidor SMTP.
+EMAIL_USE_TLS = env_bool('EMAIL_USE_TLS', True)
+EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER', '')
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD', '')
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+
+# Estas opciones se configuran en .env para poder distinguir desarrollo de
+# producción sin modificar el código.
+SECURE_SSL_REDIRECT = env_bool('SECURE_SSL_REDIRECT', not DEBUG)
+SESSION_COOKIE_SECURE = env_bool('SESSION_COOKIE_SECURE', not DEBUG)
+CSRF_COOKIE_SECURE = env_bool('CSRF_COOKIE_SECURE', not DEBUG)
+
+if env_bool('TRUST_PROXY_SSL', not DEBUG):
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
+# TODO: Activar HSTS cuando toda la aplicación use HTTPS de forma estable.
+# Una vez activado, los navegadores evitarán HTTP durante este período.
+# SECURE_HSTS_SECONDS = 31536000
+# SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+# SECURE_HSTS_PRELOAD = True

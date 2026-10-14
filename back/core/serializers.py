@@ -1,6 +1,15 @@
+import secrets
+import string
+import logging
+from django.core.mail import send_mail
+from django.contrib.auth.password_validation import validate_password
+from django.core.exceptions import ValidationError as DjangoValidationError
+
 from rest_framework import serializers
 from .models import Reclamo, Comunicado, Unidad, Usuario
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+
+logger = logging.getLogger(__name__)
 
 class UnidadSerializer(serializers.ModelSerializer):
     class Meta:
@@ -62,10 +71,56 @@ class UsuarioSerializer(serializers.ModelSerializer):
                 'write_only': True,
                 'required': False
             },
+            'unidad': {
+                'validators': []
+            },
             'email': {
                 'required': True
             }
         }
+
+    # Tarea 4: Permite conservar el propio email al editar y evita duplicados en otros usuarios
+    def validate_email(self, value):
+        from django.contrib.auth import get_user_model
+        User = get_user_model()
+
+        consulta = User.objects.filter(email=value)
+        if self.instance:
+            consulta = consulta.exclude(pk=self.instance.pk)
+        if consulta.exists():
+            raise serializers.ValidationError("Ya existe un residente con este correo electrónico.")
+        return value
+
+    # Tarea 3: Valida la robustez de la contraseña con los validadores nativos de Django
+    def validate_password(self, value):
+        try:
+            validate_password(value, user=self.instance)
+        except DjangoValidationError as error:
+            raise serializers.ValidationError(list(error.messages))
+        return value
+
+    def validate(self, attrs):
+        unidad = attrs.get('unidad')
+        piso = attrs.get('piso')
+        departamento = attrs.get('departamento')
+
+        # Resolver la unidad enviada por ID o por piso/departamento.
+        if unidad is None and piso is not None and departamento:
+            unidad = Unidad.objects.filter(
+                piso=piso,
+                departamento=departamento
+            ).first()
+
+        if unidad and Usuario.objects.filter(
+            unidad=unidad
+        ).exclude(
+            pk=self.instance.pk if self.instance else None
+        ).exists():
+            raise serializers.ValidationError({
+                'unidad': 'La unidad seleccionada ya tiene un residente asignado.'
+            })
+
+        return attrs
 
     def create(self, validated_data):
         # Extraemos piso/depto si vienen
@@ -83,16 +138,63 @@ class UsuarioSerializer(serializers.ModelSerializer):
             )
             validated_data['unidad'] = unidad_obj
 
-        password = validated_data.pop(
-            'password',
-            '123456'
-        )
+        # Generar una contraseña aleatoria segura si no viene especificada
+        password = validated_data.pop('password', None)
+        if not password:
+            # Definir conjuntos de caracteres obligatorios para cumplir con la política de seguridad
+            lower = string.ascii_lowercase
+            upper = string.ascii_uppercase
+            digits = string.digits
+            special = "!@#$%^&*()"
+
+            # Asegurar al menos un carácter de cada tipo
+            password_chars = [
+                secrets.choice(lower),
+                secrets.choice(upper),
+                secrets.choice(digits),
+                secrets.choice(special)
+            ]
+
+            # Completar hasta tener 10 caracteres en total con caracteres aleatorios de cualquier tipo
+            all_chars = lower + upper + digits + special
+            for _ in range(6):
+                password_chars.append(secrets.choice(all_chars))
+
+            # Mezclar para que no queden siempre en el mismo orden
+            secrets.SystemRandom().shuffle(password_chars)
+            password = "".join(password_chars)
 
         usuario = Usuario.objects.create_user(
             password=password,
             **validated_data
         )
 
+        usuario._credenciales_no_enviadas = False
+
+        # Enviar correo electrónico con la contraseña provisoria si es residente
+        if usuario.rol == 'residente' and usuario.email:
+            try:
+                send_mail(
+                    subject='Acceso a ConsorcioApp - Tus credenciales provisorias',
+                    message=(
+                        f"Hola {usuario.first_name},\n\n"
+                        f"Se ha registrado tu cuenta en ConsorcioApp.\n"
+                        f"Tu nombre de usuario para iniciar sesión es: {usuario.username}\n"
+                        f"Tu contraseña provisoria segura es: {password}\n\n"
+                        f"Te recomendamos cambiarla desde tu perfil al ingresar por primera vez."
+                    ),
+                    from_email=None,  # Utiliza el DEFAULT_FROM_EMAIL del settings.py
+                    recipient_list=[usuario.email],
+                    fail_silently=False,
+                )
+            except Exception:
+                usuario._credenciales_no_enviadas = True
+                logger.exception(
+                    'No se pudieron enviar las credenciales al usuario %s.',
+                    usuario.username
+                )
+        
+        # Aquí puedes implementar el envío por SMTP usando `password` como la clave provisoria
         return usuario
 
     def update(self, instance, validated_data):
@@ -122,6 +224,104 @@ class UsuarioSerializer(serializers.ModelSerializer):
 
         if password:
             instance.set_password(password)
+
+        instance.save()
+        return instance
+
+# Tarea 2: Serializer específico para gestionar el perfil del usuario autenticado sin exponer campos sensibles
+class PerfilUsuarioSerializer(serializers.ModelSerializer):
+    current_password = serializers.CharField(
+        write_only=True,
+        required=False
+    )
+    new_password = serializers.CharField(
+        write_only=True,
+        required=False
+    )
+
+    nombre = serializers.CharField(
+        source='first_name',
+        required=False,
+        allow_blank=True
+    )
+    apellido = serializers.CharField(
+        source='last_name',
+        required=False,
+        allow_blank=True
+    )
+    unidad_detalle = UnidadSerializer(
+        source='unidad',
+        read_only=True
+    )
+
+    class Meta:
+        model = Usuario
+        fields = [
+            'id',
+            'username',
+            'nombre',
+            'apellido',
+            'email',
+            'rol',
+            'unidad_detalle',
+            'current_password',
+            'new_password'
+        ]
+        read_only_fields = ['id', 'username', 'rol']
+        extra_kwargs = {
+            'email': {
+                'required': False
+            }
+        }
+
+    def validate(self, attrs):
+        current_password = attrs.get('current_password')
+        new_password = attrs.get('new_password')
+
+        # Las dos contraseñas son obligatorias cuando se solicita un cambio.
+        if current_password or new_password:
+            if not current_password or not new_password:
+                raise serializers.ValidationError({
+                    'current_password': (
+                        'Debes proporcionar la contraseña actual y la nueva contraseña.'
+                    )
+                })
+
+            if not self.instance.check_password(current_password):
+                raise serializers.ValidationError({
+                    'current_password': 'La contraseña actual es incorrecta.'
+                })
+
+            try:
+                validate_password(new_password, user=self.instance)
+            except DjangoValidationError as error:
+                raise serializers.ValidationError({
+                    'new_password': list(error.messages)
+                })
+
+        return attrs
+
+    # Tarea 4: Permite conservar el propio email al editar y evita duplicados en otros usuarios
+    def validate_email(self, value):
+        from django.contrib.auth import get_user_model
+        User = get_user_model()
+
+        consulta = User.objects.filter(email=value)
+        if self.instance:
+            consulta = consulta.exclude(pk=self.instance.pk)
+        if consulta.exists():
+            raise serializers.ValidationError("Ya existe un residente con este correo electrónico.")
+        return value
+
+    def update(self, instance, validated_data):
+        validated_data.pop('current_password', None)
+        new_password = validated_data.pop('new_password', None)
+
+        for attr, value in validated_data.items():
+            setattr(instance, attr, value)
+
+        if new_password:
+            instance.set_password(new_password)
 
         instance.save()
         return instance

@@ -4,6 +4,10 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 
 class Usuario(AbstractUser):
+    email = models.EmailField(
+        unique=True, 
+        error_messages={'unique': 'Ya existe un residente con este correo electrónico.'}
+    )
     class Rol(models.TextChoices):
         administrador = 'administrador', 'Administrador'
         residente = 'residente', 'Residente'

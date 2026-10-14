@@ -1,3 +1,7 @@
+import secrets
+import string
+
+from django.core.mail import send_mail
 from rest_framework.exceptions import PermissionDenied 
 from rest_framework import viewsets
 from rest_framework.decorators import action
@@ -5,8 +9,15 @@ from rest_framework.response import Response
 from rest_framework import status
 from core.permissions import EsAdminConsorcio, EsResidente
 from .models import Reclamo, Comunicado, Usuario, Unidad
-from .serializers import ReclamoAdminSerializer, ReclamoSerializer, ComunicadoSerializer, UsuarioSerializer, UnidadSerializer
-from rest_framework.permissions import IsAuthenticated
+from .serializers import (
+    ReclamoAdminSerializer,
+    ReclamoSerializer,
+    ComunicadoSerializer,
+    UsuarioSerializer,
+    PerfilUsuarioSerializer,
+    UnidadSerializer
+)
+from rest_framework.permissions import IsAuthenticated, AllowAny
 
 class ReclamoViewSet(viewsets.ModelViewSet):
     """
@@ -80,6 +91,31 @@ class UsuarioViewSet(viewsets.ModelViewSet):
     queryset = Usuario.objects.all()
     serializer_class = UsuarioSerializer
 
+    # Tarea 5: Asigna PerfilUsuarioSerializer al endpoint mi_perfil para proteger datos sensibles
+    def get_serializer_class(self):
+        if self.action == 'mi_perfil':
+            return PerfilUsuarioSerializer
+        return UsuarioSerializer
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        usuario = serializer.save()
+        respuesta = serializer.data
+
+        if getattr(usuario, '_credenciales_no_enviadas', False):
+            respuesta['advertencia'] = (
+                'El usuario fue creado, pero no se pudieron enviar '
+                'las credenciales por correo.'
+            )
+
+        headers = self.get_success_headers(respuesta)
+        return Response(
+            respuesta,
+            status=status.HTTP_201_CREATED,
+            headers=headers
+        )
+
     @action(detail=False, methods=['get', 'patch'], permission_classes=[IsAuthenticated])
     def mi_perfil(self, request):
         """
@@ -88,7 +124,8 @@ class UsuarioViewSet(viewsets.ModelViewSet):
 
         Métodos soportados:
         - GET: Devuelve el detalle del usuario autenticado (incluyendo su unidad).
-        - PATCH: Permite actualizar campos específicos (ej: cambio de password) 
+        - PATCH: Permite actualizar campos específicos. Para cambiar la contraseña
+                 recibe current_password y new_password.
                  sin necesidad de enviar todo el objeto completo.
         """
         usuario_actual = request.user 
@@ -100,8 +137,6 @@ class UsuarioViewSet(viewsets.ModelViewSet):
             
         # --- LÓGICA PARA ACTUALIZAR EL PERFIL (PATCH) ---
         elif request.method == 'PATCH':
-            # partial=True permite que el residente envíe solo la contraseña 
-            # sin que Django exija los demás campos obligatorios.
             serializer = self.get_serializer(
                 usuario_actual, 
                 data=request.data, 
@@ -109,8 +144,6 @@ class UsuarioViewSet(viewsets.ModelViewSet):
             )
             
             if serializer.is_valid():
-                # El método save() disparará el def update() de tu UsuarioSerializer,
-                # donde ya tenés escrita la lógica para encriptar la nueva password.
                 serializer.save()
                 return Response(
                     {"mensaje": "Los datos de tu perfil se actualizaron correctamente."}, 
@@ -119,6 +152,77 @@ class UsuarioViewSet(viewsets.ModelViewSet):
                 
             # Si la validación falla, devolvemos los errores exactos
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    @action(detail=False, methods=['post'], permission_classes=[AllowAny])
+    def recuperar_password(self, request):
+        """
+        Endpoint sencillo para recuperar contraseña.
+        Recibe el email, genera una nueva contraseña temporal segura y la envía por SMTP.
+        """
+        email = request.data.get('email')
+        if not email:
+            return Response(
+                {"error": "Debes proporcionar un correo electrónico."}, 
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        try:
+            usuario = Usuario.objects.get(email=email)
+        except Usuario.DoesNotExist:
+            # Por seguridad no revelamos si el correo existe o no, pero devolvemos OK
+            return Response(
+                {"mensaje": "Si el correo está registrado, se han enviado las instrucciones."}, 
+                status=status.HTTP_200_OK
+            )
+
+        # Generar una nueva contraseña segura temporal (cumpliendo con ciberseguridad)
+        lower = string.ascii_lowercase
+        upper = string.ascii_uppercase
+        digits = string.digits
+        special = "!@#$%^&*()"
+
+        password_chars = [
+            secrets.choice(lower),
+            secrets.choice(upper),
+            secrets.choice(digits),
+            secrets.choice(special)
+        ]
+        all_chars = lower + upper + digits + special
+        for _ in range(6):
+            password_chars.append(secrets.choice(all_chars))
+
+        secrets.SystemRandom().shuffle(password_chars)
+        nueva_password = "".join(password_chars)
+
+        # Asignar y hashear la nueva contraseña en la base de datos
+        usuario.set_password(nueva_password)
+        usuario.save()
+
+        # Enviar por SMTP
+        try:
+            send_mail(
+                subject='ConsorcioApp - Recuperación de Contraseña',
+                message=(
+                    f"Hola {usuario.first_name or usuario.username},\n\n"
+                    f"Has solicitado restablecer tu contraseña.\n"
+                    f"Tu usuario es: {usuario.username}\n"
+                    f"Tu nueva contraseña provisoria es: {nueva_password}\n\n"
+                    f"Te recomendamos iniciar sesión y cambiarla desde tu perfil."
+                ),
+                from_email=None,
+                recipient_list=[usuario.email],
+                fail_silently=False,
+            )
+        except Exception as e:
+            return Response(
+                {"error": f"No se pudo enviar el correo: {str(e)}"}, 
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
+
+        return Response(
+            {"mensaje": "Se ha enviado una nueva contraseña temporal a tu correo."}, 
+            status=status.HTTP_200_OK
+        )
 
 class UnidadViewSet(viewsets.ReadOnlyModelViewSet):
     """
